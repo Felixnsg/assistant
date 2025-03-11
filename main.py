@@ -1,9 +1,22 @@
-import requests
-import openai
-import speech_recognition as sr
-import pyttsx3
-import cv2
-import mediapipe as mp
-import numpy as np
+##main
+from core import memory
+from core import nlp
+from interfaces import chat
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-print("All libraries are installed correctly!")
+
+def run():
+    while True:
+        user_input = chat.discussion()
+        if user_input == "exit":
+            print("Bye.................")
+            break
+
+
+
+
+run()
+
+
