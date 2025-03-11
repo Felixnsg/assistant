@@ -12,7 +12,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import config
 
 def discussion():
-    convos = []
+    convos = memory.get_convos()
     prompt = input("you: ")
     past_messages = memory.get_convos()
     convos.extend(past_messages)

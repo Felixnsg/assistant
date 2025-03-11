@@ -5,7 +5,6 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-convos = []
 
 def save_convos(role, prompt):
     global convos
@@ -22,3 +21,15 @@ def get_convos():
         return convos 
     else:
         return []
+convos = get_convos()
+
+def delete_convos():
+    if os.path.exists("past_conversations.json"):
+        os.remove("past_conversations.json")
+        global convos
+        convos = []
+        return convos
+
+
+    
+

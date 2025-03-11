@@ -5,14 +5,24 @@ from interfaces import chat
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
+import config
 
 def run():
+    user_input = False
     while True:
-        user_input = chat.discussion()
-        if user_input == "exit":
-            print("Bye.................")
-            break
+        if not user_input:
+            user_input = input("type Delete, to start over, Pass to ignore: ")     
+            if user_input.lower() == "delete":
+                memory.delete_convos()
+                print(f"{config.MODEL_NAME}: Memory Deleted Sucessfully..........")
+            user_input = True
+        a = chat.discussion()
+        if a == "exit":
+                print("Bye.................")
+                break
+        
+        
+        
 
 
 
