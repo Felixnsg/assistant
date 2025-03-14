@@ -14,7 +14,6 @@ import config
 
 
 
-
 def choose_format():
     format= input("What format do you want: ")
     return format
@@ -42,7 +41,7 @@ def audio_convos():
         check_online = requests.get("https://www.google.com")
         if check_online.status_code == 200:
 
-            speech.best_text_to_speech(ai_response)
+            speech.edge_text_to_speech(ai_response)
     except requests.exceptions.RequestException:
         speech.text_to_speech(ai_response)
         return audio_prompt
@@ -69,7 +68,7 @@ def text_convos():
         check_online = requests.get("https://www.google.com")
         if check_online.status_code == 200:
 
-            speech.best_text_to_speech(ai_response)
+            speech.edge_text_to_speech(ai_response)
     except requests.exceptions.RequestException:
         speech.text_to_speech(ai_response)
         return text_prompt

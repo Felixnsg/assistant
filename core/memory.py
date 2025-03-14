@@ -4,11 +4,14 @@ import requests
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import config
 
+
+system_prompt = config.System_prompt
 
 def save_convos(role, prompt):
     global convos
-    convos.append({"role": role, "parts" : [{"text" : prompt}]})
+    convos.append({"role": role, "parts" : [{"text" :  prompt}]})
     with open ("past_conversations.json" , "w") as f:
         json.dump(convos, f)
 
