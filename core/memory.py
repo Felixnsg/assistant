@@ -5,13 +5,18 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import config
+from services import utilities
 
 
-system_prompt = config.System_prompt
+system_prompt = config.SYSTEM_PROMPT
+
+time_prompt = f"{config.time_prompt} {utilities.tell_time()}"
 
 def save_convos(role, prompt):
     global convos
-    convos.append({"role": role, "parts" : [{"text" :  prompt}]})
+    if not convos:
+        convos.append({"role": role, "parts" : [{"text" : system_prompt}]})   
+    convos.append({"role": role, "parts" : [{"text" :prompt}]})
     with open ("past_conversations.json" , "w") as f:
         json.dump(convos, f)
 

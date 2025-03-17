@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sypher - Personal AI Assistant</title>
+    <style>
+        :root {
+            --primary: #8a70ff;
+            --primary-light: #a29bfe;
+            --dark: #1e1e2e;
+            --dark-light: #6c7086;
+            --dark-mid: #313244;
+            --light: #45475a;
+            --white: #cdd6f4;
+            --success: #a6e3a1;
+            --warning: #f9e2af;
+            --error: #f38ba8;
+            --radius: 12px;
+            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--white);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--dark-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .settings-btn:hover {
+            background-color: var(--light);
+            color: var(--white);
+        }
+
+        .main {
+            display: flex;
+            flex: 1;
+            gap: 1.5rem;
+            height: calc(100% - 120px);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--dark-mid);
+            border: 1px solid var(--light);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--dark-mid);
+            border: 1px solid var(--light);
+            border-radius: var(--radius);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--success);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+        }
+
+        .messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: var(--radius);
+            animation: fadeIn 0.3s ease;
+            position: relative;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--primary);
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+
+        .sypher-message {
+            align-self: flex-start;
+            background-color: var(--dark-mid);
+            color: var(--white);
+            border: 1px solid var(--light);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--dark-light);
+        }
+
+        .message-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            text-align: right;
+            opacity: 0.7;
+        }
+
+        .sypher-message .message-avatar {
+            background-color: var(--primary);
+        }
+
+        .user-message .message-avatar {
+            background-color: var(--dark);
+        }
+
+        .message-actions {
+            position: absolute;
+            right: 0.5rem;
+            top: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+
+        .message-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .message-action-btn:hover {
+            opacity: 1;
+        }
+
+        .fetching-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background-color: var(--dark-mid);
+            border: 1px solid var(--light);
+            border-radius: var(--radius);
+            color: var(--white);
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            align-self: flex-start;
+            animation: pulse 1.5s infinite;
+        }
+
+        .weather-card {
+            background-color: var(--dark-mid);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 0.5rem;
+            border: 1px solid var(--light);
+        }
+
+        .weather-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .weather-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .weather-data {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .weather-data h4 {
+            font-size: 0.8rem;
+            color: var(--dark-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .weather-data p {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-container {
+            padding: 1rem;
+            border-top: 1px solid var(--light);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .input-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background-color: var(--light);
+            border-radius: var(--radius);
+            padding: 0 1rem;
+            transition: var(--transition);
+        }
+
+        .input-box:focus-within {
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .message-input {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 0.75rem 0;
+            font-size: 0.95rem;
+            outline: none;
+            color: var(--white);
+        }
+
+        .message-input::placeholder {
+            color: var(--dark-light);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--dark-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background-color: var(--light);
+            color: var(--white);
+        }
+
+        .send-btn {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .send-btn:hover {
+            background-color: var(--primary);
+            opacity: 0.9;
+            color: var(--white);
+        }
+
+        .voice-btn {
+            background-color: var(--light);
+            position: relative;
+            color: var(--white);
+        }
+
+        .recording .voice-btn {
+            background-color: var(--error);
+            color: var(--white);
+            animation: pulse 1.5s infinite;
+        }
+
+        .sidebar-header {
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--light);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            color: var(--dark-light);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .voice-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .voice-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .voice-option:hover {
+            background-color: var(--light);
+        }
+
+        .voice-option.active {
+            background-color: var(--light);
+        }
+
+        .voice-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius);
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+
+        .voice-info {
+            flex: 1;
+        }
+
+        .voice-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .voice-description {
+            font-size: 0.8rem;
+            color: var(--dark-light);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .history-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .clear-history {
+            font-size: 0.8rem;
+            color: var(--error);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .clear-history:hover {
+            text-decoration: underline;
+        }
+
+        .history-item {
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-item:hover {
+            background-color: var(--light);
+            border-left-color: var(--primary);
+        }
+
+        .history-time {
+            font-size: 0.75rem;
+            color: var(--dark-light);
+        }
+
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .settings-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .settings-content {
+            background-color: var(--dark-mid);
+            border: 1px solid var(--light);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .settings-modal.active .settings-content {
+            transform: translateY(0);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--dark-light);
+            font-size: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            color: var(--white);
+        }
+
+        .settings-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .setting-label {
+            font-size: 0.9rem;
+        }
+
+        .setting-description {
+            font-size: 0.8rem;
+            color: var(--dark-light);
+            margin-top: 0.25rem;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--light);
+            transition: var(--transition);
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--white);
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        .toggle input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        select.setting-control {
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--light);
+            background-color: var(--dark);
+            color: var(--white);
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        select.setting-control:focus {
+            border-color: var(--primary-light);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .cancel-btn {
+            background-color: var(--light);
+            border: none;
+            color: var(--white);
+        }
+
+        .cancel-btn:hover {
+            background-color: var(--dark-light);
+        }
+
+        .save-btn {
+            background-color: var(--primary);
+            border: none;
+            color: var(--white);
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Voice Overlay Styles */
+        .voice-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .voice-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .voice-overlay-content {
+            width: 90%;
+            max-width: 500px;
+            height: 80vh;
+            max-height: 600px;
+            background-color: var(--dark-mid);
+            border: 1px solid var(--light);
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .voice-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--dark-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .voice-close-btn:hover {
+            color: var(--white);
+        }
+        
+        .voice-visualization-container {
+            flex: 0 0 auto;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .voice-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--dark);
+            border: 2px solid var(--primary);
+            position: absolute;
+            z-index: 1;
+        }
+        
+        .mic-icon {
+            position: relative;
+            z-index: 3;
+            color: var(--white);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .mic-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        .mic-icon.active {
+            color: var(--error);
+        }
+        
+        .voice-waves {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            z-index: 2;
+        }
+        
+        .voice-wave {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        
+        .voice-waves.active .voice-wave:nth-child(1) {
+            animation: wave 2s infinite 0.1s;
+        }
+        
+        .voice-waves.active .voice-wave:nth-child(2) {
+            animation: wave 2s infinite 0.3s;
+        }
+        
+        .voice-waves.active .voice-wave:nth-child(3) {
+            animation: wave 2s infinite 0.5s;
+        }
+        
+        .voice-waves.active .voice-wave:nth-child(4) {
+            animation: wave 2s infinite 0.7s;
+        }
+        
+        @keyframes wave {
+            0% {
+                opacity: 1;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+        
+        .voice-status {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            color: var(--white);
+        }
+        
+        .voice-transcript {
+            flex: 1;
+            overflow-y: auto;
+            background-color: var(--dark);
+            border-radius: var(--radius);
+            padding: 1rem;
+        }
+        
+        .voice-transcript-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .voice-transcript-item {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            max-width: 90%;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .voice-transcript-user {
+            align-self: flex-end;
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .voice-transcript-sypher {
+            align-self: flex-start;
+            background-color: var(--dark-mid);
+            border: 1px solid var(--light);
+            color: var(--white);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .chat-header h2 {
+                font-size: 1rem;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .input-container {
+                padding: 0.75rem;
+            }
+            
+            .message-input {
+                font-size: 0.9rem;
+            }
+            
+            .action-btn {
+                width: 36px;
+                height: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a70ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16a4 4 0 0 0 0-8"></path>
+                    <path d="M12 12h4"></path>
+                </svg>
+                <h1>Sypher</h1>
+            </div>
+            <button class="settings-btn" id="settingsBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Settings
+            </button>
+        </header>
+
+        <div class="main">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>Chat with Sypher</h2>
+                    <div class="chat-status">
+                        <span class="status-indicator"></span>
+                        Online
+                    </div>
+                </div>
+                <div class="messages" id="messages">
+                    <!-- System welcome message -->
+                    <div class="message sypher-message">
+                        <div class="message-info">
+                            <div class="message-avatar">S</div>
+                            <span>Sypher</span>
+                        </div>
+                        <p>Hello! I'm Sypher, your personal AI assistant. How can I help you today?</p>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+                <div class="input-container">
+                    <div class="input-box">
+                        <input type="text" class="message-input" id="messageInput" placeholder="Type your message..." autofocus>
+                    </div>
+                    <div class="input-actions">
+                        <button class="action-btn voice-btn" id="voiceBtn" title="Voice input">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" x2="12" y1="19" y2="22"></line>
+                            </svg>
+                        </button>
+                        <button class="action-btn send-btn" id="sendBtn" title="Send message">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m22 2-7 20-4-9-9-4Z"></path>
+                                <path d="M22 2 11 13"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-header">Settings</div>
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Voice Options</h3>
+                    <div class="voice-options">
+                        <div class="voice-option active" data-voice="edge">
+                            <div class="voice-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 8c2.648 0 5.028 1.244 6.572 3.173a.75.75 0 0 1-.036 1.074l-.908.781a.75.75 0 0 1-1.005-.032C15.53 11.947 13.836 11 12 11s-3.53.947-4.623 1.996a.75.75 0 0 1-1.005.032l-.908-.781a.75.75 0 0 1-.036-1.074C7.044 9.244 9.424 8 12 8Z"></path>
+                                </svg>
+                            </div>
+                            <div class="voice-info">
+                                <div class="voice-name">Edge TTS</div>
+                                <div class="voice-description">High quality voice powered by Edge</div>
+                            </div>
+                        </div>
+                        <div class="voice-option" data-voice="elevenlabs">
+                            <div class="voice-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 8c2.648 0 5.028 1.244 6.572 3.173a.75.75 0 0 1-.036 1.074l-.908.781a.75.75 0 0 1-1.005-.032C15.53 11.947 13.836 11 12 11s-3.53.947-4.623 1.996a.75.75 0 0 1-1.005.032l-.908-.781a.75.75 0 0 1-.036-1.074C7.044 9.244 9.424 8 12 8Z"></path>
+                                </svg>
+                            </div>
+                            <div class="voice-info">
+                                <div class="voice-name">ElevenLabs</div>
+                                <div class="voice-description">Premium natural-sounding voice</div>
+                            </div>
+                        </div>
+                        <div class="voice-option" data-voice="aws">
+                            <div class="voice-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 8c2.648 0 5.028 1.244 6.572 3.173a.75.75 0 0 1-.036 1.074l-.908.781a.75.75 0 0 1-1.005-.032C15.53 11.947 13.836 11 12 11s-3.53.947-4.623 1.996a.75.75 0 0 1-1.005.032l-.908-.781a.75.75 0 0 1-.036-1.074C7.044 9.244 9.424 8 12 8Z"></path>
+                                </svg>
+                            </div>
+                            <div class="voice-info">
+                                <div class="voice-name">AWS Polly</div>
+                                <div class="voice-description">Clear voice with low latency</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="history-actions">
+                        <h3 class="sidebar-title">Chat History</h3>
+                        <button class="clear-history" id="clearHistoryBtn">Clear All</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <!-- History items will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button class="close-btn" id="closeModalBtn">×</button>
+            </div>
+            <div class="settings-section">
+                <h3>Voice Settings</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Auto-play voice responses</div>
+                        <div class="setting-description">Automatically play voice responses when received</div>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked id="autoPlayToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Voice Service</div>
+                        <div class="setting-description">Select the text-to-speech service</div>
+                    </div>
+                    <select class="setting-control" id="voiceServiceSelect">
+                        <option value="edge">Edge TTS</option>
+                        <option value="elevenlabs">ElevenLabs</option>
+                        <option value="aws">AWS Polly</option>
+                        <option value="google">Google TTS</option>
+                    </select>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3>Chat Settings</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Save History</div>
+                        <div class="setting-description">Save conversation history between sessions</div>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked id="saveHistoryToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Temperature</div>
+                        <div class="setting-description">AI response creativity (0.0-1.0)</div>
+                    </div>
+                    <select class="setting-control" id="temperatureSelect">
+                        <option value="0.72" selected>0.72 (Default)</option>
+                        <option value="0.5">0.5 (More focused)</option>
+                        <option value="0.9">0.9 (More creative)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel-btn" id="cancelSettingsBtn">Cancel</button>
+                <button class="modal-btn save-btn" id="saveSettingsBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Interface Overlay -->
+    <div class="voice-overlay" id="voiceOverlay">
+        <div class="voice-overlay-content">
+            <button class="voice-close-btn" id="voiceCloseBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            
+            <div class="voice-visualization-container">
+                <div class="voice-circle"></div>
+                <div class="voice-waves">
+                    <div class="voice-wave"></div>
+                    <div class="voice-wave"></div>
+                    <div class="voice-wave"></div>
+                    <div class="voice-wave"></div>
+                </div>
+                <div class="mic-icon" id="voiceMic">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" x2="12" y1="19" y2="22"></line>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="voice-status" id="voiceStatus">Tap to speak</div>
+            
+            <div class="voice-transcript">
+                <div class="voice-transcript-container" id="voiceTranscript">
+                    <!-- Transcripts will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const voiceOptions = document.querySelectorAll('.voice-option');
+        
+        // Voice Overlay Elements
+        const voiceOverlay = document.getElementById('voiceOverlay');
+        const voiceCloseBtn = document.getElementById('voiceCloseBtn');
+        const voiceMic = document.getElementById('voiceMic');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const voiceTranscript = document.getElementById('voiceTranscript');
+        const voiceWaves = document.querySelector('.voice-waves');
+        
+        // Current voice settings
+        let currentVoice = 'edge';
+        let isRecording = false;
+        let autoPlayVoice = true;
+        
+        // Fetch conversation history on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/api/get-history');
+                const history = await response.json();
+                
+                // Load history into sidebar
+                const historyList = document.getElementById('historyList');
+                historyList.innerHTML = '';
+                
+                history.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <span>${item.user.length > 25 ? item.user.substring(0, 22) + '...' : item.user}</span>
+                        <span class="history-time">${item.timestamp}</span>
+                    `;
+                    historyList.appendChild(historyItem);
+                });
+                
+                scrollToBottom();
+                messageInput.focus();
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        });
+        
+        // Message handling
+        function addUserMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message user-message';
+            messageElement.innerHTML = `
+                <div class="message-info">
+                    <div class="message-avatar">U</div>
+                    <span>You</span>
+                </div>
+                <p>${message}</p>
+                <div class="message-time">${formatTime(new Date())}</div>
+            `;
+            messagesContainer.appendChild(messageElement);
+            scrollToBottom();
+            
+            // Add to history
+            addToHistory(message);
+        }
+        
+        function addSypherMessage(message, weatherInfo = null) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message sypher-message';
+            
+            let messageContent = `<p>${message}</p>`;
+            
+            // If it's a weather response, add formatted weather card
+            if (weatherInfo) {
+                messageContent = `
+                    <p>${message}</p>
+                    <div class="weather-card">
+                        <div class="weather-header">
+                            <h3>${weatherInfo.Location}</h3>
+                            <span>${weatherInfo.Date}</span>
+                        </div>
+                        <div class="weather-info">
+                            <div class="weather-data">
+                                <h4>Temperature</h4>
+                                <p>${weatherInfo['Current Temperature']}</p>
+                            </div>
+                            <div class="weather-data">
+                                <h4>Condition</h4>
+                                <p>${weatherInfo['Weather Description']}</p>
+                            </div>
+                            <div class="weather-data">
+                                <h4>Humidity</h4>
+                                <p>${weatherInfo.Humidity}</p>
+                            </div>
+                            <div class="weather-data">
+                                <h4>Wind</h4>
+                                <p>${weatherInfo.Wind}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            messageElement.innerHTML = `
+                <div class="message-info">
+                    <div class="message-avatar">S</div>
+                    <span>Sypher</span>
+                </div>
+                ${messageContent}
+                <div class="message-time">${formatTime(new Date())}</div>
+                <div class="message-actions">
+                    <button class="message-action-btn" title="Play audio" onclick="playVoiceForMessage('${encodeURIComponent(message)}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 18v-12l-8 6z"></path>
+                            <path d="M8 12l8 6V6z"></path>
+                        </svg>
+                    </button>
+                    <button class="message-action-btn" title="Copy to clipboard" onclick="copyToClipboard('${encodeURIComponent(message)}')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            messagesContainer.appendChild(messageElement);
+            scrollToBottom();
+            
+            // Autoplay voice if enabled
+            if (autoPlayVoice) {
+                playVoiceForMessage(encodeURIComponent(message));
+            }
+        }
+        
+        function addFetchingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.className = 'fetching-indicator';
+            indicator.id = 'fetchingIndicator';
+            indicator.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 8c2.648 0 5.028 1.244 6.572 3.173a.75.75 0 0 1-.036 1.074l-.908.781a.75.75 0 0 1-1.005-.032C15.53 11.947 13.836 11 12 11s-3.53.947-4.623 1.996a.75.75 0 0 1-1.005.032l-.908-.781a.75.75 0 0 1-.036-1.074C7.044 9.244 9.424 8 12 8Z"></path>
+                </svg>
+                Fetching information...
+            `;
+            messagesContainer.appendChild(indicator);
+            scrollToBottom();
+        }
+        
+        function removeFetchingIndicator() {
+            const indicator = document.getElementById('fetchingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+        
+        // Utility functions
+        function scrollToBottom() {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        function addToHistory(message) {
+            const historyList = document.getElementById('historyList');
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <span>${message.length > 25 ? message.substring(0, 22) + '...' : message}</span>
+                <span class="history-time">Just now</span>
+            `;
+            historyList.prepend(historyItem);
+        }
+        
+        function copyToClipboard(encodedMessage) {
+            const message = decodeURIComponent(encodedMessage);
+            navigator.clipboard.writeText(message)
+                .then(() => {
+                    // Show a toast or notification that text was copied
+                    alert('Copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+        }
+        
+        function playVoiceForMessage(encodedMessage) {
+            const message = decodeURIComponent(encodedMessage);
+            fetch('/api/text-to-speech', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: message,
+                    voice: currentVoice
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error('Failed to play voice:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error playing voice:', error);
+            });
+        }
+        
+        // Handle sending messages
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                addUserMessage(message);
+                messageInput.value = '';
+                
+                // Show Sypher is thinking
+                addFetchingIndicator();
+                
+                try {
+                    // Send message to backend API
+                    const response = await fetch('/api/send-message', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to get response from Sypher');
+                    }
+                    
+                    const data = await response.json();
+                    removeFetchingIndicator();
+                    
+                    // Add Sypher's response
+                    if (data.needs_weather) {
+                        addSypherMessage(data.response, data.weather_info);
+                    } else {
+                        addSypherMessage(data.response);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    removeFetchingIndicator();
+                    addSypherMessage('Sorry, I encountered an error. Please try again.');
+                }
+            }
+        }
+        
+        // Voice recording - now opens the overlay instead
+        voiceBtn.addEventListener('click', function() {
+            // Open voice overlay instead of starting recording directly
+            voiceOverlay.classList.add('active');
+        });
+        
+        // Voice Overlay Handlers
+        voiceCloseBtn.addEventListener('click', function() {
+            voiceOverlay.classList.remove('active');
+            // Make sure to stop recording if active
+            if (isRecording) {
+                isRecording = false;
+                voiceMic.classList.remove('active');
+                voiceWaves.classList.remove('active');
+                voiceStatus.textContent = 'Tap to speak';
+            }
+        });
+        
+        // Handle microphone in voice overlay
+        voiceMic.addEventListener('click', function() {
+            if (isRecording) {
+                // Stop recording
+                isRecording = false;
+                voiceMic.classList.remove('active');
+                voiceWaves.classList.remove('active');
+                voiceStatus.textContent = 'Processing...';
+                
+                // Call speech recognition API
+                fetch('/api/voice-recognition', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.text) {
+                        // Add user message to voice transcript
+                        addVoiceTranscript(data.text, 'user');
+                        
+                        // Also add to main chat
+                        addUserMessage(data.text);
+                        
+                        // Send message to get response
+                        voiceStatus.textContent = 'Sypher is thinking...';
+                        
+                        // Send to API
+                        return fetch('/api/send-message', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ message: data.text })
+                        });
+                    }
+                })
+                .then(response => {
+                    if (response) return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        // Add sypher response to voice transcript
+                        addVoiceTranscript(data.response, 'sypher');
+                        
+                        // Also add to main chat (already handled by send-message API)
+                        
+                        // Play voice
+                        if (autoPlayVoice) {
+                            playVoiceForMessage(encodeURIComponent(data.response));
+                        }
+                        
+                        // Update status
+                        voiceStatus.textContent = 'Tap to speak';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    voiceStatus.textContent = 'Error. Try again.';
+                    setTimeout(() => {
+                        voiceStatus.textContent = 'Tap to speak';
+                    }, 2000);
+                });
+                
+            } else {
+                // Start recording
+                isRecording = true;
+                voiceMic.classList.add('active');
+                voiceWaves.classList.add('active');
+                voiceStatus.textContent = 'Listening...';
+            }
+        });
+        
+        // Add message to voice transcript
+        function addVoiceTranscript(message, type) {
+            const item = document.createElement('div');
+            item.className = `voice-transcript-item voice-transcript-${type}`;
+            item.textContent = message;
+            voiceTranscript.appendChild(item);
+            
+            // Scroll to bottom
+            voiceTranscript.scrollTop = voiceTranscript.scrollHeight;
+        }
+        
+        // Clear history - clears all messages
+        async function clearHistory() {
+            if (confirm('Are you sure you want to clear all chat history?')) {
+                try {
+                    const response = await fetch('/api/clear-memory', {
+                        method: 'POST'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to clear history');
+                    }
+                    
+                    // Clear both the history sidebar and the current chat
+                    document.getElementById('historyList').innerHTML = '';
+                    
+                    // Clear all messages
+                    const messages = document.getElementById('messages');
+                    messages.innerHTML = '';
+                    
+                    // Add a new welcome message
+                    const welcomeMessage = document.createElement('div');
+                    welcomeMessage.className = 'message sypher-message';
+                    welcomeMessage.innerHTML = `
+                        <div class="message-info">
+                            <div class="message-avatar">S</div>
+                            <span>Sypher</span>
+                        </div>
+                        <p>Chat history has been cleared. How can I help you today?</p>
+                        <div class="message-time">${formatTime(new Date())}</div>
+                    `;
+                    messages.appendChild(welcomeMessage);
+                    
+                } catch (error) {
+                    console.error('Error clearing history:', error);
+                    addSypherMessage('Sorry, I encountered an error clearing the history.');
+                }
+            }
+        }
+        
+        // Save settings
+        function saveSettings() {
+            autoPlayVoice = document.getElementById('autoPlayToggle').checked;
+            currentVoice = document.getElementById('voiceServiceSelect').value;
+            
+            // Update the selected voice option in the sidebar
+            voiceOptions.forEach(option => {
+                option.classList.remove('active');
+                if (option.dataset.voice === currentVoice) {
+                    option.classList.add('active');
+                }
+            });
+            
+            // Close the modal
+            settingsModal.classList.remove('active');
+        }
+        
+        // Event listeners
+        sendBtn.addEventListener('click', sendMessage);
+        
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        settingsBtn.addEventListener('click', () => {
+            // Update settings modal with current values
+            document.getElementById('autoPlayToggle').checked = autoPlayVoice;
+            document.getElementById('voiceServiceSelect').value = currentVoice;
+            
+            settingsModal.classList.add('active');
+        });
+        
+        closeModalBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+        });
+        
+        cancelSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+        });
+        
+        document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+        
+        clearHistoryBtn.addEventListener('click', clearHistory);
+        
+        voiceOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove active class from all options
+                voiceOptions.forEach(opt => opt.classList.remove('active'));
+                // Add active class to selected option
+                option.classList.add('active');
+                // Update current voice
+                currentVoice = option.dataset.voice;
+                console.log(`Voice changed to: ${currentVoice}`);
+            });
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

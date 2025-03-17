@@ -23,3 +23,4 @@ def send_request (data):
         return json_data['candidates'][0]['content']['parts'][0]['text']
     else:
         return response.status_code
+

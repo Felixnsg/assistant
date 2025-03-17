@@ -3,8 +3,23 @@ from flask import Flask, render_template, request, jsonify
 import os
 import sys
 
-# Import your existing Sypher modules
+# Add path for imports
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+# Override the format choice to avoid terminal input prompt
+# We need to do this BEFORE importing your modules
+import builtins
+original_input = builtins.input
+
+# Override the input function to automatically return "text" when asked for format
+def patched_input(prompt=""):
+    if "format" in prompt.lower():
+        return "text"  # Always return "text" for format questions
+    return original_input(prompt)  # Use original input for other prompts
+    
+builtins.input = patched_input
+
+# Now import your modules after we've patched the input function
 from core import nlp
 from core import memory
 from interfaces import speech

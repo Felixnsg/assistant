@@ -5,7 +5,9 @@ import os
 from core import nlp
 from core import memory
 from interfaces import speech
-
+from interfaces import alltalk
+from interfaces import streamaudio
+from services import utilities
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 has_run = False
@@ -40,8 +42,8 @@ def audio_convos():
     try:
         check_online = requests.get("https://www.google.com")
         if check_online.status_code == 200:
-
-            speech.edge_text_to_speech(ai_response)
+            pass
+            streamaudio.say(ai_response)
     except requests.exceptions.RequestException:
         speech.text_to_speech(ai_response)
         return audio_prompt
@@ -50,28 +52,48 @@ def audio_convos():
 
 def text_convos():
     convos = memory.get_convos()
-    past_messages = memory.get_convos()
-    convos.extend(past_messages)
     text_prompt = input("you: ")
-    convos.append({"role" : "user" , "parts" : [{"text" : text_prompt}]})
-    data = {"contents" : convos,
-            "generationConfig" : {
-                "temperature" : 0.72
-            }}
+    
     if (text_prompt == "exit"):
         return "exit"
+        
+    convos.append({"role": "user", "parts": [{"text": text_prompt}]})
+    data = {"contents": convos,
+            "generationConfig": {
+                "temperature": 0.72
+            }}
+    
     ai_response = nlp.send_request(data)
+    
+    # Check if weather trigger phrases are present
+    if utilities.monitor_sypher(ai_response):
+        utilities.choose_service(ai_response)
+        
+    
+    
     print(f"{config.MODEL_NAME}: {ai_response}")
+    
+    # Save conversation history3
     memory.save_convos("user", text_prompt)
     memory.save_convos("model", ai_response)
+
+
+
+
+
     try:
         check_online = requests.get("https://www.google.com")
         if check_online.status_code == 200:
 
-            speech.edge_text_to_speech(ai_response)
+            streamaudio.say(ai_response)
+            pass
     except requests.exceptions.RequestException:
         speech.text_to_speech(ai_response)
         return text_prompt
+
+
+
+
 
 
 global format
