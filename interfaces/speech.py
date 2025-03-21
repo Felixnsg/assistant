@@ -11,6 +11,13 @@ import config
 import boto3
 import time
 import re
+import os
+import speech_recognition as sr
+import whisper
+import numpy as np
+import tempfile
+from datetime import datetime, timedelta
+from time import sleep
 
 # Initialize the pyttsx3 engine globally
 engine = pyttsx3.init()
@@ -188,3 +195,122 @@ def AWS_text_to_speech(ai_response):
     except Exception as e:
         print(f"Error in AWS_text_to_speech: {e}")
         return False
+    
+
+
+
+import speech_recognition as sr
+import whisper
+import tempfile
+import os
+import queue
+import threading
+import time
+
+# Audio data queue and stop event for continuous listening
+audio_queue = queue.Queue()
+stop_listening = threading.Event()
+model = whisper.load_model("medium")
+
+def continuous_recorder():
+    """Records audio continuously in a background thread"""
+    recognizer = sr.Recognizer()
+    # Make it more tolerant of pauses
+    recognizer.pause_threshold = 2.0  # Default is 0.8 seconds
+    recognizer.energy_threshold = 1000
+    recognizer.dynamic_energy_threshold = True
+    
+    with sr.Microphone() as source:
+        recognizer.adjust_for_ambient_noise(source, duration=1.0)
+        print("Listening continuously...")
+        
+        while not stop_listening.is_set():
+            try:
+                # Use a shorter timeout but NO phrase time limit
+                audio = recognizer.listen(source, timeout=3, phrase_time_limit=None)
+                audio_queue.put(audio)
+                # Small delay to prevent CPU overload
+                time.sleep(0.1)
+            except sr.WaitTimeoutError:
+                continue  # Just keep listening
+            except Exception as e:
+                print(f"Error in recording: {e}")
+                break
+
+def whisper_speech_recognition():
+    """Main function for speech recognition using Whisper with continuous listening"""
+    stop_listening.clear()  # Reset stop flag
+    audio_queue.queue.clear()  # Clear any previous audio
+
+    # Start recording in background thread
+    listen_thread = threading.Thread(target=continuous_recorder)
+    listen_thread.daemon = True
+    listen_thread.start()
+    
+    # Allow recording for a moment before processing
+    time.sleep(1)
+    
+    full_transcript = ""
+    start_time = time.time()
+    last_speech_time = start_time
+    active_listening = True
+    
+    try:
+        print("Speak now (system will automatically detect when you're finished)...")
+        
+        # Process audio until silence threshold exceeded
+        while active_listening:
+            current_time = time.time()
+            
+            # Stop conditions:
+            # 1. If silence for more than 2.5 seconds after speech was detected
+            # 2. If total recording exceeds 30 seconds
+            # 3. If the stop event is set
+            if (full_transcript and current_time - last_speech_time > 2.5) or \
+               (current_time - start_time > 30) or \
+               stop_listening.is_set():
+                active_listening = False
+                continue
+                
+            # Process available audio segments
+            try:
+                if not audio_queue.empty():
+                    audio = audio_queue.get(block=False)
+                    
+                    # Save to temp file
+                    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
+                    temp_filename = temp_file.name
+                    temp_file.close()
+                    
+                    with open(temp_filename, 'wb') as f:
+                        f.write(audio.get_wav_data())
+                    
+                    # Transcribe with Whisper
+                    result = model.transcribe(temp_filename, language="fr")
+                    segment_text = result["text"].strip()
+                    
+                    # Clean up
+                    try:
+                        os.remove(temp_filename)
+                    except:
+                        pass
+                    
+                    # If we got text, update the transcript and last speech time
+                    if segment_text:
+                        print(f"Recognizing: {segment_text}")
+                        full_transcript += " " + segment_text
+                        last_speech_time = current_time
+                else:
+                    # No audio available yet, small wait
+                    time.sleep(0.1)
+                    
+            except Exception as e:
+                print(f"Error processing audio: {e}")
+                
+    finally:
+        # Clean up
+        stop_listening.set()
+        listen_thread.join(timeout=1)
+        print("Finished listening.")
+    
+    return full_transcript.strip()

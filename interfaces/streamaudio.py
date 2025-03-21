@@ -9,6 +9,7 @@ import os
 import urllib.parse
 import logging
 from datetime import datetime
+from interfaces import speech
 
 # Configure logging to file, instead of having the logs appear in the terminal I have them be in file.
 log_dir = "logs"
@@ -48,6 +49,25 @@ AVAILABLE_VOICES = [
     {"id": "Morgan_Freeman CC3.wav", "name": "Morgan Freeman"}
 ]
 
+# Available languages
+AVAILABLE_LANGUAGES = [
+    {"id": "en", "name": "English"},
+    {"id": "fr", "name": "French"},
+    {"id": "es", "name": "Spanish"},
+    {"id": "de", "name": "German"},
+    {"id": "it", "name": "Italian"},
+    {"id": "pt", "name": "Portuguese"},
+    {"id": "nl", "name": "Dutch"},
+    {"id": "ru", "name": "Russian"},
+    {"id": "ja", "name": "Japanese"},
+    {"id": "zh", "name": "Chinese"}
+]
+
+# Audio state tracking event - NEW!
+audio_finished_event = threading.Event()
+# Initially set to "done" state
+audio_finished_event.set()
+
 # Singleton TTS Player Class
 class TTSPlayer:
     _instance = None
@@ -59,6 +79,8 @@ class TTSPlayer:
             cls._instance.browser_opened = False
             cls._instance.server_thread = None
             cls._instance.current_voice = DEFAULT_VOICE
+            cls._instance.current_language = DEFAULT_LANGUAGE
+            cls._instance.is_playing = False  # NEW! track playing status
             cls._instance.ensure_files()
             cls._instance.load_settings()
         return cls._instance
@@ -72,7 +94,10 @@ class TTSPlayer:
         
         if not os.path.exists(SETTINGS_FILE):
             with open(SETTINGS_FILE, 'w') as f:
-                json.dump({"default_voice": DEFAULT_VOICE}, f)
+                json.dump({
+                    "default_voice": DEFAULT_VOICE,
+                    "default_language": DEFAULT_LANGUAGE
+                }, f)
             logger.info(f"Created settings file: {SETTINGS_FILE}")
     
     def load_settings(self):
@@ -83,7 +108,8 @@ class TTSPlayer:
             with open(SETTINGS_FILE, 'r') as f:
                 settings = json.load(f)
                 self.current_voice = settings.get("default_voice", DEFAULT_VOICE)
-            logger.info(f"Settings loaded. Current voice: {self.current_voice}")
+                self.current_language = settings.get("default_language", DEFAULT_LANGUAGE)
+            logger.info(f"Settings loaded. Current voice: {self.current_voice}, Current language: {self.current_language}")
         except Exception as e:
             logger.error(f"Error loading settings: {e}")
     
@@ -93,14 +119,21 @@ class TTSPlayer:
         
         try:
             with open(SETTINGS_FILE, 'w') as f:
-                json.dump({"default_voice": self.current_voice}, f)
-            logger.info(f"Settings saved. Default voice: {self.current_voice}")
+                json.dump({
+                    "default_voice": self.current_voice,
+                    "default_language": self.current_language
+                }, f)
+            logger.info(f"Settings saved. Default voice: {self.current_voice}, Default language: {self.current_language}")
         except Exception as e:
             logger.error(f"Error saving settings: {e}")
     
     def get_available_voices(self):
         """Return a list of available voices"""
         return AVAILABLE_VOICES
+    
+    def get_available_languages(self):
+        """Return a list of available languages"""
+        return AVAILABLE_LANGUAGES
     
     def set_voice(self, voice_id):
         """
@@ -122,6 +155,28 @@ class TTSPlayer:
             return True
         else:
             logger.warning(f"Voice '{voice_id}' not found. Using current voice: {self.current_voice}")
+            return False
+    
+    def set_language(self, language_id):
+        """
+        Set the default language to use for all TTS
+        
+        Args:
+            language_id (str): ID of the language to use (e.g. "en")
+        
+        Returns:
+            bool: True if successful, False if language not found
+        """
+        # Check if the language exists
+        language_exists = any(language["id"] == language_id for language in AVAILABLE_LANGUAGES)
+        
+        if language_exists:
+            self.current_language = language_id
+            self.save_settings()
+            logger.info(f"Default language set to: {language_id}")
+            return True
+        else:
+            logger.warning(f"Language '{language_id}' not found. Using current language: {self.current_language}")
             return False
     
     def start_server(self):
@@ -163,6 +218,30 @@ class TTSPlayer:
                         self.end_headers()
                         self.wfile.write(json.dumps({"voice": player_instance.current_voice}).encode())
                     
+                    # API to get available languages
+                    elif self.path == '/languages':
+                        self.send_response(200)
+                        self.send_header('Content-type', 'application/json')
+                        self.end_headers()
+                        self.wfile.write(json.dumps(AVAILABLE_LANGUAGES).encode())
+                    
+                    # API to get current language
+                    elif self.path == '/current-language':
+                        self.send_response(200)
+                        self.send_header('Content-type', 'application/json')
+                        self.end_headers()
+                        self.wfile.write(json.dumps({"language": player_instance.current_language}).encode())
+                    
+                    # NEW! API to get current audio status
+                    elif self.path == '/audio-status':
+                        self.send_response(200)
+                        self.send_header('Content-type', 'application/json')
+                        self.end_headers()
+                        self.wfile.write(json.dumps({
+                            "is_playing": player_instance.is_playing,
+                            "has_queue_items": player_instance.has_items_in_queue()
+                        }).encode())
+                    
                     # API to get the next item
                     elif self.path == '/next':
                         self.send_response(200)
@@ -188,9 +267,11 @@ class TTSPlayer:
                         return http.server.SimpleHTTPRequestHandler.do_GET(self)
                 
                 def do_POST(self):
+                    # Get content length
+                    content_length = int(self.headers['Content-Length']) if 'Content-Length' in self.headers else 0
+                    
                     # API to set current voice
                     if self.path == '/set-voice':
-                        content_length = int(self.headers['Content-Length'])
                         post_data = self.rfile.read(content_length)
                         voice_data = json.loads(post_data)
                         
@@ -203,6 +284,43 @@ class TTSPlayer:
                         self.send_header('Content-type', 'application/json')
                         self.end_headers()
                         self.wfile.write(json.dumps({"success": True, "voice": player_instance.current_voice}).encode())
+                    
+                    # API to set current language
+                    elif self.path == '/set-language':
+                        post_data = self.rfile.read(content_length)
+                        language_data = json.loads(post_data)
+                        
+                        new_language = language_data.get("language")
+                        
+                        if new_language:
+                            player_instance.set_language(new_language)
+                        
+                        self.send_response(200)
+                        self.send_header('Content-type', 'application/json')
+                        self.end_headers()
+                        self.wfile.write(json.dumps({"success": True, "language": player_instance.current_language}).encode())
+                    
+                    # NEW! API to update audio playing status
+                    elif self.path == '/set-audio-status':
+                        post_data = self.rfile.read(content_length)
+                        status_data = json.loads(post_data)
+                        
+                        is_playing = status_data.get("is_playing", False)
+                        player_instance.is_playing = is_playing
+                        
+                        # Update the global event flag
+                        if is_playing:
+                            audio_finished_event.clear()  # Audio is playing
+                            logger.info("Audio started playing")
+                        else:
+                            audio_finished_event.set()  # Audio is finished
+                            logger.info("Audio finished playing")
+                        
+                        self.send_response(200)
+                        self.send_header('Content-type', 'application/json')
+                        self.end_headers()
+                        self.wfile.write(json.dumps({"success": True}).encode())
+                    
                     else:
                         self.send_response(404)
                         self.end_headers()
@@ -224,7 +342,7 @@ class TTSPlayer:
                 
                 def log_message(self, format, *args):
                     # Use our file logger instead of console
-                    if not any(path in args[1] for path in ['/next', '/queue', '/voices', '/current-voice']):
+                    if not any(path in args[1] for path in ['/next', '/queue', '/voices', '/languages', '/current-voice', '/current-language', '/audio-status', '/set-audio-status']):
                         logger.info(f"HTTP: {format % args}")
             
             # Start the server
@@ -238,7 +356,7 @@ class TTSPlayer:
                 self.server_started = True
                 
                 logger.info(f"TTS player server started on port {WEB_PORT}")
-                logger.info(f"Using voice: {self.current_voice}")
+                logger.info(f"Using voice: {self.current_voice}, language: {self.current_language}")
             except Exception as e:
                 logger.error(f"Error starting server: {e}")
     
@@ -264,7 +382,10 @@ class TTSPlayer:
         
         # Set defaults
         voice = voice or self.current_voice
-        language = language or DEFAULT_LANGUAGE
+        language = language or self.current_language
+        
+        # Update the global event flag - NEW!
+        audio_finished_event.clear()  # Mark that audio will be playing
         
         # Add to queue
         with open(QUEUE_FILE, 'r') as f:
@@ -308,6 +429,31 @@ class TTSPlayer:
             logger.error(f"Error checking queue: {e}")
             return False  # Assume empty if there's an error
 
+# NEW! Function to check if it's safe to listen
+def is_safe_to_listen():
+    """
+    Check if it's safe for the microphone to listen
+    
+    Returns:
+        bool: True if it's safe to listen (no audio playing), False otherwise
+    """
+    # Use the global event flag to check if audio is finished
+    return audio_finished_event.is_set()
+
+# NEW! Function to wait until it's safe to listen
+def wait_until_safe_to_listen(timeout=30):
+    """
+    Wait until it's safe for the microphone to listen
+    
+    Args:
+        timeout (int): Maximum time to wait in seconds
+        
+    Returns:
+        bool: True if it's now safe to listen, False if timeout occurred
+    """
+    logger.info("Waiting for audio to finish before listening...")
+    return audio_finished_event.wait(timeout=timeout)
+
 # Wrapper functions to use the singleton class
 def start_server():
     """Start the web server if it's not already running"""
@@ -323,8 +469,22 @@ def say(text, voice=None, language=None):
         voice (str): Voice to use (defaults to current voice)
         language (str): Language code (defaults to DEFAULT_LANGUAGE)
     """
+    text = speech.clean_text_for_tts(text= text)
+    text = str(text)
+    
     player = TTSPlayer()
-    return player.say(text, voice, language)
+    
+    # If this is the first time we're opening the browser,
+    # add an extra delay to make sure it has time to open
+    is_first_call = not player.browser_opened
+    
+    result = player.say(text, voice, language)
+    
+    if is_first_call:
+        # Add an extra delay after the first call to ensure browser has time to open
+        time.sleep(10)
+    
+    return result
 
 def set_voice(voice_id):
     """
@@ -339,10 +499,28 @@ def set_voice(voice_id):
     player = TTSPlayer()
     return player.set_voice(voice_id)
 
+def set_language(language_id):
+    """
+    Set the default language to use for all TTS
+    
+    Args:
+        language_id (str): ID of the language to use (e.g. "en")
+    
+    Returns:
+        bool: True if successful, False if language not found
+    """
+    player = TTSPlayer()
+    return player.set_language(language_id)
+
 def get_available_voices():
     """Return a list of available voices"""
     player = TTSPlayer()
     return player.get_available_voices()
+
+def get_available_languages():
+    """Return a list of available languages"""
+    player = TTSPlayer()
+    return player.get_available_languages()
 
 def clear_queue():
     """Clear the TTS queue"""
@@ -359,288 +537,812 @@ def has_items_in_queue():
     player = TTSPlayer()
     return player.has_items_in_queue()
 
+# NEW! Helper functions
+def is_audio_playing():
+    """Check if audio is currently playing"""
+    player = TTSPlayer()
+    return player.is_playing
+
 def get_player_html():
-    """Return the HTML for the browser player"""
+    """Return the HTML for the browser player with minimalist UI"""
     return f"""
     <!DOCTYPE html>
     <html>
     <head>
-        <title>AI Voice Player</title>
+        <title>Voice Player</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
         <style>
-            body {{ 
-                font-family: Arial, sans-serif; 
+            :root {{
+                /* Dark theme (default) */
+                --bg-color: #121212;
+                --text-color: rgba(255, 255, 255, 0.87);
+                --glow-color: rgba(255, 255, 255, 0.9);
+                --shadow-color: rgba(255, 255, 255, 0.4);
+                --button-bg: rgba(255, 255, 255, 0.1);
+                --button-hover: rgba(255, 255, 255, 0.2);
+                --error-bg: rgba(220, 53, 69, 0.6);
+            }}
+            
+            /* Light version */
+            [data-theme="light"] {{
+                --bg-color: #f5f5f5;
+                --text-color: rgba(0, 0, 0, 0.87);
+                --glow-color: rgba(0, 0, 0, 0.9);
+                --shadow-color: rgba(0, 0, 0, 0.4);
+                --button-bg: rgba(0, 0, 0, 0.08);
+                --button-hover: rgba(0, 0, 0, 0.15);
+                --error-bg: rgba(220, 53, 69, 0.6);
+            }}
+            
+            /* Blue theme - dark version */
+            [data-theme="blue"] {{
+                --bg-color: #1a2a3a;
+                --text-color: rgba(220, 240, 255, 0.9);
+                --glow-color: rgba(100, 200, 255, 0.9);
+                --shadow-color: rgba(100, 200, 255, 0.5);
+                --button-bg: rgba(100, 200, 255, 0.15);
+                --button-hover: rgba(100, 200, 255, 0.25);
+                --error-bg: rgba(220, 53, 69, 0.6);
+            }}
+            
+            /* Blue theme - light version */
+            [data-theme="blue-light"] {{
+                --bg-color: #e8f0f8;
+                --text-color: rgba(25, 60, 110, 0.9);
+                --glow-color: rgba(25, 120, 200, 0.9);
+                --shadow-color: rgba(25, 120, 200, 0.4);
+                --button-bg: rgba(25, 120, 200, 0.1);
+                --button-hover: rgba(25, 120, 200, 0.2);
+                --error-bg: rgba(220, 53, 69, 0.6);
+            }}
+            
+            /* Beige theme - dark version */
+            [data-theme="beige"] {{
+                --bg-color: #2a2520;
+                --text-color: rgba(255, 245, 230, 0.9);
+                --glow-color: rgba(255, 230, 180, 0.9);
+                --shadow-color: rgba(255, 230, 180, 0.5);
+                --button-bg: rgba(255, 230, 180, 0.15);
+                --button-hover: rgba(255, 230, 180, 0.25);
+                --error-bg: rgba(220, 53, 69, 0.6);
+            }}
+            
+            /* Beige theme - light version */
+            [data-theme="beige-light"] {{
+                --bg-color: #f8f4e8;
+                --text-color: rgba(100, 70, 30, 0.9);
+                --glow-color: rgba(190, 150, 80, 0.9);
+                --shadow-color: rgba(190, 150, 80, 0.4);
+                --button-bg: rgba(190, 150, 80, 0.15);
+                --button-hover: rgba(190, 150, 80, 0.25);
+                --error-bg: rgba(220, 53, 69, 0.6);
+            }}
+            
+            /* Purple theme - dark version */
+            [data-theme="purple"] {{
+                --bg-color: #2a2035;
+                --text-color: rgba(240, 230, 255, 0.9);
+                --glow-color: rgba(180, 150, 240, 0.9);
+                --shadow-color: rgba(180, 150, 240, 0.5);
+                --button-bg: rgba(180, 150, 240, 0.15);
+                --button-hover: rgba(180, 150, 240, 0.25);
+                --error-bg: rgba(220, 53, 69, 0.6);
+            }}
+            
+            /* Purple theme - light version */
+            [data-theme="purple-light"] {{
+                --bg-color: #f0e8f8;
+                --text-color: rgba(90, 60, 140, 0.9);
+                --glow-color: rgba(130, 90, 210, 0.9);
+                --shadow-color: rgba(130, 90, 210, 0.4);
+                --button-bg: rgba(130, 90, 210, 0.1);
+                --button-hover: rgba(130, 90, 210, 0.2);
+                --error-bg: rgba(220, 53, 69, 0.6);
+            }}
+            
+            * {{ 
                 margin: 0; 
-                padding: 20px; 
-                background: #f0f0f0;
+                padding: 0; 
+                box-sizing: border-box; 
+            }}
+            
+            body {{ 
+                font-family: 'Montserrat', sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                height: 100vh;
+                width: 100vw;
                 display: flex;
                 justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                transition: all 0.3s ease;
             }}
-            .container {{ 
-                max-width: 600px;
-                width: 100%;
-                padding: 20px; 
-                border-radius: 8px; 
-                background: white; 
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            
+            .circle-container {{
+                position: relative;
+                width: 400px;
+                height: 400px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }}
-            h1 {{ color: #333; margin-top: 0; }}
-            .player {{ margin: 20px 0; }}
-            .controls {{ margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; }}
-            button {{ 
-                padding: 10px 15px; 
-                background: #4CAF50; 
-                color: white; 
-                border: none; 
-                border-radius: 4px; 
-                cursor: pointer; 
+            
+            .circle {{
+                width: 280px;
+                height: 280px;
+                border-radius: 50%;
+                position: relative;
+                cursor: pointer;
+                background-color: transparent;
             }}
-            button:hover {{ background: #45a049; }}
-            #pauseBtn {{ background: #f44336; }}
-            #pauseBtn:hover {{ background: #d32f2f; }}
-            .voice-selector {{
-                margin: 20px 0;
+            
+            .circle::before {{
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 50%;
+                box-shadow: 0 0 40px 5px var(--shadow-color);
+                opacity: 0.6;
+            }}
+            
+            .circle::after {{
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 50%;
+                border: 2px solid var(--glow-color);
+                box-shadow: 0 0 20px var(--glow-color), inset 0 0 20px var(--glow-color);
+            }}
+            
+            .playing .circle::after {{
+                animation: pulse 1s infinite cubic-bezier(0.4, 0, 0.6, 1);
+            }}
+            
+            .playing .circle::before {{
+                animation: innerPulse 1.2s infinite ease-out alternate;
+            }}
+            
+            @keyframes pulse {{
+                0% {{ 
+                    transform: scale(1); 
+                    opacity: 1; 
+                    box-shadow: 0 0 20px var(--glow-color), inset 0 0 20px var(--glow-color); 
+                }}
+                50% {{ 
+                    transform: scale(1.1); 
+                    opacity: 0.7; 
+                    box-shadow: 0 0 35px var(--glow-color), inset 0 0 30px var(--glow-color); 
+                }}
+                100% {{ 
+                    transform: scale(1); 
+                    opacity: 1; 
+                    box-shadow: 0 0 20px var(--glow-color), inset 0 0 20px var(--glow-color); 
+                }}
+            }}
+            
+            @keyframes innerPulse {{
+                0% {{ 
+                    opacity: 0.4; 
+                    box-shadow: 0 0 25px var(--shadow-color);
+                }}
+                100% {{ 
+                    opacity: 0.9; 
+                    box-shadow: 0 0 45px var(--shadow-color);
+                }}
+            }}
+            
+            .corner-button {{
+                position: absolute;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: var(--button-bg);
+                border: none;
+                cursor: pointer;
+                color: var(--text-color);
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }}
+            
+            .corner-button:hover {{
+                background-color: var(--button-hover);
+            }}
+            
+            #clearBtn {{
+                top: 20px;
+                right: 20px;
+            }}
+            
+            #themeToggle {{
+                top: 20px;
+                left: 20px;
+            }}
+            
+            #queueInfo {{
+                position: absolute;
+                bottom: 20px;
+                font-size: 14px;
+                font-weight: 300;
+                letter-spacing: 1px;
+                opacity: 0.8;
+            }}
+            
+            #viewQueue {{
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                padding: 8px 16px;
+                background-color: var(--button-bg);
+                border: none;
+                border-radius: 20px;
+                color: var(--text-color);
+                font-size: 12px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }}
+            
+            #viewQueue:hover {{
+                background-color: var(--button-hover);
+            }}
+            
+            .queue-details {{
+                position: absolute;
+                right: 20px;
+                bottom: 60px;
+                width: 280px;
+                max-height: 200px;
+                overflow-y: auto;
+                background-color: var(--bg-color);
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
                 padding: 10px;
-                background: #f5f5f5;
-                border-radius: 4px;
+                z-index: 10;
+                font-size: 12px;
+                display: none;
             }}
-            select {{
+            
+            .queue-item {{
                 padding: 8px;
-                margin-right: 10px;
-                border-radius: 4px;
-                border: 1px solid #ddd;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }}
-            .status {{ 
-                padding: 10px; 
-                background: #e7f3ff; 
-                border-radius: 4px; 
-                margin-bottom: 20px; 
+            
+            .error-message {{
+                position: absolute;
+                bottom: -40px;
+                background-color: var(--error-bg);
+                color: var(--text-color);
+                padding: 6px 12px;
+                border-radius: 20px;
+                max-width: 240px;
+                font-size: 12px;
+                text-align: center;
+                opacity: 0;
+                transition: opacity 0.5s ease;
             }}
-            .queue {{ 
-                padding: 10px; 
-                background: #f9f9f9; 
-                border-radius: 4px; 
-                margin-top: 20px; 
-                max-height: 200px; 
-                overflow-y: auto; 
-            }}
-            .queue-item {{ 
-                padding: 8px; 
-                margin: 5px 0; 
-                background: #eee; 
-                border-radius: 4px; 
-            }}
-            .current {{ 
-                background: #e7f3ff; 
-                border-left: 4px solid #2196F3; 
-                padding-left: 10px; 
+            
+            /* For the audio player - make it invisible */
+            #audioPlayer {{
+                opacity: 0;
+                height: 0;
+                width: 0;
+                position: absolute;
             }}
         </style>
     </head>
     <body>
-        <div class="container">
-            <h1>AI Voice Player</h1>
+        <div class="circle-container">
+            <div class="circle" id="mainCircle"></div>
+            <div id="queueInfo">Ready</div>
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+        
+        <button id="clearBtn" class="corner-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+        </button>
+        
+        <button id="themeToggle" class="corner-button" title="Toggle Dark/Light">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </button>
+        
+        <button id="colorThemeBtn" class="corner-button" style="top: 80px; left: 20px;" title="Change Color Theme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+        </button>
+        
+        <button id="voiceToggle" class="corner-button" style="top: 20px; left: 80px;" title="Change Voice">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+        </button>
+        
+        <button id="languageToggle" class="corner-button" style="top: 20px; left: 140px;" title="Change Language">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                <path d="M2 12h20"></path>
+            </svg>
+        </button>
+        
+        <div id="voiceSelector" style="position: absolute; top: 70px; left: 80px; background-color: var(--bg-color); border-radius: 8px; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; z-index: 10; min-width: 180px;">
+            <select id="voiceSelect" style="width: 100%; padding: 8px; background-color: var(--button-bg); color: var(--text-color); border: none; border-radius: 4px; margin-bottom: 8px;"></select>
+            <button id="setVoiceBtn" style="width: 100%; padding: 8px; background-color: var(--button-bg); color: var(--text-color); border: none; border-radius: 4px; cursor: pointer;">Apply Voice</button>
+        </div>
+        
+        <div id="languageSelector" style="position: absolute; top: 70px; left: 140px; background-color: var(--bg-color); border-radius: 8px; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; z-index: 10; min-width: 180px;">
+            <select id="languageSelect" style="width: 100%; padding: 8px; background-color: var(--button-bg); color: var(--text-color); border: none; border-radius: 4px; margin-bottom: 8px;"></select>
+            <button id="setLanguageBtn" style="width: 100%; padding: 8px; background-color: var(--button-bg); color: var(--text-color); border: none; border-radius: 4px; cursor: pointer;">Apply Language</button>
+        </div>
+        
+        <button id="viewQueue">View Queue</button>
+        <div id="queueDetails" class="queue-details"></div>
+        
+        <audio id="audioPlayer" controls>
+            Your browser does not support the audio element.
+        </audio>
+        
+        <script>
+            // DOM elements
+            const body = document.body;
+            const audioPlayer = document.getElementById('audioPlayer');
+            const mainCircle = document.getElementById('mainCircle');
+            const clearBtn = document.getElementById('clearBtn');
+            const themeToggle = document.getElementById('themeToggle');
+            const colorThemeBtn = document.getElementById('colorThemeBtn');
+            const queueInfo = document.getElementById('queueInfo');
+            const viewQueue = document.getElementById('viewQueue');
+            const queueDetails = document.getElementById('queueDetails');
+            const errorMessage = document.getElementById('errorMessage');
+            const circleContainer = document.querySelector('.circle-container');
+            const voiceToggle = document.getElementById('voiceToggle');
+            const voiceSelector = document.getElementById('voiceSelector');
+            const voiceSelect = document.getElementById('voiceSelect');
+            const setVoiceBtn = document.getElementById('setVoiceBtn');
+            const languageToggle = document.getElementById('languageToggle');
+            const languageSelector = document.getElementById('languageSelector');
+            const languageSelect = document.getElementById('languageSelect');
+            const setLanguageBtn = document.getElementById('setLanguageBtn');
             
-            <div class="status" id="statusBox">
-                Click "Play" to start the voice queue. It will automatically play all messages.
-            </div>
+            // State
+            let isPlaying = false;
+            let currentItem = null;
+            let checking = false;
+            let currentVoice = "";
+            let currentLanguage = "en";
+            let availableVoices = [];
+            let availableLanguages = [];
+            let isDarkMode = true;
+            let currentColorTheme = "default"; // default, blue, beige, purple
             
-            <div class="voice-selector">
-                <label for="voiceSelect"><strong>Voice:</strong></label>
-                <select id="voiceSelect"></select>
-                <button id="setVoiceBtn">Set as Default</button>
-            </div>
+            // Function to update server about audio playing status
+            function updateAudioStatus(playing) {{
+                fetch('/set-audio-status', {{
+                    method: 'POST',
+                    headers: {{
+                        'Content-Type': 'application/json'
+                    }},
+                    body: JSON.stringify({{ is_playing: playing }})
+                }})
+                .then(response => response.json())
+                .then(data => {{
+                    console.log("Updated audio status:", playing);
+                }})
+                .catch(error => {{
+                    console.error("Error updating audio status:", error);
+                }});
+            }}
             
-            <div class="player">
-                <audio id="audioPlayer" controls>
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
-            
-            <div class="controls">
-                <button id="playBtn">Play</button>
-                <button id="pauseBtn">Pause</button>
-                <button id="skipBtn">Skip</button>
-                <button id="clearBtn">Clear Queue</button>
-                <button id="refreshBtn">Refresh</button>
-            </div>
-            
-            <div>
-                <label for="autoplayToggle">
-                    <input type="checkbox" id="autoplayToggle" checked> 
-                    Autoplay new items
-                </label>
-            </div>
-            
-            <div class="queue">
-                <h3>Queue</h3>
-                <div id="queueItems">
-                    <div class="queue-item">No items in queue</div>
-                </div>
-            </div>
-            
-            <script>
-                // DOM elements
-                const audioPlayer = document.getElementById('audioPlayer');
-                const statusBox = document.getElementById('statusBox');
-                const playBtn = document.getElementById('playBtn');
-                const pauseBtn = document.getElementById('pauseBtn');
-                const skipBtn = document.getElementById('skipBtn');
-                const clearBtn = document.getElementById('clearBtn');
-                const refreshBtn = document.getElementById('refreshBtn');
-                const autoplayToggle = document.getElementById('autoplayToggle');
-                const queueItems = document.getElementById('queueItems');
-                const voiceSelect = document.getElementById('voiceSelect');
-                const setVoiceBtn = document.getElementById('setVoiceBtn');
+            // Show error message for 15 seconds
+            function showErrorMessage(message) {{
+                errorMessage.textContent = message;
+                errorMessage.style.opacity = 1;
                 
-                // State
-                let isPlaying = false;
-                let currentItem = null;
-                let checking = false;
-                let currentVoice = "";
-                let availableVoices = [];
-                
-                // Load voices
-                async function loadVoices() {{
-                    try {{
-                        // Get available voices
-                        const voicesResponse = await fetch('/voices');
-                        availableVoices = await voicesResponse.json();
-                        
-                        // Get current voice
-                        const currentVoiceResponse = await fetch('/current-voice');
-                        const currentVoiceData = await currentVoiceResponse.json();
-                        currentVoice = currentVoiceData.voice;
-                        
-                        // Populate voice selector
-                        voiceSelect.innerHTML = '';
-                        availableVoices.forEach(voice => {{
-                            const option = document.createElement('option');
-                            option.value = voice.id;
-                            option.text = voice.name;
-                            if (voice.id === currentVoice) {{
-                                option.selected = true;
-                            }}
-                            voiceSelect.appendChild(option);
-                        }});
-                        
-                        console.log("Voices loaded. Current voice:", currentVoice);
-                    }} catch (error) {{
-                        console.error("Error loading voices:", error);
+                setTimeout(() => {{
+                    errorMessage.style.opacity = 0;
+                }}, 15000);
+            }}
+            
+            // Theme management
+            function updateTheme() {{
+                if (isDarkMode) {{
+                    if (currentColorTheme === "default") {{
+                        body.removeAttribute('data-theme');
+                    }} else {{
+                        body.setAttribute('data-theme', currentColorTheme);
+                    }}
+                }} else {{
+                    // Light versions
+                    if (currentColorTheme === "default") {{
+                        body.setAttribute('data-theme', 'light');
+                    }} else {{
+                        body.setAttribute('data-theme', `${{currentColorTheme}}-light`);
                     }}
                 }}
                 
-                // Set voice
-                async function setVoice() {{
-                    const newVoice = voiceSelect.value;
+                // Update selector themes
+                updateVoiceSelectorTheme();
+                updateLanguageSelectorTheme();
+            }}
+            
+            function updateVoiceSelectorTheme() {{
+                if (voiceSelector.style.display === 'block') {{
+                    voiceSelector.style.backgroundColor = getComputedStyle(body).getPropertyValue('--bg-color');
+                    voiceSelect.style.backgroundColor = getComputedStyle(body).getPropertyValue('--button-bg');
+                    voiceSelect.style.color = getComputedStyle(body).getPropertyValue('--text-color');
+                    setVoiceBtn.style.backgroundColor = getComputedStyle(body).getPropertyValue('--button-bg');
+                    setVoiceBtn.style.color = getComputedStyle(body).getPropertyValue('--text-color');
+                }}
+            }}
+            
+            function updateLanguageSelectorTheme() {{
+                if (languageSelector.style.display === 'block') {{
+                    languageSelector.style.backgroundColor = getComputedStyle(body).getPropertyValue('--bg-color');
+                    languageSelect.style.backgroundColor = getComputedStyle(body).getPropertyValue('--button-bg');
+                    languageSelect.style.color = getComputedStyle(body).getPropertyValue('--text-color');
+                    setLanguageBtn.style.backgroundColor = getComputedStyle(body).getPropertyValue('--button-bg');
+                    setLanguageBtn.style.color = getComputedStyle(body).getPropertyValue('--text-color');
+                }}
+            }}
+            
+            // Dark/Light toggle
+            themeToggle.addEventListener('click', () => {{
+                isDarkMode = !isDarkMode;
+                updateTheme();
+            }});
+            
+            // Color theme toggle
+            colorThemeBtn.addEventListener('click', () => {{
+                // Cycle through color themes: default -> blue -> beige -> purple -> default
+                switch(currentColorTheme) {{
+                    case "default":
+                        currentColorTheme = "blue";
+                        break;
+                    case "blue":
+                        currentColorTheme = "beige";
+                        break;
+                    case "beige":
+                        currentColorTheme = "purple";
+                        break;
+                    case "purple":
+                        currentColorTheme = "default";
+                        break;
+                }}
+                updateTheme();
+            }});
+            
+            // Voice selector toggle with debug
+            voiceToggle.addEventListener('click', function(e) {{
+                console.log("Voice toggle clicked");
+                if (voiceSelector.style.display === 'block') {{
+                    console.log("Hiding voice selector");
+                    voiceSelector.style.display = 'none';
+                }} else {{
+                    console.log("Showing voice selector");
+                    voiceSelector.style.display = 'block';
+                    // Hide language selector if it's open
+                    languageSelector.style.display = 'none';
+                    // Force re-flow
+                    void voiceSelector.offsetWidth;
+                    updateVoiceSelectorTheme();
+                }}
+                e.stopPropagation(); // Prevent event bubbling
+            }});
+            
+            // Language selector toggle
+            languageToggle.addEventListener('click', function(e) {{
+                console.log("Language toggle clicked");
+                if (languageSelector.style.display === 'block') {{
+                    console.log("Hiding language selector");
+                    languageSelector.style.display = 'none';
+                }} else {{
+                    console.log("Showing language selector");
+                    languageSelector.style.display = 'block';
+                    // Hide voice selector if it's open
+                    voiceSelector.style.display = 'none';
+                    // Force re-flow
+                    void languageSelector.offsetWidth;
+                    updateLanguageSelectorTheme();
+                }}
+                e.stopPropagation(); // Prevent event bubbling
+            }});
+            
+            // Close selectors when clicking elsewhere
+            document.addEventListener('click', function(e) {{
+                if (voiceSelector.style.display === 'block' && 
+                    !voiceSelector.contains(e.target) && 
+                    e.target !== voiceToggle) {{
+                    voiceSelector.style.display = 'none';
+                }}
+                
+                if (languageSelector.style.display === 'block' && 
+                    !languageSelector.contains(e.target) && 
+                    e.target !== languageToggle) {{
+                    languageSelector.style.display = 'none';
+                }}
+            }});
+            
+            // View queue toggle
+            viewQueue.addEventListener('click', () => {{
+                if (queueDetails.style.display === 'block') {{
+                    queueDetails.style.display = 'none';
+                }} else {{
+                    queueDetails.style.display = 'block';
+                    updateQueueDisplay(); // Make sure it's updated
+                }}
+            }});
+            
+            // Load voices
+            async function loadVoices() {{
+                try {{
+                    // Get available voices
+                    const voicesResponse = await fetch('/voices');
+                    availableVoices = await voicesResponse.json();
                     
-                    try {{
-                        const response = await fetch('/set-voice', {{
-                            method: 'POST',
-                            headers: {{
-                                'Content-Type': 'application/json'
-                            }},
-                            body: JSON.stringify({{ voice: newVoice }})
-                        }});
-                        
-                        const data = await response.json();
-                        if (data.success) {{
-                            currentVoice = data.voice;
-                            statusBox.innerHTML = `<strong>Voice set to:</strong> ${{newVoice.replace('.wav', '')}}`;
-                            console.log("Voice set to:", currentVoice);
+                    // Get current voice
+                    const currentVoiceResponse = await fetch('/current-voice');
+                    const currentVoiceData = await currentVoiceResponse.json();
+                    currentVoice = currentVoiceData.voice;
+                    
+                    // Populate voice selector
+                    voiceSelect.innerHTML = '';
+                    availableVoices.forEach(voice => {{
+                        const option = document.createElement('option');
+                        option.value = voice.id;
+                        option.text = voice.name;
+                        if (voice.id === currentVoice) {{
+                            option.selected = true;
                         }}
-                    }} catch (error) {{
-                        console.error("Error setting voice:", error);
-                        statusBox.innerHTML = `<strong>Error setting voice:</strong> ${{error.message}}`;
+                        voiceSelect.appendChild(option);
+                    }});
+                    
+                    console.log("Voices loaded. Current voice:", currentVoice);
+                }} catch (error) {{
+                    console.error("Error loading voices:", error);
+                    showErrorMessage("Failed to load voices");
+                }}
+            }}
+            
+            // Load languages
+            async function loadLanguages() {{
+                try {{
+                    // Get available languages
+                    const languagesResponse = await fetch('/languages');
+                    availableLanguages = await languagesResponse.json();
+                    
+                    // Get current language
+                    const currentLanguageResponse = await fetch('/current-language');
+                    const currentLanguageData = await currentLanguageResponse.json();
+                    currentLanguage = currentLanguageData.language;
+                    
+                    // Populate language selector
+                    languageSelect.innerHTML = '';
+                    availableLanguages.forEach(language => {{
+                        const option = document.createElement('option');
+                        option.value = language.id;
+                        option.text = language.name;
+                        if (language.id === currentLanguage) {{
+                            option.selected = true;
+                        }}
+                        languageSelect.appendChild(option);
+                    }});
+                    
+                    console.log("Languages loaded. Current language:", currentLanguage);
+                }} catch (error) {{
+                    console.error("Error loading languages:", error);
+                    showErrorMessage("Failed to load languages");
+                }}
+            }}
+            
+            // Set voice
+            async function setVoice() {{
+                const newVoice = voiceSelect.value;
+                
+                try {{
+                    const response = await fetch('/set-voice', {{
+                        method: 'POST',
+                        headers: {{
+                            'Content-Type': 'application/json'
+                        }},
+                        body: JSON.stringify({{ voice: newVoice }})
+                    }});
+                    
+                    const data = await response.json();
+                    if (data.success) {{
+                        currentVoice = data.voice;
+                        showErrorMessage(`Voice set to: ${{newVoice.replace('.wav', '')}}`);
+                        voiceSelector.style.display = 'none'; // Hide after setting
+                        console.log("Voice set to:", currentVoice);
                     }}
+                }} catch (error) {{
+                    console.error("Error setting voice:", error);
+                    showErrorMessage(`Error setting voice: ${{error.message}}`);
+                }}
+            }}
+            
+            // Set language
+            async function setLanguage() {{
+                const newLanguage = languageSelect.value;
+                
+                try {{
+                    const response = await fetch('/set-language', {{
+                        method: 'POST',
+                        headers: {{
+                            'Content-Type': 'application/json'
+                        }},
+                        body: JSON.stringify({{ language: newLanguage }})
+                    }});
+                    
+                    const data = await response.json();
+                    if (data.success) {{
+                        currentLanguage = data.language;
+                        showErrorMessage(`Language set to: ${{newLanguage}}`);
+                        languageSelector.style.display = 'none'; // Hide after setting
+                        console.log("Language set to:", currentLanguage);
+                    }}
+                }} catch (error) {{
+                    console.error("Error setting language:", error);
+                    showErrorMessage(`Error setting language: ${{error.message}}`);
+                }}
+            }}
+            
+            // Voice selector events with debug
+            setVoiceBtn.addEventListener('click', function(e) {{
+                console.log("Set voice button clicked");
+                setVoice();
+                e.stopPropagation(); // Prevent event bubbling
+            }});
+            
+            // Language selector events
+            setLanguageBtn.addEventListener('click', function(e) {{
+                console.log("Set language button clicked");
+                setLanguage();
+                e.stopPropagation(); // Prevent event bubbling
+            }});
+            
+            // Check for new items every 1 second
+            const CHECK_INTERVAL = 1000;
+            
+            // Play audio
+            function playAudio(item) {{
+                currentItem = item;
+                const text = item.text;
+                const voice = item.voice;
+                const language = item.language || 'en';
+                
+                console.log("Playing audio:", item);
+                circleContainer.classList.add('playing');
+                
+                // Create TTS URL with GET parameters
+                const params = new URLSearchParams();
+                params.append('text', text);
+                params.append('voice', voice);
+                params.append('language', language);
+                params.append('output_file', `tts_output_${{Date.now()}}.wav`);
+                
+                const url = `{TTS_SERVER}/api/tts-generate-streaming?${{params.toString()}}`;
+                console.log("Generated URL:", url);
+                
+                // Update player
+                try {{
+                    audioPlayer.src = url;
+                    
+                    // Play and catch any errors
+                    audioPlayer.play()
+                        .then(() => {{
+                            console.log("Play started");
+                            isPlaying = true;
+                            // Update server about playing status
+                            updateAudioStatus(true);
+                        }})
+                        .catch(e => {{
+                            console.error("Play error:", e);
+                            showErrorMessage("Failed to play audio. Server might be unavailable.");
+                            isPlaying = false;
+                            updateAudioStatus(false);
+                            circleContainer.classList.remove('playing');
+                            currentItem = null;
+                            // Try next item after error
+                            setTimeout(checkQueue, 1000);
+                        }});
+                }} catch (e) {{
+                    console.error("Error setting audio source:", e);
+                    showErrorMessage("Error connecting to TTS server");
+                    isPlaying = false;
+                    updateAudioStatus(false);
+                    circleContainer.classList.remove('playing');
                 }}
                 
-                // Check for new items every 1 second
-                const CHECK_INTERVAL = 1000;
+                updateQueueDisplay();
+            }}
+            
+            // Check for new items in the queue
+            async function checkQueue() {{
+                if (checking) return;
+                checking = true;
                 
-                // Play audio
-                function playAudio(item) {{
-                    currentItem = item;
-                    const text = item.text;
-                    const voice = item.voice;
-                    
-                    console.log("Playing audio:", item);
-                    
-                    // Create TTS URL with GET parameters
-                    const params = new URLSearchParams();
-                    params.append('text', text);
-                    params.append('voice', voice);
-                    params.append('language', item.language || 'en');
-                    params.append('output_file', `tts_output_${{Date.now()}}.wav`);
-                    
-                    const url = `{TTS_SERVER}/api/tts-generate-streaming?${{params.toString()}}`;
-                    console.log("Generated URL:", url);
-                    
-                    // Update player
-                    try {{
-                        audioPlayer.src = url;
+                try {{
+                    // Get next item if we're not currently playing
+                    if (!isPlaying) {{
+                        const response = await fetch('/next');
+                        const data = await response.json();
                         
-                        // Play and catch any errors
-                        audioPlayer.play()
-                            .then(() => console.log("Play started"))
-                            .catch(e => console.error("Play error:", e));
-                    }} catch (e) {{
-                        console.error("Error setting audio source:", e);
+                        if (!data.empty) {{
+                            playAudio(data);
+                        }} else {{
+                            queueInfo.textContent = "Queue empty";
+                            circleContainer.classList.remove('playing');
+                        }}
                     }}
                     
-                    // Update status
-                    statusBox.innerHTML = `
-                        <strong>Now playing:</strong><br>
-                        Text: ${{text}}<br>
-                        Voice: ${{voice.replace('.wav', '')}}
-                    `;
-                    
-                    isPlaying = true;
+                    // Update queue display
                     updateQueueDisplay();
+                }} catch (error) {{
+                    console.error("Error checking queue:", error);
+                    showErrorMessage("Error checking queue");
+                }} finally {{
+                    checking = false;
                 }}
-                
-                // Check for new items in the queue
-                async function checkQueue() {{
-                    if (checking) return;
-                    checking = true;
+            }}
+            
+            // Update the queue display
+            async function updateQueueDisplay() {{
+                try {{
+                    const response = await fetch('/queue');
+                    const data = await response.json();
                     
-                    try {{
-                        // Get next item if we're not currently playing
-                        if (!isPlaying && autoplayToggle.checked) {{
-                            const response = await fetch('/next');
-                            const data = await response.json();
-                            
-                            if (!data.empty) {{
-                                playAudio(data);
-                            }}
-                        }}
-                        
-                        // Update queue display
-                        updateQueueDisplay();
-                    }} catch (error) {{
-                        console.error("Error checking queue:", error);
-                    }} finally {{
-                        checking = false;
+                    // Update queue count
+                    const queueCount = data.queue ? data.queue.length : 0;
+                    
+                    // Update queue info text
+                    if (currentItem) {{
+                        queueInfo.textContent = queueCount > 0 ? 
+                            `${{queueCount}} text${{queueCount !== 1 ? 's' : ''}} left to play` : 
+                            "Now playing";
+                    }} else if (queueCount > 0) {{
+                        queueInfo.textContent = `${{queueCount}} text${{queueCount !== 1 ? 's' : ''}} in queue`;
+                    }} else {{
+                        queueInfo.textContent = "Queue empty";
                     }}
-                }}
-                
-                // Update the queue display
-                async function updateQueueDisplay() {{
-                    try {{
-                        const response = await fetch('/queue');
-                        const data = await response.json();
-                        
-                        // Clear the queue display
-                        queueItems.innerHTML = '';
+                    
+                    // Update detailed queue view if visible
+                    if (queueDetails.style.display === 'block') {{
+                        // Clear the queue details
+                        queueDetails.innerHTML = '';
                         
                         // Add current item if playing
                         if (currentItem) {{
                             const currentItemDiv = document.createElement('div');
-                            currentItemDiv.className = 'queue-item current';
-                            currentItemDiv.innerHTML = `
-                                <strong>Now playing:</strong> ${{currentItem.text}}
-                                (Voice: ${{currentItem.voice.replace('.wav', '')}})
-                            `;
-                            queueItems.appendChild(currentItemDiv);
+                            currentItemDiv.className = 'queue-item';
+                            currentItemDiv.innerHTML = `<strong>Now playing:</strong> ${{currentItem.text.substring(0, 50)}}${{currentItem.text.length > 50 ? '...' : ''}}`;
+                            queueDetails.appendChild(currentItemDiv);
                         }}
                         
                         // Add queue items
@@ -648,101 +1350,194 @@ def get_player_html():
                             data.queue.forEach((item, index) => {{
                                 const itemDiv = document.createElement('div');
                                 itemDiv.className = 'queue-item';
-                                itemDiv.innerHTML = `
-                                    <strong>${{index + 1}}:</strong> ${{item.text}}
-                                    (Voice: ${{item.voice.replace('.wav', '')}})
-                                `;
-                                queueItems.appendChild(itemDiv);
+                                itemDiv.innerHTML = `<strong>${{index + 1}}:</strong> ${{item.text.substring(0, 50)}}${{item.text.length > 50 ? '...' : ''}}`;
+                                queueDetails.appendChild(itemDiv);
                             }});
                         }} else if (!currentItem) {{
-                            queueItems.innerHTML = '<div class="queue-item">No items in queue</div>';
+                            queueDetails.innerHTML = '<div class="queue-item">No items in queue</div>';
                         }}
-                    }} catch (error) {{
-                        console.error("Error updating queue display:", error);
                     }}
+                    
+                }} catch (error) {{
+                    console.error("Error updating queue display:", error);
                 }}
-                
-                // Event listeners
-                audioPlayer.addEventListener('error', (e) => {{
-                    console.error("Audio error event:", e);
-                    statusBox.innerHTML = `
-                        <strong>Error playing audio:</strong><br>
-                        ${{audioPlayer.error ? audioPlayer.error.message : 'Unknown error'}}
-                    `;
-                    statusBox.style.background = '#ffebee';
-                }});
-                
-                audioPlayer.addEventListener('ended', () => {{
-                    console.log("Audio ended");
+            }}
+            
+            // Event listeners
+            audioPlayer.addEventListener('error', (e) => {{
+                console.error("Audio error event:", e);
+                showErrorMessage("Error playing audio");
+                isPlaying = false;
+                updateAudioStatus(false);
+                circleContainer.classList.remove('playing');
+                currentItem = null;
+                // Try next item after error
+                setTimeout(checkQueue, 1000);
+            }});
+            
+            audioPlayer.addEventListener('ended', () => {{
+                console.log("Audio ended");
+                isPlaying = false;
+                // Update server about ended status
+                updateAudioStatus(false);
+                currentItem = null;
+                circleContainer.classList.remove('playing');
+                // Check for more items immediately
+                checkQueue();
+            }});
+            
+            // Toggle play/pause when clicking on the circle
+            mainCircle.addEventListener('click', () => {{
+                if (isPlaying) {{
+                    audioPlayer.pause();
                     isPlaying = false;
-                    currentItem = null;
-                    statusBox.textContent = 'Finished playing, checking for more items...';
-                    statusBox.style.background = '#e7f3ff';
-                    // Check for more items immediately
-                    checkQueue();
-                }});
-                
-                playBtn.addEventListener('click', () => {{
+                    updateAudioStatus(false);
+                    circleContainer.classList.remove('playing');
+                }} else {{
                     if (audioPlayer.src) {{
-                        console.log("Play button clicked with existing source");
-                        audioPlayer.play().catch(e => console.error("Play error:", e));
+                        audioPlayer.play().catch(e => {{
+                            console.error("Play error:", e);
+                            showErrorMessage("Failed to play audio");
+                        }});
                         isPlaying = true;
+                        updateAudioStatus(true);
+                        circleContainer.classList.add('playing');
                     }} else {{
-                        console.log("Play button clicked, checking queue");
                         checkQueue();
                     }}
-                }});
-                
-                pauseBtn.addEventListener('click', () => {{
-                    console.log("Pause button clicked");
-                    audioPlayer.pause();
-                    isPlaying = false;
-                }});
-                
-                skipBtn.addEventListener('click', () => {{
-                    console.log("Skip button clicked");
-                    audioPlayer.pause();
-                    isPlaying = false;
-                    currentItem = null;
-                    checkQueue();
-                }});
-                
-                clearBtn.addEventListener('click', async () => {{
-                    console.log("Clear button clicked");
-                    try {{
-                        await fetch('/queue', {{ method: 'DELETE' }});
-                        updateQueueDisplay();
-                        statusBox.textContent = 'Queue cleared';
-                    }} catch (error) {{
-                        console.error("Error clearing queue:", error);
-                    }}
-                }});
-                
-                refreshBtn.addEventListener('click', () => {{
-                    console.log("Refresh button clicked");
+                }}
+            }});
+            
+            clearBtn.addEventListener('click', async () => {{
+                try {{
+                    await fetch('/queue', {{ method: 'DELETE' }});
                     updateQueueDisplay();
-                }});
+                    queueInfo.textContent = "Queue cleared";
+                }} catch (error) {{
+                    console.error("Error clearing queue:", error);
+                    showErrorMessage("Error clearing queue");
+                }}
+            }});
+            
+            function restartPulseAnimation() {{
+                // First remove the class
+                circleContainer.classList.remove('playing');
                 
-                setVoiceBtn.addEventListener('click', () => {{
-                    console.log("Set voice button clicked");
-                    setVoice();
-                }});
+                // Force a browser reflow
+                void circleContainer.offsetWidth;
                 
-                // Load voices on page load
-                loadVoices();
+                // If we should be playing, add the class back
+                if (isPlaying) {{
+                    // Add with a tiny delay to ensure the class change registers
+                    setTimeout(() => {{
+                        circleContainer.classList.add('playing');
+                    }}, 10);
+                }}
+            }}
+
+            // In your playAudio function, replace this line:
+            circleContainer.classList.add('playing');
+
+            // With this:
+            restartPulseAnimation();
+
+            // Add this to your checkQueue function at the end:
+            // Try to restart animation if we're playing but animation doesn't look right
+            if (isPlaying && currentItem) {{
+                restartPulseAnimation();
+            }}
+
+            // Add this interval to periodically restart animation if needed
+            setInterval(() => {{
+                if (isPlaying && currentItem) {{
+                    // Check if animation seems stuck by examining if the transforms are changing
+                    // This is a backup to ensure animation keeps running
+                    restartPulseAnimation();
+                    console.log("Restarting pulse animation as preventative measure");
+                }}
+            }}, 5000); // Every 5 seconds
+            
+            function isAudioActuallyPlaying() {{
+                return !audioPlayer.paused && !audioPlayer.ended && audioPlayer.currentTime > 0;
+            }}
+
+            // Check if we need to restart animation when DOM is fully loaded
+            document.addEventListener('DOMContentLoaded', function() {{
+                console.log("DOM fully loaded");
+                updateTheme();
                 
-                // Start checking the queue regularly
-                setInterval(checkQueue, CHECK_INTERVAL);
-                
-                // Initial setup
-                console.log("Player initialized");
-                updateQueueDisplay();
-            </script>
-        </div>
+                // Check if we should be playing
+                if (isAudioActuallyPlaying()) {{
+                    console.log("Audio is already playing on load, ensuring animation is active");
+                    isPlaying = true;
+                    restartPulseAnimation();
+                }}
+            }});
+
+            // Check for animation state when window gains focus
+            window.addEventListener('focus', function() {{
+                console.log("Window gained focus, checking animation state");
+                if (isAudioActuallyPlaying() && !circleContainer.classList.contains('playing')) {{
+                    console.log("Audio is playing but animation is not, fixing...");
+                    isPlaying = true;
+                    restartPulseAnimation();
+                }}
+            }});
+
+            // Add a click handler to the document to restart animation if needed
+            document.addEventListener('click', function() {{
+                if (isPlaying && !circleContainer.classList.contains('playing')) {{
+                    console.log("Detected click while playing but animation is off, restarting...");
+                    restartPulseAnimation();
+                }}
+            }});
+
+            // Fix animation if browser was inactive
+            document.addEventListener('visibilitychange', function() {{
+                if (!document.hidden && isAudioActuallyPlaying()) {{
+                    console.log("Page became visible, ensuring animation is running");
+                    isPlaying = true;
+                    restartPulseAnimation();
+                }}
+            }});
+
+            // Extra check when audio time updates
+            audioPlayer.addEventListener('timeupdate', function() {{
+                // If audio is playing but animation is not showing, fix it
+                if (isAudioActuallyPlaying() && !circleContainer.classList.contains('playing')) {{
+                    console.log("Audio is playing but animation stopped, restarting...");
+                    isPlaying = true;
+                    restartPulseAnimation();
+                }}
+            }});
+            
+            // Load data on page load
+            loadVoices();
+            loadLanguages();
+            
+            // Initialize theme on load
+            document.addEventListener('DOMContentLoaded', function() {{
+                console.log("DOM fully loaded");
+                updateTheme();
+            }});
+            
+            // Start immediately
+            setTimeout(checkQueue, 500);
+            
+            // Start checking the queue regularly
+            setInterval(checkQueue, CHECK_INTERVAL);
+                        
+            // Add debug message
+            console.log("Player initialized with:", {{
+                themeToggle: !!themeToggle,
+                colorThemeBtn: !!colorThemeBtn,
+                voiceToggle: !!voiceToggle,
+                languageToggle: !!languageToggle
+            }});
+        </script>
     </body>
     </html>
     """
-
 # Create a simple function to show minimal info for the user
 def status_message(message):
     """Show a status message to the user without detailed logging"""
@@ -751,7 +1546,7 @@ def status_message(message):
 
 # Example usage
 if __name__ == "__main__":
-    status_message("TTS Queue System with Voice Selection")
+    status_message("TTS Queue System with Voice and Language Selection")
     status_message("------------------------------------")
     
     # List available voices
@@ -759,22 +1554,33 @@ if __name__ == "__main__":
     for voice in AVAILABLE_VOICES:
         status_message(f"- {voice['name']} (ID: {voice['id']})")
     
+    # List available languages
+    status_message("\nAvailable languages:")
+    for language in AVAILABLE_LANGUAGES:
+        status_message(f"- {language['name']} (ID: {language['id']})")
+    
     # Load settings
     player = TTSPlayer()
     status_message(f"\nCurrent voice: {player.current_voice}")
+    status_message(f"Current language: {player.current_language}")
     
     # Option to change voice
     voice_choice = input("\nSelect a voice ID (or press Enter to keep current): ")
     if voice_choice:
         set_voice(voice_choice)
     
+    # Option to change language
+    language_choice = input("\nSelect a language ID (or press Enter to keep current): ")
+    if language_choice:
+        set_language(language_choice)
+    
     # Start the server and open browser
-    say("Hello, this is a test of the TTS queue system with voice selection.")
+    say("Hello, this is a test of the TTS queue system with voice and language selection.")
     time.sleep(1)
     say("The browser window will open. Click play to start the first message.")
     time.sleep(1)
     say("After the first message plays, the rest will play automatically.")
-    say("You can change the voice in the browser interface.")
+    say("You can change the voice and language in the browser interface.")
     
     status_message("\nBrowser has been opened. Click 'Play' button to start.")
     status_message("This window will stay open to process the TTS queue.")

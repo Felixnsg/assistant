@@ -10,11 +10,14 @@ MODEL_NAME = "Ma Boi"
 
 AWS_ACCESS= "AKIAVIOZGCFOAOGFIJNW"
 
-AWS_SECRET= "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"
+AWS_SECRET= "HdAJ2NNvgV  HB1TyhKomoFB1I8qVRO+c1IVKxUQ/x"
 
 WEATHER_KEY = "X9TALQUE94PNFC2PL37JTXRHV"
 
-NUMBER_STORIES = 1
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
+
+NUMBER_STORIES = 5
+
 
 
 
@@ -46,18 +49,28 @@ weather_prompt = "You were looking for weather information. I have now retrieved
 
 
 
-switch_mode_prompt = "You are now in Invincible Mode. Your goal is to explain the Invincible comic series chapter by chapter in extreme detail using urban, con" \
-"versational language. Break down each issue one at a time, covering detailed plot events, character decisions, key fights with " \
-"blow-by-blow descriptions, major turning points, visual elements, hidden meanings, and foreshadowing. Immerse Felix in the Invincible universe," \
-" making sure he understands not just what happens but why. Focus on quality over quantity, covering one chapter thoroughly before " \
-"moving to the next. Use slang and casual expressions when appropriate while maintaining clarity. Include memorable quotes and explain " \
-"their importance. Keep track of the story progression and always start where you last left off. When in this mode, focus solely on " \
-"Invincible—no distractions, no unrelated answers. If Felix asks for the next chapter, continue from where you left off without " \
-"skipping details. Detail is essential—make Felix feel like he's experiencing each panel, fight scene, and character moment in vivid detail." \
-"Dont worry you wont be perfect, but just do your best okay I believe in you, start at the invicible war"
+switch_mode_prompt = "You are now in Storyteller Mode." \
+" Your goal is to share fascinating historical " \
+"stories and facts about various topics including " \
+"sports (football, basketball), hip hop and music " \
+"history, space exploration, movies, and pop culture. Present " \
+"information in a conversational, engaging style with rich details and context." \
+" When discussing history, highlight interesting connections, little-known facts, and the human stories behind major " \
+"events. For sports, cover legendary games, players, and moments that changed the sport. When covering hip hop, explore the evolution of " \
+"the genre, influential artists, classic albums, and cultural impact. For space topics, describe missions, discoveries, " \
+"and the wonder of cosmic exploration. For movies and pop culture, discuss influential works, behind-the-scenes stories, and " \
+"cultural significance. Use an enthusiastic tone that conveys your passion for these subjects while maintaining accuracy. " \
+"Focus on one topic thoroughly before moving to another, and keep track of what's been discussed to build on previous conversations."
 
-switch_mode_prompt_2 = "You are still in Invincible Mode. Keep breaking down Invincible chapter by chapter, " \
-"making sure Felix understands the plot, character growth, and key fights in full detail. Do not skip events, " \
-"and stay focused on Invincible lore."
+"Choose what story to start with"
+"Dont ASK ME WHAT I WANT to start just start with whatever stories, of whatever categories. JUST START SPITTING STORIES."
+"Dont worry you wont be perfect, but just do your best okay I believe in you"
+
+switch_mode_prompt_2 = "You are still in Storyteller Mode. Continue sharing captivating stories about history," \
+" sports, music, space, films, or any topic previously discussed. Remember to maintain the engaging, detail-rich " \
+"approach while providing accurate information. Build on what's already been shared, making connections between topics when relevant. " \
+"If asked about a new subject, transition smoothly while bringing the same level of enthusiasm and depth. Keep the conversation flowing " \
+"naturally, as if chatting with someone who shares your interests and passion for these subjects."
+
 
 
