@@ -1,0 +1,12 @@
+requests
+pyttsx3
+gTTS
+playsound
+SpeechRecognition
+edge-tts
+elevenlabs
+boto3
+openai-whisper
+numpy
+selenium
+spotipy
