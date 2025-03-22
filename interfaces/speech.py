@@ -237,80 +237,45 @@ def continuous_recorder():
                 print(f"Error in recording: {e}")
                 break
 
-def whisper_speech_recognition():
-    """Main function for speech recognition using Whisper with continuous listening"""
-    stop_listening.clear()  # Reset stop flag
-    audio_queue.queue.clear()  # Clear any previous audio
-
-    # Start recording in background thread
-    listen_thread = threading.Thread(target=continuous_recorder)
-    listen_thread.daemon = True
-    listen_thread.start()
+def whisper_browser_audio_recognition():
+    """Use Whisper to transcribe audio recorded from the browser"""
+    # Path to the temporary audio file
+    temp_audio_file = os.path.join(os.path.dirname(__file__), "temp_audio.wav")
     
-    # Allow recording for a moment before processing
-    time.sleep(1)
-    
-    full_transcript = ""
+    # Wait for the file to exist (with timeout)
     start_time = time.time()
-    last_speech_time = start_time
-    active_listening = True
+    while not os.path.exists(temp_audio_file) and time.time() - start_time < 30:
+        print("Waiting for audio file from browser...")
+        time.sleep(1)
+    
+    if not os.path.exists(temp_audio_file):
+        print("No audio file received from browser.")
+        return ""
     
     try:
-        print("Speak now (system will automatically detect when you're finished)...")
+        # Let the file finish writing
+        time.sleep(0.5)
         
-        # Process audio until silence threshold exceeded
-        while active_listening:
-            current_time = time.time()
-            
-            # Stop conditions:
-            # 1. If silence for more than 2.5 seconds after speech was detected
-            # 2. If total recording exceeds 30 seconds
-            # 3. If the stop event is set
-            if (full_transcript and current_time - last_speech_time > 2.5) or \
-               (current_time - start_time > 30) or \
-               stop_listening.is_set():
-                active_listening = False
-                continue
-                
-            # Process available audio segments
-            try:
-                if not audio_queue.empty():
-                    audio = audio_queue.get(block=False)
-                    
-                    # Save to temp file
-                    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
-                    temp_filename = temp_file.name
-                    temp_file.close()
-                    
-                    with open(temp_filename, 'wb') as f:
-                        f.write(audio.get_wav_data())
-                    
-                    # Transcribe with Whisper
-                    result = model.transcribe(temp_filename, language="fr")
-                    segment_text = result["text"].strip()
-                    
-                    # Clean up
-                    try:
-                        os.remove(temp_filename)
-                    except:
-                        pass
-                    
-                    # If we got text, update the transcript and last speech time
-                    if segment_text:
-                        print(f"Recognizing: {segment_text}")
-                        full_transcript += " " + segment_text
-                        last_speech_time = current_time
-                else:
-                    # No audio available yet, small wait
-                    time.sleep(0.1)
-                    
-            except Exception as e:
-                print(f"Error processing audio: {e}")
-                
-    finally:
-        # Clean up
-        stop_listening.set()
-        listen_thread.join(timeout=1)
-        print("Finished listening.")
+        # Get file modification time
+        mod_time = os.path.getmtime(temp_audio_file)
+        
+        # Check if file is recently modified (within last 30 seconds)
+        if time.time() - mod_time > 30:
+            print("Audio file is too old. Please record new audio.")
+            return ""
+        
+        # Transcribe with Whisper
+        print("Transcribing browser audio...")
+        result = model.transcribe(temp_audio_file, language="fr")
+        transcription = result["text"].strip()
+        
+        print(f"Transcription: {transcription}")
+        
+        # Delete the file after processing
+        os.remove(temp_audio_file)
+        
+        return transcription
     
-    return full_transcript.strip()
+    except Exception as e:
+        print(f"Error transcribing browser audio: {e}")
+        return ""
