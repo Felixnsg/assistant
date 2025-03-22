@@ -13,7 +13,6 @@ from services import utilities
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import config
 import json
-import webbrowser
 
 def data_prep(prompt: str, convos: list = None) -> dict:
     """Format data in an understandable format for the used LLM
@@ -153,21 +152,15 @@ class ChatManager:
         # First, wait until any current audio output has finished
         self.wait_for_audio_to_finish()
         
-        # Now open the browser recorder if not already open
-        print("Opening browser recorder...")
-        webbrowser.open(f"http://localhost:{streamaudio.WEB_PORT}/record")
-        
-        # Give user instructions
-        print("Speak into your browser's microphone and click the record button when finished.")
-        
-        # Now it's safe to get audio from the browser
-        audio_prompt = speech.whisper_browser_audio_recognition()
+        # Now it's safe to listen
+        print("Listening for your voice...")
+        audio_prompt = speech.whisper_speech_recognition()
         
         # If we didn't get any input, try again
         if not audio_prompt or audio_prompt.strip() == "":
             print("No speech detected, trying again...")
             return self.audio_convos()
-        
+            
         return self.process_conversation(audio_prompt)
 
     def text_convos(self) -> str:
