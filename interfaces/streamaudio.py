@@ -203,7 +203,11 @@ class TTSPlayer:
                         self.send_header('Content-type', 'text/html')
                         self.end_headers()
                         self.wfile.write(get_player_html().encode())
-                    
+                    elif self.path == '/record':
+                        self.send_response(200)
+                        self.send_header('Content-type', 'text/html')
+                        self.end_headers()
+                        self.wfile.write(get_recorder_html().encode())
                     # API to get the queue
                     elif self.path == '/queue':
                         self.send_response(200)
@@ -317,6 +321,27 @@ class TTSPlayer:
                         self.wfile.write(json.dumps({"success": True, "voice": player_instance.current_voice}).encode())
                     
                     # API to set current language
+                    # Add this inside do_POST, alongside other routes
+                    elif self.path == '/upload-audio':
+                        content_length = int(self.headers['Content-Length'])
+                        audio_data = self.rfile.read(content_length)
+                        
+                        # Create temp directory
+                        temp_dir = os.path.join(os.path.dirname(__file__), "temp_audio")
+                        os.makedirs(temp_dir, exist_ok=True)
+                        
+                        # Save to file
+                        temp_file = os.path.join(temp_dir, "temp_audio.wav")
+                        with open(temp_file, 'wb') as f:
+                            f.write(audio_data)
+                        
+                        logger.info(f"Received audio file, saved to {temp_file}")
+                        print(f"Received audio file, saved to {temp_file}")
+                        
+                        self.send_response(200)
+                        self.send_header('Content-type', 'application/json')
+                        self.end_headers()
+                        self.wfile.write(json.dumps({"success": True, "file": temp_file}).encode())
                     elif self.path == '/set-language':
                         post_data = self.rfile.read(content_length)
                         language_data = json.loads(post_data)
@@ -1569,6 +1594,7 @@ def get_player_html():
     </body>
     </html>
     """
+# Add this function at the end of the file, near get_player_html()
 def get_recorder_html():
     """Return the HTML for the browser recorder"""
     return """
