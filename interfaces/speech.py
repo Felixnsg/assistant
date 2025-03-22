@@ -237,48 +237,45 @@ def continuous_recorder():
                 print(f"Error in recording: {e}")
                 break
 
-def whisper_browser_audio_recognition():
-    """Use Whisper to transcribe audio recorded from the browser"""
-    # Path to the temporary audio file
-    # Use the same path as defined in browser_tts.py
-    temp_audio_dir = os.path.join(os.path.dirname(__file__), "temp_audio")
-    temp_audio_file = os.path.join(temp_audio_dir, "temp_audio.wav")
+def whisper_speech_recognition():
+    """Use Whisper API to transcribe audio from microphone"""
+    import requests
+    import speech_recognition as sr
+    import tempfile
     
-    # Rest of the function remains the same    
-    # Wait for the file to exist (with timeout)
-    start_time = time.time()
-    while not os.path.exists(temp_audio_file) and time.time() - start_time < 30:
-        print("Waiting for audio file from browser...")
-        time.sleep(1)
+    # First, record audio with the microphone
+    recognizer = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Adjusting for ambient noise...")
+        recognizer.adjust_for_ambient_noise(source, duration=1.0)
+        
+        print("Listening...")
+        audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
     
-    if not os.path.exists(temp_audio_file):
-        print("No audio file received from browser.")
-        return ""
+    # Save the audio to a temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
+        temp_file.write(audio.get_wav_data())
+        temp_file_path = temp_file.name
     
     try:
-        # Let the file finish writing
-        time.sleep(0.5)
+        # Send to Whisper API
+        url = "http://localhost:5000/transcribe"  # Use localhost if using SSH forwarding
         
-        # Get file modification time
-        mod_time = os.path.getmtime(temp_audio_file)
+        with open(temp_file_path, 'rb') as f:
+            files = {'file': f}
+            response = requests.post(url, files=files)
         
-        # Check if file is recently modified (within last 30 seconds)
-        if time.time() - mod_time > 30:
-            print("Audio file is too old. Please record new audio.")
-            return ""
+        # Clean up temp file
+        import os
+        os.unlink(temp_file_path)
         
-        # Transcribe with Whisper
-        print("Transcribing browser audio...")
-        result = model.transcribe(temp_audio_file, language="fr")
-        transcription = result["text"].strip()
-        
-        print(f"Transcription: {transcription}")
-        
-        # Delete the file after processing
-        os.remove(temp_audio_file)
-        
-        return transcription
-    
+        if response.status_code == 200:
+            result = response.json()
+            if result.get('success'):
+                transcription = result.get('transcription')
+                print(f"Transcription: {transcription}")
+                return transcription
     except Exception as e:
-        print(f"Error transcribing browser audio: {e}")
-        return ""
+        print(f"Error using Whisper API: {e}")
+    
+    return ""

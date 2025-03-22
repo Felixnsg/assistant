@@ -1,0 +1,84 @@
+import speech_recognition as sr
+import requests
+import tempfile
+import os
+
+def record_and_transcribe():
+    """Record audio from microphone and send to Whisper API for transcription"""
+    
+    # Record audio
+    recognizer = sr.Recognizer()
+    recognizer.energy_threshold = 300  # More sensitive
+    recognizer.dynamic_energy_threshold = True
+    
+    print("Recording setup complete. Please speak when ready...")
+    
+    with sr.Microphone() as source:
+        print("Adjusting for ambient noise...")
+        recognizer.adjust_for_ambient_noise(source, duration=1.0)
+        print(f"Energy threshold set to: {recognizer.energy_threshold}")
+        
+        print("Listening...")
+        try:
+            audio = recognizer.listen(source, timeout=5)
+            print("Audio captured!")
+        except sr.WaitTimeoutError:
+            print("No audio detected. Timeout.")
+            return
+    
+    # Save audio to temp file
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
+        temp_file.write(audio.get_wav_data())
+        temp_file_path = temp_file.name
+        print(f"Audio saved to temporary file: {temp_file_path}")
+    
+    # Send to Whisper API
+    try:
+        # Use the IP address of the server
+        url = "http://localhost:5000/transcribe"
+        print(f"Sending audio to Whisper API at {url}...")
+        
+        with open(temp_file_path, 'rb') as f:
+            files = {'file': f}
+            response = requests.post(url, files=files)
+        
+        # Clean up temp file
+        os.unlink(temp_file_path)
+        print("Temporary file deleted.")
+        
+        if response.status_code == 200:
+            result = response.json()
+            if result.get('success'):
+                transcription = result.get('transcription')
+                print(f"Transcription: {transcription}")
+                return transcription
+            else:
+                print(f"API Error: {result.get('error')}")
+        else:
+            print(f"HTTP Error: {response.status_code}")
+            print(f"Response: {response.text}")
+    
+    except Exception as e:
+        print(f"Error using Whisper API: {e}")
+        # Clean up if exception occurred
+        if os.path.exists(temp_file_path):
+            os.unlink(temp_file_path)
+    
+    return ""
+
+if __name__ == "__main__":
+    print("Simple Whisper API Test")
+    print("======================")
+    
+    # List available microphones
+    print("Available microphones:")
+    for i, mic_name in enumerate(sr.Microphone.list_microphone_names()):
+        print(f"  {i}: {mic_name}")
+    
+    # Try to record and transcribe
+    transcription = record_and_transcribe()
+    
+    if transcription:
+        print("\nSUCCESS! Transcription obtained.")
+    else:
+        print("\nFAILED to get transcription.")
