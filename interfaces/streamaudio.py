@@ -11,6 +11,14 @@ import logging
 from datetime import datetime
 from interfaces import speech
 
+
+# Add near the top with other imports
+TEMP_AUDIO_DIR = os.path.join(os.path.dirname(__file__), "temp_audio")
+os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
+
+# In the /upload-audio route:
+temp_file = os.path.join(TEMP_AUDIO_DIR, "temp_audio.wav")
+
 # Configure logging to file, instead of having the logs appear in the terminal I have them be in file.
 log_dir = "logs"
 if not os.path.exists(log_dir):

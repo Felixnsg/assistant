@@ -240,8 +240,11 @@ def continuous_recorder():
 def whisper_browser_audio_recognition():
     """Use Whisper to transcribe audio recorded from the browser"""
     # Path to the temporary audio file
-    temp_audio_file = os.path.join(os.path.dirname(__file__), "temp_audio.wav")
+    # Use the same path as defined in browser_tts.py
+    temp_audio_dir = os.path.join(os.path.dirname(__file__), "temp_audio")
+    temp_audio_file = os.path.join(temp_audio_dir, "temp_audio.wav")
     
+    # Rest of the function remains the same    
     # Wait for the file to exist (with timeout)
     start_time = time.time()
     while not os.path.exists(temp_audio_file) and time.time() - start_time < 30:
