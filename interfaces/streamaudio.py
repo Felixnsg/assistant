@@ -11,14 +11,6 @@ import logging
 from datetime import datetime
 from interfaces import speech
 
-
-# Add near the top with other imports
-TEMP_AUDIO_DIR = os.path.join(os.path.dirname(__file__), "temp_audio")
-os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
-
-# In the /upload-audio route:
-temp_file = os.path.join(TEMP_AUDIO_DIR, "temp_audio.wav")
-
 # Configure logging to file, instead of having the logs appear in the terminal I have them be in file.
 log_dir = "logs"
 if not os.path.exists(log_dir):
@@ -40,7 +32,7 @@ logger.propagate = False
 TTS_SERVER = os.getenv("TTS_SERVER", "http://localhost:7851")
 DEFAULT_VOICE = "female_01.wav"  # Initial default voice
 DEFAULT_LANGUAGE = "en"
-WEB_PORT = 8765
+WEB_PORT = 8760
 QUEUE_FILE = "tts_queue.json"
 SETTINGS_FILE = "tts_settings.json"
 
@@ -114,7 +106,7 @@ class TTSPlayer:
         
         try:
             with open(SETTINGS_FILE, 'r') as f:
-                settings = json.load(f)
+                settings  = json.load(f)
                 self.current_voice = settings.get("default_voice", DEFAULT_VOICE)
                 self.current_language = settings.get("default_language", DEFAULT_LANGUAGE)
             logger.info(f"Settings loaded. Current voice: {self.current_voice}, Current language: {self.current_language}")
@@ -203,11 +195,7 @@ class TTSPlayer:
                         self.send_header('Content-type', 'text/html')
                         self.end_headers()
                         self.wfile.write(get_player_html().encode())
-                    elif self.path == '/record':
-                        self.send_response(200)
-                        self.send_header('Content-type', 'text/html')
-                        self.end_headers()
-                        self.wfile.write(get_recorder_html().encode())
+                    
                     # API to get the queue
                     elif self.path == '/queue':
                         self.send_response(200)
@@ -253,30 +241,7 @@ class TTSPlayer:
                             "is_playing": player_instance.is_playing,
                             "has_queue_items": player_instance.has_items_in_queue()
                         }).encode())
-                        # Add this in the do_GET method, with the other endpoints
-                    elif self.path == '/record':
-                        self.send_response(200)
-                        self.send_header('Content-type', 'text/html')
-                        self.end_headers()
-                        self.wfile.write(get_recorder_html().encode())
-
-                    # Add this in the do_POST method, with the other endpoints
-                    elif self.path == '/upload-audio':
-                        content_length = int(self.headers['Content-Length'])
-                        audio_data = self.rfile.read(content_length)
-                        
-                        # Save to temporary file
-                        temp_file = os.path.join(os.path.dirname(__file__), "temp_audio.wav")
-                        with open(temp_file, 'wb') as f:
-                            f.write(audio_data)
-                        
-                        logger.info(f"Received audio file, saved to {temp_file}")
-                        
-                        self.send_response(200)
-                        self.send_header('Content-type', 'application/json')
-                        self.end_headers()
-                        self.wfile.write(json.dumps({"success": True, "file": temp_file}).encode())
-                                        
+                    
                     # API to get the next item
                     elif self.path == '/next':
                         self.send_response(200)
@@ -321,27 +286,6 @@ class TTSPlayer:
                         self.wfile.write(json.dumps({"success": True, "voice": player_instance.current_voice}).encode())
                     
                     # API to set current language
-                    # Add this inside do_POST, alongside other routes
-                    elif self.path == '/upload-audio':
-                        content_length = int(self.headers['Content-Length'])
-                        audio_data = self.rfile.read(content_length)
-                        
-                        # Create temp directory
-                        temp_dir = os.path.join(os.path.dirname(__file__), "temp_audio")
-                        os.makedirs(temp_dir, exist_ok=True)
-                        
-                        # Save to file
-                        temp_file = os.path.join(temp_dir, "temp_audio.wav")
-                        with open(temp_file, 'wb') as f:
-                            f.write(audio_data)
-                        
-                        logger.info(f"Received audio file, saved to {temp_file}")
-                        print(f"Received audio file, saved to {temp_file}")
-                        
-                        self.send_response(200)
-                        self.send_header('Content-type', 'application/json')
-                        self.end_headers()
-                        self.wfile.write(json.dumps({"success": True, "file": temp_file}).encode())
                     elif self.path == '/set-language':
                         post_data = self.rfile.read(content_length)
                         language_data = json.loads(post_data)
@@ -1590,190 +1534,6 @@ def get_player_html():
                 voiceToggle: !!voiceToggle,
                 languageToggle: !!languageToggle
             }});
-        </script>
-    </body>
-    </html>
-    """
-# Add this function at the end of the file, near get_player_html()
-def get_recorder_html():
-    """Return the HTML for the browser recorder"""
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Voice Recorder</title>
-        <style>
-            body {
-                font-family: 'Montserrat', sans-serif;
-                background-color: #121212;
-                color: rgba(255, 255, 255, 0.87);
-                height: 100vh;
-                margin: 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            
-            .recorder-container {
-                width: 300px;
-                text-align: center;
-            }
-            
-            .record-button {
-                width: 80px;
-                height: 80px;
-                border-radius: 50%;
-                background-color: #ff4b4b;
-                margin: 20px auto;
-                cursor: pointer;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                box-shadow: 0 0 10px rgba(255, 75, 75, 0.5);
-                transition: all 0.3s ease;
-            }
-            
-            .record-button.recording {
-                animation: pulse 1.5s infinite;
-                background-color: #ff0000;
-            }
-            
-            @keyframes pulse {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.1); }
-                100% { transform: scale(1); }
-            }
-            
-            .status {
-                margin-top: 20px;
-                font-size: 14px;
-            }
-            
-            .timer {
-                font-size: 24px;
-                margin-top: 10px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="recorder-container">
-            <h2>Voice Recorder</h2>
-            <div class="record-button" id="recordButton">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                    <circle cx="12" cy="12" r="6"></circle>
-                </svg>
-            </div>
-            <div class="timer" id="timer">00:00</div>
-            <div class="status" id="status">Click to start recording</div>
-        </div>
-        
-        <script>
-            const recordButton = document.getElementById('recordButton');
-            const timer = document.getElementById('timer');
-            const status = document.getElementById('status');
-            
-            let mediaRecorder;
-            let audioChunks = [];
-            let isRecording = false;
-            let startTime;
-            let timerInterval;
-            
-            // Request microphone access
-            async function setupRecorder() {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    
-                    mediaRecorder.ondataavailable = (event) => {
-                        audioChunks.push(event.data);
-                    };
-                    
-                    mediaRecorder.onstop = () => {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                        sendAudioToServer(audioBlob);
-                    };
-                    
-                    status.textContent = "Ready to record";
-                } catch (err) {
-                    console.error("Error accessing microphone:", err);
-                    status.textContent = "Error: Could not access microphone";
-                }
-            }
-            
-            // Send recorded audio to the server
-            function sendAudioToServer(blob) {
-                status.textContent = "Processing...";
-                
-                fetch('/upload-audio', {
-                    method: 'POST',
-                    body: blob
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Server response:", data);
-                    status.textContent = "Audio sent to server successfully";
-                    setTimeout(() => {
-                        status.textContent = "Click to start recording";
-                    }, 3000);
-                })
-                .catch(error => {
-                    console.error("Error sending audio:", error);
-                    status.textContent = "Error sending audio to server";
-                });
-            }
-            
-            // Update timer display
-            function updateTimer() {
-                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-                const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
-                const seconds = (elapsedTime % 60).toString().padStart(2, '0');
-                timer.textContent = `${minutes}:${seconds}`;
-                
-                // Auto-stop after 30 seconds
-                if (elapsedTime >= 30 && isRecording) {
-                    stopRecording();
-                }
-            }
-            
-            // Start recording
-            function startRecording() {
-                audioChunks = [];
-                mediaRecorder.start();
-                isRecording = true;
-                recordButton.classList.add('recording');
-                status.textContent = "Recording...";
-                
-                startTime = Date.now();
-                timerInterval = setInterval(updateTimer, 1000);
-            }
-            
-            // Stop recording
-            function stopRecording() {
-                if (isRecording) {
-                    mediaRecorder.stop();
-                    isRecording = false;
-                    recordButton.classList.remove('recording');
-                    clearInterval(timerInterval);
-                }
-            }
-            
-            // Toggle recording
-            recordButton.addEventListener('click', () => {
-                if (!mediaRecorder) {
-                    status.textContent = "Waiting for microphone access...";
-                    setupRecorder();
-                    return;
-                }
-                
-                if (isRecording) {
-                    stopRecording();
-                } else {
-                    startRecording();
-                }
-            });
-            
-            // Initialize on page load
-            window.addEventListener('load', setupRecorder);
         </script>
     </body>
     </html>

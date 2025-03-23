@@ -11,13 +11,16 @@ import config
 import boto3
 import time
 import re
-import os
 import speech_recognition as sr
 import whisper
 import numpy as np
 import tempfile
 from datetime import datetime, timedelta
 from time import sleep
+import speech_recognition as sr
+import queue
+import threading
+import requests
 
 # Initialize the pyttsx3 engine globally
 engine = pyttsx3.init()
@@ -199,81 +202,60 @@ def AWS_text_to_speech(ai_response):
 
 
 
-import speech_recognition as sr
-import whisper
-import tempfile
-import os
-import queue
-import threading
-import time
 
 # Audio data queue and stop event for continuous listening
 audio_queue = queue.Queue()
 stop_listening = threading.Event()
-model = whisper.load_model("medium")
+model = whisper.load_model("base")
 
 def continuous_recorder():
     """Records audio continuously in a background thread"""
     recognizer = sr.Recognizer()
-    # Make it more tolerant of pauses
-    recognizer.pause_threshold = 2.0  # Default is 0.8 seconds
-    recognizer.energy_threshold = 1000
+    recognizer.energy_threshold = 300 
     recognizer.dynamic_energy_threshold = True
+    recognizer.pause_threshold = 2
     
     with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source, duration=1.0)
-        print("Listening continuously...")
-        
+        recognizer.adjust_for_ambient_noise(source, duration=1.0)        
         while not stop_listening.is_set():
             try:
-                # Use a shorter timeout but NO phrase time limit
-                audio = recognizer.listen(source, timeout=3, phrase_time_limit=None)
+                audio = recognizer.listen(source, timeout=5, phrase_time_limit= 15)
                 audio_queue.put(audio)
-                # Small delay to prevent CPU overload
                 time.sleep(0.1)
             except sr.WaitTimeoutError:
-                continue  # Just keep listening
+                continue
             except Exception as e:
                 print(f"Error in recording: {e}")
                 break
 
 def whisper_speech_recognition():
     """Use Whisper API to transcribe audio from microphone"""
-    import requests
-    import speech_recognition as sr
-    import tempfile
-    
-    # First, record audio with the microphone
+
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
-        print("Adjusting for ambient noise...")
         recognizer.adjust_for_ambient_noise(source, duration=1.0)
         
         print("Listening...")
-        audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
+        audio = recognizer.listen(source, timeout=5, phrase_time_limit=15)
     
-    # Save the audio to a temporary file
     with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
         temp_file.write(audio.get_wav_data())
         temp_file_path = temp_file.name
     
     try:
-        # Send to Whisper API
-        url = "http://localhost:5000/transcribe"  # Use localhost if using SSH forwarding
+        url = "http://localhost:5001/transcribe" 
         
         with open(temp_file_path, 'rb') as f:
             files = {'file': f}
             response = requests.post(url, files=files)
         
-        # Clean up temp file
-        import os
         os.unlink(temp_file_path)
         
         if response.status_code == 200:
             result = response.json()
-            if result.get('success'):
-                transcription = result.get('transcription')
-                print(f"Transcription: {transcription}")
+            if result.get('Result'):
+                transcription = result.get('Text')
+                print(f"you: {transcription}")
                 return transcription
     except Exception as e:
         print(f"Error using Whisper API: {e}")

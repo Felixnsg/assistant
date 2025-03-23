@@ -21046,3 +21046,1752 @@ Alright, let's delve in...
 2025-03-22 00:13:50,098 - INFO - Waiting for audio to finish before listening...
 2025-03-22 00:13:54,164 - INFO - Waiting for audio to finish before listening...
 2025-03-22 00:13:58,609 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:36:31,444 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:36:40,465 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 00:36:40,465 - INFO - Starting TTS player server...
+2025-03-22 00:36:40,468 - INFO - TTS player server started on port 8765
+2025-03-22 00:36:40,468 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 00:36:41,151 - INFO - TTS player opened in browser at http://localhost:8765
+2025-03-22 00:36:41,154 - INFO - Added to TTS queue: This sounds like a very alarming and dangerous sit...
+2025-03-22 00:36:51,155 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:39:09,346 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:39:15,653 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 00:39:15,653 - INFO - Starting TTS player server...
+2025-03-22 00:39:15,656 - INFO - TTS player server started on port 8765
+2025-03-22 00:39:15,656 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 00:39:16,348 - INFO - TTS player opened in browser at http://localhost:8765
+2025-03-22 00:39:16,367 - INFO - Added to TTS queue: I am doing well, thank you for asking! How are you...
+2025-03-22 00:39:26,367 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:42:00,107 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:42:07,390 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 00:42:07,390 - INFO - Starting TTS player server...
+2025-03-22 00:42:07,394 - INFO - TTS player server started on port 8765
+2025-03-22 00:42:07,394 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 00:42:08,047 - INFO - TTS player opened in browser at http://localhost:8765
+2025-03-22 00:42:08,091 - INFO - Added to TTS queue: It's okay to not know! Everyone feels that way som...
+2025-03-22 00:45:08,295 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:45:16,068 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 00:45:16,068 - INFO - Starting TTS player server...
+2025-03-22 00:45:16,071 - INFO - TTS player server started on port 8765
+2025-03-22 00:45:16,071 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 00:45:16,807 - INFO - TTS player opened in browser at http://localhost:8765
+2025-03-22 00:45:16,838 - INFO - Added to TTS queue: Hello! How can I help you today?
+2025-03-22 00:45:26,838 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:46:34,140 - INFO - Added to TTS queue: Okay, I understand. You're talking about trying to...
+2025-03-22 00:46:34,141 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:48:06,793 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:48:11,593 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 00:48:11,593 - INFO - Starting TTS player server...
+2025-03-22 00:48:11,593 - INFO - TTS player server started on port 8765
+2025-03-22 00:48:11,593 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 00:48:12,270 - INFO - TTS player opened in browser at http://localhost:8765
+2025-03-22 00:48:12,318 - INFO - Added to TTS queue: Hello! How can I help you today?
+2025-03-22 00:48:22,321 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:55:05,381 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:55:11,911 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 00:55:11,911 - INFO - Starting TTS player server...
+2025-03-22 00:55:11,919 - INFO - TTS player server started on port 8765
+2025-03-22 00:55:11,919 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 00:55:12,697 - INFO - TTS player opened in browser at http://localhost:8765
+2025-03-22 00:55:12,736 - INFO - Added to TTS queue: Hey there! I'm doing well, thanks for asking! How ...
+2025-03-22 00:55:22,738 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:59:37,719 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:59:43,405 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 00:59:43,405 - INFO - Starting TTS player server...
+2025-03-22 00:59:43,405 - INFO - TTS player server started on port 8760
+2025-03-22 00:59:43,405 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 00:59:44,199 - INFO - TTS player opened in browser at http://localhost:8760
+2025-03-22 00:59:44,204 - INFO - Added to TTS queue: Hello! How can I help you today?
+2025-03-22 00:59:44,842 - INFO - HTTP: "GET / HTTP/1.1" 200 -
+2025-03-22 00:59:45,052 - INFO - HTTP: "GET /voices HTTP/1.1" 200 -
+2025-03-22 00:59:45,087 - INFO - HTTP: "GET /languages HTTP/1.1" 200 -
+2025-03-22 00:59:45,381 - INFO - HTTP: "GET /current-voice HTTP/1.1" 200 -
+2025-03-22 00:59:45,426 - INFO - HTTP: code 404, message File not found
+2025-03-22 00:59:45,426 - INFO - HTTP: "GET /favicon.ico HTTP/1.1" 404 -
+2025-03-22 00:59:45,427 - INFO - HTTP: "GET /current-language HTTP/1.1" 200 -
+2025-03-22 00:59:45,876 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:46,137 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:46,271 - INFO - Audio finished playing
+2025-03-22 00:59:46,271 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 00:59:46,271 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:46,370 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:46,453 - INFO - Audio finished playing
+2025-03-22 00:59:46,453 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 00:59:46,583 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:46,682 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:46,965 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:47,270 - INFO - Audio finished playing
+2025-03-22 00:59:47,271 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 00:59:47,271 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:47,357 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:47,523 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:47,587 - INFO - Audio finished playing
+2025-03-22 00:59:47,587 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 00:59:47,663 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:47,835 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:47,970 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:48,287 - INFO - Audio finished playing
+2025-03-22 00:59:48,287 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 00:59:48,289 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:48,365 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:48,536 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:48,597 - INFO - Audio finished playing
+2025-03-22 00:59:48,597 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 00:59:48,674 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:48,844 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:48,986 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:49,298 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:49,359 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:49,553 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:49,603 - INFO - Audio finished playing
+2025-03-22 00:59:49,603 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 00:59:49,670 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:49,671 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:49,868 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:49,983 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:50,172 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:50,371 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:50,485 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:50,679 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:51,054 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:51,359 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:52,059 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:52,370 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:53,057 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:53,369 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:54,055 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:54,204 - INFO - Waiting for audio to finish before listening...
+2025-03-22 00:59:54,366 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:55,053 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:55,365 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:56,055 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:56,366 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:57,054 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:57,367 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:58,053 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:58,365 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 00:59:59,052 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 00:59:59,367 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:00,060 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:00,373 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:01,049 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:01,365 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:02,057 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:02,368 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:02,559 - INFO - Added to TTS queue: I'm doing well, thank you for asking! How about yo...
+2025-03-22 01:00:02,560 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:00:03,066 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:03,394 - INFO - Audio finished playing
+2025-03-22 01:00:03,394 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:00:03,395 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:03,636 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:04,058 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:04,372 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:04,404 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:04,641 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:05,064 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:05,377 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:06,065 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:06,379 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:07,054 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:07,368 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:08,054 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:08,367 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:09,056 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:09,367 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:10,051 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:10,363 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:11,054 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:11,361 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:12,057 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:12,362 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:13,051 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:13,360 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:14,064 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:14,377 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:15,080 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:15,152 - INFO - Added to TTS queue: I'm not quite sure I understand what you mean abou...
+2025-03-22 01:00:15,154 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:00:15,388 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:16,052 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:16,360 - INFO - Audio finished playing
+2025-03-22 01:00:16,362 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:00:16,362 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:16,620 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:17,061 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:17,374 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:18,062 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:18,375 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:00:19,058 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:00:19,370 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:23,469 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:02:29,318 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 01:02:29,318 - INFO - Starting TTS player server...
+2025-03-22 01:02:29,318 - INFO - TTS player server started on port 8760
+2025-03-22 01:02:29,318 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 01:02:29,368 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:29,413 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:30,061 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:30,125 - INFO - TTS player opened in browser at http://localhost:8760
+2025-03-22 01:02:30,126 - INFO - Added to TTS queue: Hey! I'm doing well, thanks for asking! How are yo...
+2025-03-22 01:02:30,371 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:30,637 - INFO - HTTP: "GET / HTTP/1.1" 200 -
+2025-03-22 01:02:30,767 - INFO - HTTP: "GET /languages HTTP/1.1" 200 -
+2025-03-22 01:02:31,072 - INFO - HTTP: "GET /voices HTTP/1.1" 200 -
+2025-03-22 01:02:31,087 - INFO - HTTP: "GET /current-language HTTP/1.1" 200 -
+2025-03-22 01:02:31,401 - INFO - HTTP: "GET /current-voice HTTP/1.1" 200 -
+2025-03-22 01:02:31,681 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:31,995 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:31,997 - INFO - Audio finished playing
+2025-03-22 01:02:31,998 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:02:32,072 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:32,259 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:32,306 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:32,383 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:32,570 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:32,695 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:33,008 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:33,084 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:33,272 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:33,395 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:33,397 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:34,073 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:34,333 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:34,383 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:34,384 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:35,074 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:35,334 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:35,381 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:35,384 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:36,088 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:36,354 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:36,391 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:36,400 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:36,699 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:36,700 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:37,091 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:37,357 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:37,404 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:37,436 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:37,803 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:38,120 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:38,359 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:38,360 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:39,099 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:39,365 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:39,416 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:39,416 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:39,855 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:40,090 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:40,127 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:02:40,778 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:41,090 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:42,080 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:42,352 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:42,779 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:43,094 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:43,732 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:02:43,771 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:44,083 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:44,772 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:45,086 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:45,769 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:46,083 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:46,769 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:47,082 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:47,770 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:48,081 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:48,771 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:49,090 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:49,773 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:50,083 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:50,768 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:51,079 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:51,896 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:02:52,075 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:52,339 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:52,402 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:52,772 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:02:53,082 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:02:53,768 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:31,458 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:03:37,883 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 01:03:37,883 - INFO - Starting TTS player server...
+2025-03-22 01:03:37,883 - INFO - TTS player server started on port 8760
+2025-03-22 01:03:37,883 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 01:03:38,094 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:38,122 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:38,609 - INFO - TTS player opened in browser at http://localhost:8760
+2025-03-22 01:03:38,609 - INFO - Added to TTS queue: Hello there! How can I help you today?
+2025-03-22 01:03:39,005 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:39,315 - INFO - HTTP: "GET / HTTP/1.1" 200 -
+2025-03-22 01:03:39,363 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:39,683 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:39,777 - INFO - HTTP: "GET /voices HTTP/1.1" 200 -
+2025-03-22 01:03:39,778 - INFO - HTTP: "GET /languages HTTP/1.1" 200 -
+2025-03-22 01:03:40,090 - INFO - HTTP: "GET /current-voice HTTP/1.1" 200 -
+2025-03-22 01:03:40,091 - INFO - HTTP: "GET /current-language HTTP/1.1" 200 -
+2025-03-22 01:03:40,106 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:40,356 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:40,417 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:40,418 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:40,776 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:41,042 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:41,088 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:41,104 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:41,464 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:41,779 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:42,029 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:42,096 - INFO - Audio started playing
+2025-03-22 01:03:42,096 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:03:42,145 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:42,463 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:42,780 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:43,029 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:43,786 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:44,099 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:44,473 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:44,475 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:45,783 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:46,048 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:46,467 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:46,780 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:47,459 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:47,775 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:48,461 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:48,619 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:03:48,777 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:49,464 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:49,777 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:50,462 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:50,778 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:51,463 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:51,776 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:52,458 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:52,776 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:53,188 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:53,778 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:54,044 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:54,468 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:54,781 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:55,459 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:55,767 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:56,469 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:56,779 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:57,465 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:57,775 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:58,463 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:58,776 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:03:59,474 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:03:59,782 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:00,458 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:00,765 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:01,459 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:01,774 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:02,470 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:02,775 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:03,470 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:03,782 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:04,461 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:04,770 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:05,460 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:05,771 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:06,459 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:06,765 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:07,468 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:07,780 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:08,483 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:08,797 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:09,459 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:09,769 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:10,465 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:10,769 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:11,467 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:11,778 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:12,468 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:12,779 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:13,466 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:13,779 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:14,462 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:14,773 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:15,460 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:04:15,771 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:04:54,010 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:05:00,014 - INFO - Settings loaded. Current voice: male_01.wav, Current language: fr
+2025-03-22 01:05:00,014 - INFO - Starting TTS player server...
+2025-03-22 01:05:00,016 - INFO - TTS player server started on port 8760
+2025-03-22 01:05:00,016 - INFO - Using voice: male_01.wav, language: fr
+2025-03-22 01:05:00,762 - INFO - TTS player opened in browser at http://localhost:8760
+2025-03-22 01:05:00,763 - INFO - Added to TTS queue: Hello! How can I help you today?
+2025-03-22 01:05:01,691 - INFO - HTTP: "GET / HTTP/1.1" 200 -
+2025-03-22 01:05:01,901 - INFO - HTTP: "GET /voices HTTP/1.1" 200 -
+2025-03-22 01:05:01,953 - INFO - HTTP: "GET /languages HTTP/1.1" 200 -
+2025-03-22 01:05:02,235 - INFO - HTTP: "GET /current-voice HTTP/1.1" 200 -
+2025-03-22 01:05:02,269 - INFO - HTTP: "GET /current-language HTTP/1.1" 200 -
+2025-03-22 01:05:02,720 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:02,986 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:03,089 - INFO - Audio finished playing
+2025-03-22 01:05:03,089 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:05:03,089 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:03,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:03,289 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:03,790 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:04,102 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:04,227 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:04,366 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:04,901 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:05,207 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:05,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:06,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:06,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:07,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:07,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:08,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:08,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:09,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:09,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:10,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:10,764 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:05:10,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:11,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:11,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:12,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:13,219 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:13,469 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:13,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:14,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:14,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:15,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:15,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:16,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:16,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:17,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:17,617 - INFO - Added to TTS queue: Oh, I'm sorry to hear that! Is there something I'v...
+2025-03-22 01:05:17,617 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:05:17,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:18,232 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:18,497 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:18,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:19,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:19,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:20,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:20,475 - INFO - Audio started playing
+2025-03-22 01:05:20,475 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:05:20,833 - INFO - HTTP: code 404, message File not found
+2025-03-22 01:05:20,833 - INFO - HTTP: "GET /favicon.ico HTTP/1.1" 404 -
+2025-03-22 01:05:20,915 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:22,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:23,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:23,914 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:25,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:25,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:27,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:27,913 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:29,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:29,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:31,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:31,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:33,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:33,913 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:35,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:35,666 - INFO - Audio finished playing
+2025-03-22 01:05:35,666 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:05:35,972 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:36,287 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:36,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:37,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:37,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:38,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:38,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:39,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:39,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:40,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:40,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:41,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:41,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:42,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:42,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:43,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:43,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:44,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:44,451 - INFO - Added to TTS queue: Ah, my apologies! I misunderstood. I am doing well...
+2025-03-22 01:05:44,451 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:05:44,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:45,232 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:45,502 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:45,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:46,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:46,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:47,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:47,612 - INFO - Audio started playing
+2025-03-22 01:05:47,612 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:05:48,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:48,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:50,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:50,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:52,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:52,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:54,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:54,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:56,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:56,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:58,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:58,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:59,275 - INFO - Audio finished playing
+2025-03-22 01:05:59,275 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:05:59,277 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:05:59,539 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:05:59,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:00,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:00,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:01,208 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:01,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:02,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:03,216 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:03,484 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:03,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:04,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:04,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:05,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:05,768 - INFO - Added to TTS queue: Oui, je suis prêt ! Parlez-moi en français. Que pu...
+2025-03-22 01:06:05,768 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:06:05,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:06,247 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:06,501 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:06,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:07,205 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:07,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:08,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:08,586 - INFO - Audio started playing
+2025-03-22 01:06:08,586 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:06:09,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:09,911 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:11,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:11,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:13,232 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:13,774 - INFO - Audio finished playing
+2025-03-22 01:06:13,774 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:06:14,086 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:14,402 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:14,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:15,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:15,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:16,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:16,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:17,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:17,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:18,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:18,525 - INFO - Added to TTS queue: I'm sorry, I don't understand that language. Could...
+2025-03-22 01:06:18,525 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:06:18,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:19,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:19,497 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:19,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:20,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:20,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:21,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:21,531 - INFO - Audio started playing
+2025-03-22 01:06:21,531 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:06:22,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:22,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:24,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:24,913 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:26,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:26,570 - INFO - Audio finished playing
+2025-03-22 01:06:26,570 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:06:26,880 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:27,192 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:27,224 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:27,458 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:27,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:28,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:28,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:29,231 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:29,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:30,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:30,826 - INFO - Added to TTS queue: No worries! Happens to the best of us. So, back to...
+2025-03-22 01:06:30,826 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:06:30,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:31,238 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:31,494 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:31,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:32,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:32,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:33,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:33,510 - INFO - Audio started playing
+2025-03-22 01:06:33,510 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:06:34,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:34,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:36,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:36,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:38,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:38,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:40,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:40,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:42,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:42,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:44,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:44,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:46,027 - INFO - Audio finished playing
+2025-03-22 01:06:46,027 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:06:46,028 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:46,276 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:46,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:47,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:47,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:48,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:48,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:49,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:49,615 - INFO - Settings saved. Default voice: male_01.wav, Default language: en
+2025-03-22 01:06:49,615 - INFO - Default language set to: en
+2025-03-22 01:06:49,615 - INFO - HTTP: "POST /set-language HTTP/1.1" 200 -
+2025-03-22 01:06:50,208 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:50,472 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:50,930 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:51,237 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:51,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:52,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:52,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:53,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:53,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:54,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:54,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:55,086 - INFO - Added to TTS queue: Sounds good! Back to English it is. What can I do ...
+2025-03-22 01:06:55,086 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:06:55,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:55,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:56,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:56,484 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:56,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:57,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:57,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:06:58,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:58,764 - INFO - Audio started playing
+2025-03-22 01:06:58,764 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:06:59,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:06:59,901 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:01,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:01,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:03,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:03,357 - INFO - Audio finished playing
+2025-03-22 01:07:03,357 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:07:03,357 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:03,482 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:03,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:04,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:04,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:05,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:05,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:06,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:06,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:07,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:07,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:08,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:08,546 - INFO - Added to TTS queue: Sure! Here's a quick one: A little cloud named Nim...
+2025-03-22 01:07:08,546 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:07:08,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:09,231 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:09,494 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:09,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:10,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:10,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:11,231 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:11,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:12,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:12,481 - INFO - Audio started playing
+2025-03-22 01:07:12,481 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:07:12,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:14,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:14,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:16,211 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:16,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:18,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:18,911 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:20,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:20,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:22,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:22,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:24,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:24,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:26,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:26,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:28,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:28,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:30,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:30,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:32,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:32,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:34,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:34,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:36,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:36,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:38,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:38,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:40,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:40,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:42,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:42,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:44,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:44,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:45,322 - INFO - Audio finished playing
+2025-03-22 01:07:45,322 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:07:45,322 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:45,589 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:45,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:46,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:46,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:47,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:47,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:48,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:48,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:49,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:49,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:50,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:50,758 - INFO - Added to TTS queue: I'm all ears! I'm ready to learn. Tell me about wh...
+2025-03-22 01:07:50,758 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:07:50,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:51,235 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:51,498 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:51,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:52,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:52,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:53,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:53,901 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:07:54,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:54,642 - INFO - Audio started playing
+2025-03-22 01:07:54,642 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:07:55,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:55,915 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:57,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:57,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:59,232 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:07:59,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:00,628 - INFO - Audio finished playing
+2025-03-22 01:08:00,628 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:08:00,628 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:00,895 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:00,941 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:01,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:01,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:02,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:03,229 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:03,491 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:03,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:04,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:04,507 - INFO - Added to TTS queue: Okay! I'm ready to hear your name. Please, tell me...
+2025-03-22 01:08:04,507 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:08:04,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:05,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:05,480 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:05,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:06,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:06,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:07,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:07,753 - INFO - Audio started playing
+2025-03-22 01:08:07,753 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:08:08,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:08,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:10,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:10,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:12,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:12,276 - INFO - Audio finished playing
+2025-03-22 01:08:12,278 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:08:12,278 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:12,485 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:13,212 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:13,472 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:13,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:14,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:14,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:15,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:15,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:16,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:16,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:17,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:17,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:17,992 - INFO - Added to TTS queue: It's nice to meet you, Felix, or should I say Alex...
+2025-03-22 01:08:17,993 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:08:18,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:18,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:19,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:19,475 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:19,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:20,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:20,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:21,231 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:21,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:22,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:22,482 - INFO - Audio started playing
+2025-03-22 01:08:22,483 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:08:22,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:24,208 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:24,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:26,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:26,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:28,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:28,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:30,207 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:30,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:31,811 - INFO - Audio finished playing
+2025-03-22 01:08:31,811 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:08:31,812 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:32,076 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:32,122 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:32,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:32,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:33,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:33,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:34,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:34,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:35,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:35,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:36,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:36,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:37,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:37,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:38,159 - INFO - Added to TTS queue: Since you mentioned that people call you Alex, I'l...
+2025-03-22 01:08:38,159 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:08:38,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:38,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:39,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:39,486 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:39,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:40,209 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:40,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:41,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:41,817 - INFO - Audio started playing
+2025-03-22 01:08:41,817 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:08:42,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:42,901 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:44,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:44,900 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:46,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:46,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:48,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:48,916 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:50,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:50,914 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:51,621 - INFO - Audio finished playing
+2025-03-22 01:08:51,621 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:08:51,621 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:51,883 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:51,929 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:52,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:52,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:53,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:53,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:54,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:54,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:55,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:55,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:56,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:56,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:57,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:57,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:58,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:58,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:08:59,098 - INFO - Added to TTS queue: Okay, got it. In that case, I'll probably switch b...
+2025-03-22 01:08:59,098 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:08:59,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:08:59,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:00,233 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:00,502 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:00,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:01,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:01,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:02,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:02,702 - INFO - Audio started playing
+2025-03-22 01:09:02,702 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:09:03,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:03,911 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:05,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:05,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:07,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:07,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:09,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:09,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:11,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:11,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:13,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:13,260 - INFO - Audio finished playing
+2025-03-22 01:09:13,261 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:09:13,261 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:13,477 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:13,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:14,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:14,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:15,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:15,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:16,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:16,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:17,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:17,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:18,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:18,297 - INFO - Added to TTS queue: You can just call me by my name, or "the assistant...
+2025-03-22 01:09:18,297 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:09:18,900 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:19,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:19,486 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:19,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:20,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:20,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:21,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:21,738 - INFO - Audio started playing
+2025-03-22 01:09:21,738 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:09:22,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:22,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:24,206 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:24,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:26,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:26,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:28,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:28,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:30,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:30,480 - INFO - Audio finished playing
+2025-03-22 01:09:30,480 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:09:30,630 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:30,634 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:31,223 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:31,491 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:31,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:32,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:32,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:33,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:33,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:34,232 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:34,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:35,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:35,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:36,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:36,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:37,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:37,906 - INFO - Added to TTS queue: Cypher it is! I like it. So, Felix/Alex, how can C...
+2025-03-22 01:09:37,907 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:09:37,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:38,235 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:38,488 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:38,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:39,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:39,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:40,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:40,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:41,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:41,482 - INFO - Audio started playing
+2025-03-22 01:09:41,482 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:09:41,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:43,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:43,901 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:45,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:45,914 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:47,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:47,914 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:49,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:49,914 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:51,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:51,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:53,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:53,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:54,682 - INFO - Audio finished playing
+2025-03-22 01:09:54,684 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:09:54,684 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:54,945 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:54,991 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:55,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:55,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:56,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:56,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:57,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:57,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:58,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:58,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:09:59,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:09:59,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:00,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:00,566 - INFO - Added to TTS queue: Is Cypher, you were going to say? I'm listening! W...
+2025-03-22 01:10:00,567 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:10:00,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:01,234 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:01,506 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:01,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:02,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:02,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:03,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:03,643 - INFO - Audio started playing
+2025-03-22 01:10:03,643 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:10:04,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:04,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:06,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:06,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:07,966 - INFO - Audio finished playing
+2025-03-22 01:10:07,966 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:10:07,966 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:08,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:08,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:09,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:09,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:10,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:10,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:11,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:11,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:12,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:12,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:13,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:13,886 - INFO - Added to TTS queue: You're absolutely right! Cypher rhymes with hyper....
+2025-03-22 01:10:13,887 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:10:13,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:14,233 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:14,504 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:14,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:15,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:15,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:16,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:16,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:17,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:17,475 - INFO - Audio started playing
+2025-03-22 01:10:17,475 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:10:18,205 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:18,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:20,211 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:20,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:22,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:22,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:24,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:24,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:26,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:26,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:28,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:28,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:30,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:30,901 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:32,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:32,916 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:34,232 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:34,916 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:36,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:36,909 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:37,909 - INFO - Audio finished playing
+2025-03-22 01:10:37,909 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:10:37,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:38,174 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:38,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:39,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:39,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:40,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:40,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:41,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:41,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:42,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:42,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:43,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:43,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:44,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:44,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:45,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:45,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:46,003 - INFO - Added to TTS queue: I understand what you mean. I suppose "Cypher" doe...
+2025-03-22 01:10:46,004 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:10:46,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:46,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:47,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:47,479 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:47,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:48,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:48,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:49,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:49,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:10:50,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:50,710 - INFO - Audio started playing
+2025-03-22 01:10:50,711 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:10:51,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:51,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:53,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:53,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:55,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:55,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:57,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:57,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:59,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:10:59,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:01,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:01,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:03,208 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:03,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:05,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:05,900 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:07,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:07,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:09,208 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:09,904 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:10,614 - INFO - Audio finished playing
+2025-03-22 01:11:10,614 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:11:10,614 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:10,870 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:10,933 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:11,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:11,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:12,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:12,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:13,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:13,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:14,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:14,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:15,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:15,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:16,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:16,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:17,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:17,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:18,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:18,873 - INFO - Added to TTS queue: Well, boredom is a common ailment, and I have a fe...
+2025-03-22 01:11:18,873 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:11:18,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:19,235 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:19,501 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:19,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:20,206 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:20,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:21,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:21,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:22,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:22,517 - INFO - Audio started playing
+2025-03-22 01:11:22,517 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:11:23,208 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:23,917 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:25,208 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:25,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:27,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:27,915 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:29,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:29,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:31,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:31,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:33,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:33,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:35,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:35,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:37,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:37,913 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:39,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:39,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:41,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:41,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:43,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:43,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:45,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:45,910 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:47,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:47,909 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:49,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:49,909 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:51,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:51,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:53,210 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:53,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:55,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:55,464 - INFO - Audio finished playing
+2025-03-22 01:11:55,464 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:11:55,527 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:55,529 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:56,216 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:56,482 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:56,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:57,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:57,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:58,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:58,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:11:59,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:11:59,901 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:00,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:00,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:01,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:01,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:02,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:02,236 - INFO - Added to TTS queue: Okay, here's a soccer question for you: Which coun...
+2025-03-22 01:12:02,237 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:12:02,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:03,238 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:03,505 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:03,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:04,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:04,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:05,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:05,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:06,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:06,550 - INFO - Audio started playing
+2025-03-22 01:12:06,550 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:12:07,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:07,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:09,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:09,901 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:11,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:11,911 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:12,809 - INFO - Audio finished playing
+2025-03-22 01:12:12,809 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:12:12,810 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:13,076 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:13,122 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:13,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:13,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:14,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:14,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:15,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:15,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:16,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:16,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:17,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:17,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:18,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:18,262 - INFO - Added to TTS queue: That is correct! Brazil has won the most FIFA Worl...
+2025-03-22 01:12:18,262 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:12:18,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:19,233 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:19,494 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:19,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:20,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:20,918 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:21,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:21,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:22,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:22,478 - INFO - Audio started playing
+2025-03-22 01:12:22,478 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:12:22,913 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:24,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:24,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:26,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:26,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:28,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:28,913 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:30,211 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:30,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:32,211 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:32,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:34,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:34,475 - INFO - Audio finished playing
+2025-03-22 01:12:34,475 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:12:34,730 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:34,732 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:35,214 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:35,479 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:35,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:36,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:36,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:37,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:37,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:38,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:38,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:39,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:39,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:40,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:40,691 - INFO - Added to TTS queue: Alright, here's a football question for you: Which...
+2025-03-22 01:12:40,691 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:12:40,901 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:41,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:41,489 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:41,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:42,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:42,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:43,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:43,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:44,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:44,470 - INFO - Audio started playing
+2025-03-22 01:12:44,470 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:12:44,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:46,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:46,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:48,209 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:48,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:50,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:50,783 - INFO - Audio finished playing
+2025-03-22 01:12:50,783 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:12:51,095 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:51,402 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:51,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:52,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:52,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:53,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:53,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:54,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:54,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:55,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:55,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:56,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:56,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:57,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:57,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:58,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:58,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:12:59,011 - INFO - Added to TTS queue: You're on the right track! Those are definitely tw...
+2025-03-22 01:12:59,012 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:12:59,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:12:59,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:00,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:00,470 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:00,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:01,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:01,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:02,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:02,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:03,207 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:03,460 - INFO - Audio started playing
+2025-03-22 01:13:03,460 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:13:03,901 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:05,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:05,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:07,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:07,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:09,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:09,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:11,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:11,332 - INFO - Audio finished playing
+2025-03-22 01:13:11,332 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:13:11,332 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:11,487 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:11,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:12,230 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:12,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:13,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:13,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:14,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:14,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:15,239 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:15,918 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:16,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:16,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:17,048 - INFO - Added to TTS queue: The Patriots are a very good guess! They are tied ...
+2025-03-22 01:13:17,048 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:13:17,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:17,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:18,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:18,465 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:18,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:19,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:19,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:20,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:20,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:21,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:21,476 - INFO - Audio started playing
+2025-03-22 01:13:21,476 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:13:21,909 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:23,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:23,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:25,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:25,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:27,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:27,911 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:29,150 - INFO - Audio finished playing
+2025-03-22 01:13:29,150 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:13:29,150 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:29,413 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:29,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:30,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:30,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:31,231 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:31,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:32,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:32,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:33,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:33,831 - INFO - Added to TTS queue: It is a tricky one! Think about the teams you ment...
+2025-03-22 01:13:33,831 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:13:33,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:34,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:34,479 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:34,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:35,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:35,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:36,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:36,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:37,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:37,516 - INFO - Audio started playing
+2025-03-22 01:13:37,516 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:13:38,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:38,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:40,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:40,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:42,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:42,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:44,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:44,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:45,935 - INFO - Audio finished playing
+2025-03-22 01:13:45,935 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:13:45,935 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:46,201 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:46,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:47,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:47,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:48,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:48,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:49,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:49,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:50,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:50,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:51,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:51,221 - INFO - Added to TTS queue: You got it! The Pittsburgh Steelers and the New En...
+2025-03-22 01:13:51,222 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:13:51,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:52,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:52,487 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:52,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:53,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:53,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:54,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:54,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:13:55,210 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:55,467 - INFO - Audio started playing
+2025-03-22 01:13:55,467 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:13:55,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:57,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:57,901 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:59,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:13:59,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:01,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:01,911 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:03,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:03,917 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:05,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:05,915 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:07,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:07,476 - INFO - Audio finished playing
+2025-03-22 01:14:07,476 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:14:07,626 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:07,629 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:08,217 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:08,484 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:08,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:09,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:09,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:10,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:10,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:11,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:11,900 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:12,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:12,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:13,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:13,483 - INFO - Added to TTS queue: Okay, switching to NBA questions! Ready for your f...
+2025-03-22 01:14:13,484 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:14:13,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:14,235 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:14,501 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:14,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:15,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:15,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:16,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:16,778 - INFO - Audio started playing
+2025-03-22 01:14:16,778 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:14:17,211 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:17,912 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:19,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:19,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:21,014 - INFO - Audio finished playing
+2025-03-22 01:14:21,014 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:14:21,015 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:21,280 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:21,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:22,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:22,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:23,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:23,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:24,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:24,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:25,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:25,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:26,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:26,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:27,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:27,309 - INFO - Added to TTS queue: Alright, here we go: Which NBA player has the most...
+2025-03-22 01:14:27,309 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:14:27,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:28,234 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:28,494 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:28,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:29,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:29,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:30,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:30,907 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:31,211 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:31,475 - INFO - Audio started playing
+2025-03-22 01:14:31,475 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:14:31,903 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:33,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:33,906 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:35,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:35,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:36,583 - INFO - Audio finished playing
+2025-03-22 01:14:36,583 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:14:36,584 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:36,835 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:36,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:37,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:37,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:38,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:38,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:39,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:39,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:40,217 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:40,909 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:41,214 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:41,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:42,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:42,394 - INFO - Added to TTS queue: Yes, as of right now. I won't trick you with outda...
+2025-03-22 01:14:42,395 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:14:42,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:43,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:43,487 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:43,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:44,209 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:44,913 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:45,231 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:45,702 - INFO - Audio started playing
+2025-03-22 01:14:45,702 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:14:46,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:46,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:48,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:48,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:49,807 - INFO - Audio finished playing
+2025-03-22 01:14:49,808 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:14:49,808 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:50,072 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:50,118 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:50,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:50,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:51,226 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:51,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:52,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:52,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:53,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:53,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:54,232 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:54,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:55,211 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:55,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:56,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:56,851 - INFO - Added to TTS queue: That's absolutely correct! LeBron James holds the ...
+2025-03-22 01:14:56,852 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:14:56,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:57,239 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:57,508 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:57,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:58,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:58,910 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:14:59,221 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:14:59,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:00,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:00,485 - INFO - Audio started playing
+2025-03-22 01:15:00,485 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:15:00,911 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:02,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:02,905 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:04,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:04,913 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:06,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:06,907 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:08,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:08,908 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:10,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:10,911 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:12,222 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:12,390 - INFO - Audio finished playing
+2025-03-22 01:15:12,391 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:15:12,391 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:12,491 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:12,916 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:13,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:13,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:14,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:14,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:15,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:15,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:16,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:16,911 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:17,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:17,383 - INFO - Added to TTS queue: Okay, here's your next NBA question: Which NBA tea...
+2025-03-22 01:15:17,384 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:15:17,904 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:18,224 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:18,391 - INFO - Audio finished playing
+2025-03-22 01:15:18,391 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:15:18,391 - INFO - Audio finished playing
+2025-03-22 01:15:18,391 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:15:18,474 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:18,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:19,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:19,399 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:19,494 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:19,917 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:20,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:20,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:21,220 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:21,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:22,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:22,905 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:23,216 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:23,915 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:24,227 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:24,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:25,225 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:25,914 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:26,228 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:26,912 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:27,223 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:27,903 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:28,005 - INFO - Added to TTS queue: Sure thing! The question is: Which NBA team has wo...
+2025-03-22 01:15:28,006 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:15:28,215 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:28,906 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:29,219 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:29,374 - INFO - Audio finished playing
+2025-03-22 01:15:29,374 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:15:29,376 - INFO - Audio finished playing
+2025-03-22 01:15:29,376 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:15:29,486 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:29,908 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:30,218 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:30,388 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:30,482 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:30,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:31,213 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:31,902 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:32,212 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:15:32,918 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:15:33,229 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:05,617 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:17:13,578 - INFO - Settings loaded. Current voice: male_01.wav, Current language: en
+2025-03-22 01:17:13,578 - INFO - Starting TTS player server...
+2025-03-22 01:17:13,579 - INFO - TTS player server started on port 8760
+2025-03-22 01:17:13,579 - INFO - Using voice: male_01.wav, language: en
+2025-03-22 01:17:14,238 - INFO - TTS player opened in browser at http://localhost:8760
+2025-03-22 01:17:14,238 - INFO - Added to TTS queue: Oui, bien sûr ! Vous pouvez tout à fait garder les...
+2025-03-22 01:17:15,190 - INFO - HTTP: "GET / HTTP/1.1" 200 -
+2025-03-22 01:17:15,403 - INFO - HTTP: "GET /voices HTTP/1.1" 200 -
+2025-03-22 01:17:15,452 - INFO - HTTP: "GET /languages HTTP/1.1" 200 -
+2025-03-22 01:17:15,735 - INFO - HTTP: "GET /current-voice HTTP/1.1" 200 -
+2025-03-22 01:17:15,771 - INFO - HTTP: "GET /current-language HTTP/1.1" 200 -
+2025-03-22 01:17:16,222 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:16,487 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:16,561 - INFO - Audio finished playing
+2025-03-22 01:17:16,561 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:17:16,562 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:16,720 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:16,802 - INFO - Audio finished playing
+2025-03-22 01:17:16,802 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:17:16,804 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:17,272 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:17,576 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:17,718 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:17,840 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:18,405 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:18,708 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:19,412 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:19,723 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:20,319 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:20,638 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:20,718 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:20,902 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:21,418 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:21,730 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:21,994 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:22,104 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:22,417 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:22,729 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:22,993 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:23,101 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:23,415 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:23,727 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:23,991 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:24,100 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:24,241 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:17:24,410 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:24,723 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:24,986 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:25,112 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:25,411 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:25,724 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:25,990 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:26,115 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:26,413 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:26,723 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:26,991 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:27,116 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:27,414 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:27,725 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:27,992 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:28,102 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:28,415 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:28,729 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:28,998 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:29,108 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:29,406 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:29,711 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:29,974 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:30,115 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:30,411 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:30,420 - INFO - Added to TTS queue: Yes, of course! You can absolutely keep the questi...
+2025-03-22 01:17:30,420 - INFO - Waiting for audio to finish before listening...
+2025-03-22 01:17:30,719 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:30,986 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:31,110 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:31,311 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:31,422 - INFO - Audio finished playing
+2025-03-22 01:17:31,422 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:17:31,467 - INFO - Audio finished playing
+2025-03-22 01:17:31,467 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 01:17:31,468 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:31,716 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:31,794 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:32,107 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:32,407 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:32,716 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:32,982 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:33,106 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:33,402 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:33,716 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:33,980 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:34,108 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:34,403 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:34,718 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:34,985 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:35,110 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:35,408 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:35,720 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:35,984 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:36,109 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:36,409 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:36,720 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:36,986 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 01:17:37,159 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 01:17:37,408 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:06,781 - INFO - Waiting for audio to finish before listening...
+2025-03-22 17:28:14,825 - INFO - Settings loaded. Current voice: male_01.wav, Current language: en
+2025-03-22 17:28:14,825 - INFO - Starting TTS player server...
+2025-03-22 17:28:14,826 - INFO - TTS player server started on port 8760
+2025-03-22 17:28:14,826 - INFO - Using voice: male_01.wav, language: en
+2025-03-22 17:28:15,397 - INFO - TTS player opened in browser at http://localhost:8760
+2025-03-22 17:28:15,397 - INFO - Added to TTS queue: Hello! How can I help you today?
+2025-03-22 17:28:15,801 - INFO - HTTP: "GET / HTTP/1.1" 200 -
+2025-03-22 17:28:15,853 - INFO - HTTP: "GET /voices HTTP/1.1" 200 -
+2025-03-22 17:28:16,052 - INFO - HTTP: "GET /languages HTTP/1.1" 200 -
+2025-03-22 17:28:16,169 - INFO - HTTP: "GET /current-voice HTTP/1.1" 200 -
+2025-03-22 17:28:16,359 - INFO - HTTP: "GET /current-language HTTP/1.1" 200 -
+2025-03-22 17:28:16,670 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:16,997 - INFO - Audio finished playing
+2025-03-22 17:28:16,997 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 17:28:16,997 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:17,166 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:17,259 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:17,307 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:17,695 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:18,005 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:18,177 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:18,264 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:18,860 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:19,164 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:19,340 - INFO - Audio finished playing
+2025-03-22 17:28:19,340 - INFO - HTTP: "POST /set-audio-status HTTP/1.1" 200 -
+2025-03-22 17:28:19,867 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:20,172 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:20,351 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:20,434 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:20,868 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:21,183 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:21,867 - INFO - HTTP: "GET /next HTTP/1.1" 200 -
+2025-03-22 17:28:22,182 - INFO - HTTP: "GET /queue HTTP/1.1" 200 -
+2025-03-22 17:28:25,400 - INFO - Waiting for audio to finish before listening...
