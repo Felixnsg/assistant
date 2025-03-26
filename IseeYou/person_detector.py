@@ -75,7 +75,7 @@ class PersonDetector:
                         
                         person_boxes.append([x, y, w, h, confidence])
 
-            CONFIDENCE_THRESHOLD = 0.7  # Only keep detections with 70% or higher confidence
+            CONFIDENCE_THRESHOLD = 0.6  # Only keep detections with 70% or higher confidence
     
             # Filter person boxes by confidence
             filtered_person_boxes = []
