@@ -122,7 +122,7 @@ class FelixRecognizer:
                 felix_prob = probabilities[0][0].item()  # Assuming class 1 is Felix
             
             # Determine if it's Felix based on threshold
-            is_felix = felix_prob > 0.5  # You can adjust this threshold
+            is_felix = felix_prob > 0.4 # You can adjust this threshold
             
             return is_felix, felix_prob
             

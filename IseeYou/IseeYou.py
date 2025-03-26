@@ -27,12 +27,6 @@ class FelixTrackingClient:
         self.box_annotator = sv.BoxAnnotator(
             thickness=3
         )
-        byte_tracker = sv.ByteTrack(
-        track_activation_threshold=0.5,
-        lost_track_buffer=20,
-        minimum_matching_threshold=0.7,
-        frame_rate=30
-)
         
         print("FelixTrackingClient initialized successfully")
     
@@ -105,117 +99,139 @@ class FelixTrackingClient:
             traceback.print_exc()
     
     def update_tracking(self, detections):
-        """Tracking with Supervision's ByteTrack wrapper"""
-        self.frame_count += 1  # Optional if you're still using this for logging
-
-        if not detections:
+        """Simple tracking implementation without ByteTrack dependency"""
+        # Increment the frame counter
+        self.frame_count += 1
+        
+        # Check if we received any detections from the server
+        if not detections or len(detections) == 0:
             if self.frame_count % 30 == 0:
                 print(f"[TRACKING] Frame #{self.frame_count}: No detections received")
-            return
-
-        # Step 1: Convert to supervision.Detections object
-        boxes = []
-        confidences = []
-        class_ids = []  # 0 = Felix, 1 = Not Felix
-
-        for det in detections:
+            return  # No detections to process
+        
+        # Process each detection
+        for i, det in enumerate(detections):
+            # Extract data from server detection
             x, y, w, h = det["box"]
-            conf = det["confidence"]
-            is_felix = det["is_felix"]
-
-            x1, y1, x2, y2 = x, y, x + w, y + h
-            boxes.append([x1, y1, x2, y2])
-            confidences.append(conf)
-            class_ids.append(0 if is_felix else 1)
-
-        sv_detections = sv.Detections(
-            xyxy=np.array(boxes),
-            confidence=np.array(confidences),
-            class_id=np.array(class_ids)
-        )
-
-        # Step 2: Track using ByteTrack
-        tracked_detections = self.byte_tracker.update_with_detections(sv_detections)
-
-        # Step 3: Store tracked detections for visualization
-        self.tracked_detections = tracked_detections  # You can use this in `visualize_frame`
-
+            is_felix = det["is_felix"]  # Direct from server - true if Felix
+            confidence = det["confidence"]
+            
+            # Generate a simple ID based on position and frame number
+            # This is a simple approach - in a real system you'd want more sophisticated tracking
+            new_id = self.frame_count * 1000 + i
+            
+            # If there's only one detection and it's close to an existing one, try to reuse the ID
+            if len(detections) == 1 and len(self.tracking_cache) > 0:
+                # Find closest match in existing cache
+                best_match_id = None
+                best_match_dist = float('inf')
+                
+                for track_id, track_info in self.tracking_cache.items():
+                    old_x, old_y, old_w, old_h = track_info["box"]
+                    # Calculate center point distance
+                    old_cx, old_cy = old_x + old_w/2, old_y + old_h/2
+                    new_cx, new_cy = x + w/2, y + h/2
+                    
+                    dist = ((old_cx - new_cx)**2 + (old_cy - new_cy)**2)**0.5
+                    
+                    # If within reasonable distance, it's probably the same object
+                    if dist < 100 and dist < best_match_dist:  # 100 pixels is a reasonable threshold
+                        best_match_dist = dist
+                        best_match_id = track_id
+                
+                if best_match_id is not None:
+                    new_id = best_match_id
+            
+            # Add to tracking cache
+            self.tracking_cache[new_id] = {
+                "box": [x, y, w, h],
+                "is_felix": is_felix,  # Store the direct value from server
+                "confidence": confidence,
+                "last_seen": self.frame_count
+            }
+        
+        # Clean up stale tracks
+        stale_ids = []
+        for track_id, info in self.tracking_cache.items():
+            if self.frame_count - info["last_seen"] > 30:  # 30 frames = ~1 second
+                stale_ids.append(track_id)
+        
+        for track_id in stale_ids:
+            del self.tracking_cache[track_id]
+        
+        # Log tracking updates
         if self.frame_count % 30 == 0:
-            felix_count = sum(1 for cid in tracked_detections.class_id if cid == 0)
-            print(f"[TRACKING] Frame #{self.frame_count}: Tracking {len(tracked_detections)} objects ({felix_count} Felix)")
-
+            felix_tracks = sum(1 for info in self.tracking_cache.values() if info["is_felix"])
+            print(f"[TRACKING] Frame #{self.frame_count}: Tracking {len(self.tracking_cache)} objects ({felix_tracks} Felix)")
     
     def visualize_frame(self, frame):
-        """Draw detection results on the frame using tracked_detections from ByteTrack"""
+        """Draw detection results on the frame with compatibility for older Supervision versions"""
         if frame is None:
             return None
                 
-        # Check if tracked_detections exists and isn't empty
-        if not hasattr(self, 'tracked_detections') or len(self.tracked_detections) == 0:
+        # Check if tracking_cache is empty; if so, return the original frame
+        if not self.tracking_cache:
             if self.frame_count % 30 == 0:
                 print(f"[VISUALIZE] Frame #{self.frame_count}: No tracks to visualize")
             return frame.copy()
         
         try:
+            # Prepare lists to hold the converted data
+            boxes = []
+            confidences = []
+            class_ids = []
+            track_ids = []
+            
+            # Extract data from tracking_cache and convert format
+            for track_id, track_data in self.tracking_cache.items():
+                # Get box in [x, y, w, h] format
+                x, y, w, h = track_data["box"]
+                
+                # Convert to [x1, y1, x2, y2] format for Supervision
+                x1, y1, x2, y2 = x, y, x + w, y + h
+                boxes.append([x1, y1, x2, y2])
+                
+                # Add other data
+                confidences.append(track_data["confidence"])
+                # FIXED: The correct mapping - is_felix true → class_id 0
+                class_id = 0 if track_data["is_felix"] else 1  # 0 for Felix, 1 for Not Felix
+                class_ids.append(class_id)
+                track_ids.append(track_id)
+            
             # Log visualization details occasionally
             if self.frame_count % 30 == 0:
-                felix_count = sum(1 for cid in self.tracked_detections.class_id if cid == 0)
-                print(f"[VISUALIZE] Frame #{self.frame_count}: Drawing {len(self.tracked_detections)} boxes ({felix_count} Felix)")
+                felix_boxes = sum(1 for cls_id in class_ids if cls_id == 0)  # FIXED: class_id 0 = Felix
+                print(f"[VISUALIZE] Frame #{self.frame_count}: Drawing {len(boxes)} boxes ({felix_boxes} Felix)")
             
-            frame_copy = frame.copy()
+            # Create Supervision Detections object
+            detections = sv.Detections(
+                xyxy=np.array(boxes),
+                confidence=np.array(confidences),
+                class_id=np.array(class_ids),
+                tracker_id=np.array(track_ids)
+            )
             
-            # Method 1: Try using Supervision's built-in annotators
+            # Method 1: Draw on the frame directly without the 'labels' parameter
             try:
-                # Create box annotator with custom colors
-                box_annotator = sv.BoxAnnotator(
-                    thickness=2,
-                    color_lookup=lambda class_id: (0, 255, 0) if class_id == 0 else (0, 0, 255)  # Green for Felix, Red for others
-                )
+                frame_copy = frame.copy()
                 
-                # Create custom labels for each detection
-                labels = [
-                    f"{'Felix' if class_id == 0 else 'Not Felix'} #{tracker_id}: {conf:.2f}"
-                    for tracker_id, conf, class_id in zip(
-                        self.tracked_detections.tracker_id,
-                        self.tracked_detections.confidence,
-                        self.tracked_detections.class_id
-                    )
-                ]
-                
-                # Draw boxes and labels
-                frame_copy = box_annotator.annotate(
-                    scene=frame_copy,
-                    detections=self.tracked_detections,
-                    labels=labels
-                )
-                
-                return frame_copy
-                
-            except Exception as e:
-                print(f"[VISUALIZE] Error in Supervision annotation: {e}")
-                
-                # Fall back to custom drawing method if Supervision annotator fails
-                for i, (xyxy, tracker_id, conf, class_id) in enumerate(zip(
-                    self.tracked_detections.xyxy,
-                    self.tracked_detections.tracker_id,
-                    self.tracked_detections.confidence,
-                    self.tracked_detections.class_id
-                )):
-                    x1, y1, x2, y2 = map(int, xyxy)
+                # Create custom text for each detection
+                for i, (det_box, track_id, conf, class_id) in enumerate(zip(boxes, track_ids, confidences, class_ids)):
+                    x1, y1, x2, y2 = det_box
                     
-                    # Get label text
+                    # FIXED: Get label text - class_id 0 means Felix
                     person_type = "Felix" if class_id == 0 else "Not Felix"
-                    label_text = f"{person_type} #{tracker_id}: {conf:.2f}"
+                    label_text = f"{person_type} #{track_id}: {conf:.2f}"
                     
-                    # Draw box with correct color
+                    # FIXED: Draw box with correct color mapping
                     color = (0, 255, 0) if class_id == 0 else (0, 0, 255)  # Green for Felix, Red for others
-                    cv2.rectangle(frame_copy, (x1, y1), (x2, y2), color, 2)
+                    cv2.rectangle(frame_copy, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
                     
                     # Draw label text
                     cv2.putText(
                         frame_copy, 
                         label_text,
-                        (x1, max(0, y1 - 10)),
+                        (int(x1), int(y1 - 10) if y1 > 20 else int(y1 + 20)),
                         cv2.FONT_HERSHEY_SIMPLEX, 
                         0.5, 
                         color, 
@@ -223,6 +239,13 @@ class FelixTrackingClient:
                     )
                 
                 return frame_copy
+                
+            except Exception as e:
+                print(f"[VISUALIZE] Error in custom visualization: {e}")
+                traceback.print_exc()
+                
+                # Just return the original frame if everything fails
+                return frame.copy()
                 
         except Exception as e:
             print(f"[VISUALIZE] General error: {e}")

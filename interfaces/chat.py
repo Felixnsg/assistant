@@ -13,7 +13,7 @@ from services import utilities
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import config
 import json
-from IseeYou import IseeYou
+from IseeYou.IseeYou import FelixTrackingClient  # ✅ NEW
 
 
 def data_prep(prompt: str, convos: list = None) -> dict:
@@ -49,7 +49,8 @@ class ChatManager:
         self.nlp = nlp_instance
         self.utilities = utilities_instances
         self.config = config_instance
-        self.IseeYou = IseeYou_instance
+        # Change this line to store it as FelixTrackingClient
+        self.FelixTrackingClient = IseeYou_instance
         self.format = self.choose_format()
         self.prompt = ""
         self.ai_response = ""
@@ -108,21 +109,25 @@ class ChatManager:
         if self.prompt.lower() == "exit":
             return "exit"
         
+        # Call request to get AI response
         self.call_request()
         
+        # Start FelixTrackingClient in a non-blocking way
         import asyncio
-        try:
-            asyncio.create_task(self.IseeYou.run(video_source=0))
-        except RuntimeError:
-            # If not in an async environment, fallback to run manually
-            loop = asyncio.get_event_loop()
-            loop.create_task(self.IseeYou.run(video_source=0))
+        import threading
         
-
+        def run_tracking_client():
+            asyncio.run(self.FelixTrackingClient.run(video_source=0))
+        
+        # Run the tracking client in a separate thread to avoid blocking
+        tracking_thread = threading.Thread(target=run_tracking_client)
+        tracking_thread.daemon = True  # This ensures the thread will exit when the main program exits
+        tracking_thread.start()
+        
+        # Continue with the rest of your code
         if self.utilities.monitor_sypher(self.ai_response):
             print("Toggled")
             self.utilities.choose_service(self.ai_response)
-            
             
         # Display the response
         print(f"{self.config.MODEL_NAME}: {self.ai_response}")

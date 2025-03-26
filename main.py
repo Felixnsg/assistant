@@ -2,7 +2,7 @@ from core.memory import Memory
 from core.nlp import LlpCall
 from interfaces.chat import ChatManager
 from services.utilities import Utilities
-from IseeYou import IseeYou  # ✅ NEW
+from IseeYou.IseeYou import FelixTrackingClient  # ✅ NEW
 import config
 
 def run():
@@ -10,7 +10,9 @@ def run():
     nlp_instance = LlpCall()
     memory_instance = Memory(system_prompt=config.SYSTEM_PROMPT)
 
-    isee_instance = IseeYou()
+    isee_instance = FelixTrackingClient(
+        
+    )
 
     chat_instance = ChatManager(
         memory_instance=memory_instance,
