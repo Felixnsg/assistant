@@ -13,6 +13,8 @@ from services import utilities
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import config
 import json
+from IseeYou import IseeYou
+
 
 def data_prep(prompt: str, convos: list = None) -> dict:
     """Format data in an understandable format for the used LLM
@@ -42,11 +44,12 @@ def data_prep(prompt: str, convos: list = None) -> dict:
         return {}
 
 class ChatManager:
-    def __init__(self, memory_instance, nlp_instance, config_instance, utilities_instances):
+    def __init__(self, memory_instance, nlp_instance, config_instance, utilities_instances, IseeYou_instance):
         self.memory = memory_instance
         self.nlp = nlp_instance
         self.utilities = utilities_instances
         self.config = config_instance
+        self.IseeYou = IseeYou_instance
         self.format = self.choose_format()
         self.prompt = ""
         self.ai_response = ""
@@ -91,7 +94,7 @@ class ChatManager:
         try:
             check_online = requests.get("https://www.google.com")
             if check_online.status_code == 200:
-               streamaudio.say(self.ai_response)
+               speech.text_to_speech(self.ai_response)
             else:
                 speech.text_to_speech(self.ai_response)
         except requests.exceptions.RequestException:
@@ -105,16 +108,21 @@ class ChatManager:
         if self.prompt.lower() == "exit":
             return "exit"
         
-
-        result = self.call_request()
+        self.call_request()
+        
+        import asyncio
+        try:
+            asyncio.create_task(self.IseeYou.run(video_source=0))
+        except RuntimeError:
+            # If not in an async environment, fallback to run manually
+            loop = asyncio.get_event_loop()
+            loop.create_task(self.IseeYou.run(video_source=0))
+        
 
         if self.utilities.monitor_sypher(self.ai_response):
             print("Toggled")
             self.utilities.choose_service(self.ai_response)
             
-        
-        if result == "exit":
-            return "exit"
             
         # Display the response
         print(f"{self.config.MODEL_NAME}: {self.ai_response}")

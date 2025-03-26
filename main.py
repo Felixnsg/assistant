@@ -1,24 +1,25 @@
-##main.py
 from core.memory import Memory
 from core.nlp import LlpCall
 from interfaces.chat import ChatManager
 from services.utilities import Utilities
+from IseeYou import IseeYou  # ✅ NEW
 import config
 
 def run():
-    """Main entry of our code, initializes all necessary components.
-    """
+    """Main entry of our code, initializes all necessary components."""
     nlp_instance = LlpCall()
     memory_instance = Memory(system_prompt=config.SYSTEM_PROMPT)
-        
+
+    isee_instance = IseeYou()
+
     chat_instance = ChatManager(
         memory_instance=memory_instance,
         nlp_instance=nlp_instance,
         config_instance=config,
-        utilities_instances=None  # Will set this later
+        utilities_instances=None,
+        IseeYou_instance=isee_instance  
     )
-    
-    # Now create utilities with the chat instance
+
     utilities_instance = Utilities(
         Chat_instance=chat_instance,
         Config_instance=config,
@@ -26,7 +27,7 @@ def run():
     )
     
     chat_instance.utilities = utilities_instance
-    
+
     user_input = False
     while True:
         if not user_input:
