@@ -1,15 +1,11 @@
-import asyncio
-import websockets
-import torch
-import cv2
-import numpy as np
-import json
-from PIL import Image
-import io
-from person_detector import PersonDetector
-from felix_recognizer import FelixRecognizer
-import traceback
-import time
+# File: GPUserver.py
+# --- REFACTOR: Added file description ---
+"""
+WebSocket server for GPU-accelerated person detection and Felix recognition.
+
+Receives video frames from a client (IseeYou.py), processes them using
+PersonDetector (YOLOv8) and FelixRecognizer, and sends results back.
+"""
 
 import asyncio
 import websockets
@@ -17,202 +13,321 @@ import torch
 import cv2
 import numpy as np
 import json
-from PIL import Image
-import io
+from PIL import Image # Not strictly needed if processing directly with cv2/numpy
+import io # Not used
 import traceback
 import time
 import sys
 import os
+import logging # --- REFACTOR: Added logging ---
 
-# Check if running in interactive mode
-is_interactive = hasattr(sys, 'ps1')
+# --- REFACTOR: Configure logging ---
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(module)s] %(message)s')
 
-print("=== Felix Detection Server ===")
-print(f"Python version: {sys.version}")
-print(f"Current directory: {os.getcwd()}")
-print(f"Running in interactive mode: {is_interactive}")
+# Check if running in interactive mode (less critical now with logging)
+# is_interactive = hasattr(sys, 'ps1')
+# logging.info(f"Running in interactive mode: {is_interactive}")
 
+# --- REFACTOR: Improved module import and path handling ---
 try:
-    # Try to import the detector and recognizer modules
-    print("Importing modules...")
+    # Assuming person_detector.py and felix_recognizer.py are in the same dir or Python path
     from person_detector import PersonDetector
     from felix_recognizer import FelixRecognizer
-    print("Modules imported successfully")
-except Exception as e:
-    print(f"ERROR importing modules: {e}")
-    traceback.print_exc()
-    sys.exit(1)
+    logging.info("Modules PersonDetector and FelixRecognizer imported successfully.")
+except ImportError as e:
+    logging.error(f"ERROR importing detector/recognizer modules: {e}", exc_info=True)
+    # Try adding parent directory if modules are in ../core or similar structure
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+    try:
+        # Example: Adjust path if they are in core
+        # from core.person_detector import PersonDetector
+        # from core.felix_recognizer import FelixRecognizer
+        from person_detector import PersonDetector # Retry with potentially updated path
+        from felix_recognizer import FelixRecognizer
+        logging.info("Modules re-imported successfully after path adjustment.")
+    except ImportError as e2:
+         logging.error(f"ERROR importing detector/recognizer modules even after path adjustment: {e2}", exc_info=True)
+         sys.exit(1) # Exit if critical modules can't be loaded
+
+# --- REFACTOR: Import config ---
+try:
+    # Assuming config.py is in the parent directory relative to this file's location
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+    import config
+except ImportError as e:
+     logging.error(f"Error importing config module: {e}. Ensure config.py exists.", exc_info=True)
+     # Use defaults if config import fails, or exit
+     class config: # Dummy class with defaults
+        FELIX_MODEL_PATH = "/root/models/felix_classifier.pth" # Example default
+        YOLO_MODEL_PATH = None # Use default yolo
+        PERSON_DETECTION_THRESHOLD = 0.6
+        FELIX_RECOGNIZER_THRESHOLD = 0.6
+        # Add other needed defaults
+     logging.warning("Using default configuration values as config.py could not be imported.")
+     # Or sys.exit(1)
+
 
 class FelixDetectionServer:
-    """Handles GPU-accelerated detection and recognition"""
-    
-    def __init__(self, felix_model, yolo_model=None):
-        print("\nInitializing FelixDetectionServer...")
-        
+    """
+    Handles WebSocket connections, receives frames, performs detection/recognition,
+    and sends results back to the client.
+
+    Attributes:
+        detector (PersonDetector): Instance for detecting persons.
+        recognizer (FelixRecognizer): Instance for recognizing Felix.
+        frame_count (int): Counter for processed frames in the current session.
+        total_detections (int): Counter for total person detections.
+        felix_detections (int): Counter for total Felix detections.
+    """
+
+    # --- REFACTOR: Improved docstring, use config for model paths/thresholds ---
+    def __init__(self,
+                 felix_model_path: str = config.FELIX_MODEL_PATH,
+                 yolo_model_path: str = config.YOLO_MODEL_PATH,
+                 person_threshold: float = config.PERSON_DETECTION_THRESHOLD,
+                 felix_threshold: float = config.FELIX_RECOGNIZER_THRESHOLD):
+        """
+        Initializes the FelixDetectionServer.
+
+        Args:
+            felix_model_path (str): Path to the Felix recognizer model weights.
+            yolo_model_path (str): Path to the YOLO person detector model (or None for default).
+            person_threshold (float): Confidence threshold for person detection.
+            felix_threshold (float): Confidence threshold for Felix recognition.
+
+        Raises:
+            RuntimeError: If PersonDetector or FelixRecognizer fails to initialize.
+        """
+        logging.info("Initializing FelixDetectionServer...")
+
         try:
             # Initialize YOLOv8 person detector
-            print("Creating person detector...")
-            self.detector = PersonDetector(model_path=yolo_model)
-            print("Person detector created")
-            
+            logging.info("Creating PersonDetector...")
+            self.detector = PersonDetector(model_path=yolo_model_path, confidence_threshold=person_threshold)
+            logging.info("PersonDetector created.")
+
             # Initialize Felix recognizer
-            print("Creating Felix recognizer...")
-            self.recognizer = FelixRecognizer(felix_model)
-            print("Felix recognizer created")
-            
+            logging.info("Creating FelixRecognizer...")
+            self.recognizer = FelixRecognizer(model_path=felix_model_path, confidence_threshold=felix_threshold)
+            logging.info("FelixRecognizer created.")
+
             # Stats tracking
             self.frame_count = 0
             self.total_detections = 0
             self.felix_detections = 0
-            
-            # Print GPU info for debugging
+
+            # Print GPU info
             if torch.cuda.is_available():
-                print(f"Using GPU: {torch.cuda.get_device_name(0)}")
-                print(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
+                logging.info(f"Using GPU: {torch.cuda.get_device_name(0)}")
+                # logging.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB") # Can be verbose
             else:
-                print("CUDA not available. Using CPU.")
-                
-            print("FelixDetectionServer initialized successfully")
+                logging.warning("CUDA not available. Using CPU (performance may be significantly reduced).")
+
+            logging.info("FelixDetectionServer initialized successfully.")
+        except (RuntimeError, FileNotFoundError) as e:
+            logging.error(f"ERROR initializing server component: {e}", exc_info=True)
+            raise # Re-raise critical initialization errors
         except Exception as e:
-            print(f"ERROR initializing server: {e}")
-            traceback.print_exc()
-            raise
-    
-    async def process_frame(self, frame):
-        """Process a frame and return detection results"""
+            logging.error(f"Unexpected ERROR initializing server: {e}", exc_info=True)
+            raise # Re-raise critical initialization errors
+
+    # --- REFACTOR: Improved docstring, logging, error handling ---
+    async def process_frame(self, frame: np.ndarray) -> list[dict]:
+        """
+        Processes a single video frame to detect persons and recognize Felix.
+
+        Args:
+            frame (np.ndarray): The input video frame (OpenCV BGR format).
+
+        Returns:
+            list[dict]: A list of dictionaries, each representing a detected person
+                        with their bounding box, Felix status, and confidence.
+                        Example: [{"box": [x, y, w, h], "is_felix": bool, "confidence": float}]
+                        Returns empty list on error.
+        """
         self.frame_count += 1
-        print(f"\n----- Processing Frame #{self.frame_count} -----")
-        
+        start_time = time.monotonic()
+        # logging.info(f"----- Processing Frame #{self.frame_count} -----") # Can be verbose
+
+        if not isinstance(frame, np.ndarray):
+             logging.error("process_frame: Invalid input - frame is not a NumPy array.")
+             return []
+
+        results = []
         try:
-            # Run person detection with YOLOv8
-            print("Running person detection...")
+            # 1. Run person detection
+            # logging.debug("Running person detection...") # Use debug level
             person_boxes = self.detector.detect(frame)
-            print(f"Detection completed - Found {len(person_boxes)} people")
-            
-            results = []
-            for i, box in enumerate(person_boxes):
-                try:
-                    # Get box dimensions
-                    x, y, w, h = box[:4]
-                    person_box = [int(x), int(y), int(w), int(h)]
-                    
-                    # Run recognition
-                    print(f"Running recognition for person #{i+1}...")
-                    is_felix, confidence = self.recognizer.is_felix(frame, person_box)
-                    
-                    # Log result
-                    result_type = "FELIX" if is_felix else "NOT FELIX"
-                    print(f"Person #{i+1} is {result_type} (confidence: {confidence:.3f})")
-                    
-                    if is_felix:
-                        self.felix_detections += 1
-                    
-                    # Add to results
-                    results.append({
-                        "box": person_box,
-                        "is_felix": bool(is_felix),
-                        "confidence": float(confidence)
-                    })
-                except Exception as e:
-                    print(f"Error processing detection #{i+1}: {e}")
-                    traceback.print_exc()
-            
-            # Update counter
+            detection_time = time.monotonic()
+            # logging.debug(f"Detection found {len(person_boxes)} people in {(detection_time - start_time)*1000:.1f} ms")
+
+            # 2. Run Felix recognition for each detected person
+            recognition_tasks = []
+            felix_found_in_frame = False
+            for i, box_with_conf in enumerate(person_boxes):
+                 person_box = box_with_conf[:4] # Get [x, y, w, h]
+                 # logging.debug(f"Running recognition for person #{i+1} @ {person_box}...")
+                 # --- REFACTOR: Run recognition (consider async if becomes bottleneck, but likely sequential is fine) ---
+                 try:
+                      is_felix, confidence = self.recognizer.is_felix(frame, person_box)
+                      result_type = "FELIX" if is_felix else "NOT FELIX"
+                      # logging.debug(f"Person #{i+1} is {result_type} (confidence: {confidence:.3f})")
+                      if is_felix:
+                          felix_found_in_frame = True
+
+                      results.append({
+                          "box": [int(coord) for coord in person_box], # Ensure integer coords in result
+                          "is_felix": bool(is_felix),
+                          "confidence": float(confidence) # Ensure float
+                      })
+                 except Exception as recog_e:
+                      logging.error(f"Error during Felix recognition for box {person_box}: {recog_e}", exc_info=True)
+                      # Optionally add a placeholder result indicating error for this box
+                      # results.append({"box": person_box, "is_felix": False, "confidence": 0.0, "error": str(recog_e)})
+
+
+            # Update counters
             self.total_detections += len(person_boxes)
-            
+            if felix_found_in_frame:
+                 self.felix_detections += 1 # Count frames where Felix is detected at least once
+
+            processing_time = time.monotonic() - start_time
+            # Log only if detections found or processing is slow
+            if results or processing_time > 0.5:
+                 logging.info(f"Frame #{self.frame_count}: Found {len(results)} people ({sum(1 for r in results if r['is_felix'])} Felix). Time: {processing_time*1000:.1f} ms")
+
             return results
+
         except Exception as e:
-            print(f"Error in process_frame: {e}")
-            traceback.print_exc()
-            return []
-    
-    async def handle_client(self, websocket):
-        """Handle a client connection"""
+            logging.error(f"Error in process_frame: {e}", exc_info=True)
+            return [] # Return empty list on error
+
+    # --- REFACTOR: Improved docstring, logging, error handling ---
+    async def handle_client(self, websocket: websockets.WebSocketServerProtocol, path: str):
+        """
+        Handles a single client WebSocket connection.
+
+        Receives frames, processes them, and sends back results.
+
+        Args:
+            websocket (websockets.WebSocketServerProtocol): The WebSocket connection object.
+            path (str): The connection path (not used here).
+        """
+        client_addr = websocket.remote_address
+        logging.info(f"+++ Client connected: {client_addr} +++")
         try:
-            print("\n+++ Client connected! +++\n")
             async for message in websocket:
+                frame_start_time = time.monotonic()
                 try:
-                    # Decode the frame from binary data
+                    # Check message type (expecting bytes)
+                    if not isinstance(message, bytes):
+                         logging.warning(f"Received non-bytes message from {client_addr}. Skipping.")
+                         continue
+
+                    # Decode the frame from binary data (assuming JPEG format from client)
                     frame_bytes = np.frombuffer(message, dtype=np.uint8)
                     frame = cv2.imdecode(frame_bytes, cv2.IMREAD_COLOR)
-                    
+
                     if frame is None:
-                        print("Error: Could not decode frame")
-                        await websocket.send(json.dumps([]))
-                        continue
-                    
+                        logging.error(f"Could not decode frame received from {client_addr}.")
+                        # Optionally send error back to client
+                        # await websocket.send(json.dumps({"error": "Failed to decode frame"}))
+                        continue # Skip this message
+
                     # Process the frame
                     results = await self.process_frame(frame)
-                    
-                    # Send back the results
-                    await websocket.send(json.dumps(results))
-                    print(f"Sent results for frame #{self.frame_count} with {len(results)} detections")
-                    
-                except Exception as e:
-                    print(f"Error processing message: {e}")
-                    traceback.print_exc()
-                    await websocket.send(json.dumps([]))
-        except Exception as e:
-            print(f"Error handling client: {e}")
-            traceback.print_exc()
-        finally:
-            print("\n--- Client disconnected ---\n")
 
+                    # Send back the results as JSON
+                    response_payload = json.dumps(results)
+                    await websocket.send(response_payload)
+
+                    # Log transfer/processing time less frequently
+                    # if self.frame_count % 30 == 0:
+                    #      logging.info(f"Sent results for frame #{self.frame_count} to {client_addr} ({len(results)} detections)")
+
+                # --- REFACTOR: Catch specific websocket errors ---
+                except websockets.exceptions.ConnectionClosed:
+                     logging.warning(f"Connection closed unexpectedly by client {client_addr}.")
+                     break # Exit loop on connection closed
+                except json.JSONDecodeError as e:
+                     logging.error(f"Error encoding results to JSON: {e}", exc_info=True)
+                     # Don't send potentially broken data
+                except cv2.error as e:
+                     logging.error(f"OpenCV error processing frame from {client_addr}: {e}", exc_info=True)
+                except Exception as e:
+                    logging.error(f"Error processing message from {client_addr}: {e}", exc_info=True)
+                    # Optionally send generic error back to client if connection is open
+                    try:
+                        await websocket.send(json.dumps({"error": "Internal server error during processing"}))
+                    except websockets.exceptions.ConnectionClosed:
+                         pass # Ignore if connection closed while trying to send error
+                    except Exception as send_e:
+                         logging.error(f"Error sending error message to client {client_addr}: {send_e}")
+
+        except websockets.exceptions.ConnectionClosedOK:
+            logging.info(f"Client {client_addr} disconnected normally.")
+        except websockets.exceptions.ConnectionClosedError as e:
+             logging.warning(f"Client {client_addr} connection closed with error: {e}")
+        except Exception as e:
+            logging.error(f"Error handling client {client_addr}: {e}", exc_info=True)
+        finally:
+            logging.info(f"--- Client disconnected: {client_addr} ---")
+
+# --- REFACTOR: Improved main function with error handling ---
 async def main():
-    print("\nStarting main function...")
-    
-    # Check if model file exists
-    model_path = "/root/models/felix_classifier.pth"
-    if not os.path.exists(model_path):
-        print(f"ERROR: Model file not found at {model_path}")
-        alternative_paths = [
-            os.path.join(os.getcwd(), "models/felix_classifier.pth"),
-            os.path.join(os.getcwd(), "felix_classifier.pth")
-        ]
-        print(f"Checking alternative paths: {alternative_paths}")
-        
-        for alt_path in alternative_paths:
-            if os.path.exists(alt_path):
-                print(f"Found model at alternative path: {alt_path}")
-                model_path = alt_path
-                break
-        else:
-            print("ERROR: Could not find model file. Please check the path.")
-            return
-    
+    """Sets up and runs the FelixDetectionServer."""
+    logging.info("Starting main function...")
+
+    # --- REFACTOR: Configuration loading handled by importing config ---
+    # Model paths and thresholds are now read from config object
+
     try:
-        # Create the server
-        print("Creating server...")
+        # Create the server instance
+        logging.info("Creating FelixDetectionServer instance...")
         server = FelixDetectionServer(
-            felix_model=model_path,
-            yolo_model=None  # Use pretrained YOLOv8x model
+            felix_model_path=config.FELIX_MODEL_PATH,
+            yolo_model_path=config.YOLO_MODEL_PATH,
+            person_threshold=config.PERSON_DETECTION_THRESHOLD,
+            felix_threshold=config.FELIX_RECOGNIZER_THRESHOLD
         )
-        print("Server created successfully")
-        
-        # Start the websocket server
-        print("Starting websocket server...")
+        logging.info("Server instance created successfully.")
+
+        # Configure WebSocket server parameters
+        host = "0.0.0.0"
+        port = 8765
+        # --- REFACTOR: Use configuration for limits if needed ---
+        max_size = 10 * 1024 * 1024  # 10MB message size limit
+        ping_interval = 20
+        ping_timeout = 20
+
+        logging.info(f"Starting WebSocket server on ws://{host}:{port}")
         async with websockets.serve(
-            server.handle_client, 
-            "0.0.0.0", 
-            8765,
-            ping_interval=20,
-            ping_timeout=20,
-            max_size=10*1024*1024  # 10MB message size limit
+            server.handle_client,
+            host,
+            port,
+            ping_interval=ping_interval,
+            ping_timeout=ping_timeout,
+            max_size=max_size
         ):
-            print("\n=== Server running on ws://0.0.0.0:8765 ===")
-            print("=== Waiting for client connections ===\n")
-            await asyncio.Future()  # Run forever
-            
+            logging.info(f"=== Server running ===")
+            logging.info(f"=== Max message size: {max_size / (1024*1024):.1f} MB ===")
+            logging.info(f"=== Waiting for client connections ===")
+            await asyncio.Future()  # Run forever until interrupted
+
+    except (RuntimeError, FileNotFoundError) as e:
+         logging.error(f"FATAL: Failed to initialize server components: {e}", exc_info=True)
+    except OSError as e:
+         # Catch common network errors like "address already in use"
+         logging.error(f"FATAL: Could not start WebSocket server (OS Error): {e}", exc_info=True)
     except Exception as e:
-        print(f"ERROR in main: {e}")
-        traceback.print_exc()
+        logging.error(f"FATAL ERROR in main server setup: {e}", exc_info=True)
 
 if __name__ == "__main__":
     try:
-        print("Starting asyncio.run(main())...")
+        logging.info("Starting Felix Detection Server...")
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nServer stopped by user (KeyboardInterrupt)")
+        logging.info("\nServer stopped by user (KeyboardInterrupt).")
     except Exception as e:
-        print(f"ERROR: Unhandled exception: {e}")
-        traceback.print_exc()
+        # Catch any unexpected errors during asyncio.run or shutdown
+        logging.critical(f"FATAL ERROR: Unhandled exception during server execution: {e}", exc_info=True)
