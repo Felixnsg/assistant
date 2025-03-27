@@ -224,8 +224,8 @@ class ChatManager:
             # --- REFACTOR: Choose format during initialization ---
             self.format = self._choose_format()
         except Exception as e:
-             logging.error(f"Error during initial format selection: {e}. Defaulting to 'text'.")
-             self.format = "text"
+            logging.error(f"Error during initial format selection: {e}. Defaulting to 'text'.")
+            self.format = "text"
 
         logging.info(f"ChatManager initialized with format: {self.format}")
 
@@ -434,13 +434,13 @@ class ChatManager:
            "Sorry, I received an unexpected response format" in self.current_ai_response or \
            "I cannot provide a response due to safety settings" in self.current_ai_response:
              # Print the error message from LLM call
-             print(f"{self.config.MODEL_NAME}: {self.current_ai_response}")
+            print(f"{self.config.MODEL_NAME}: {self.current_ai_response}")
              # Speak the error if in audio mode
-             if self.format == "audio":
-                  await self._speak_response()
+            if self.format == "audio":
+                await self._speak_response()
              # Don't save this turn? Or save the error response? Save for now.
-             self._save_current_turn()
-             return self.current_ai_response # Return the error response
+            self._save_current_turn()
+            return self.current_ai_response # Return the error response
 
         # 2. Display the valid AI response (before potential service call modifies context)
         print(f"{self.config.MODEL_NAME}: {self.current_ai_response}")
@@ -450,9 +450,9 @@ class ChatManager:
 
         # 4. Speak the initial AI response *before* service execution (gives user feedback faster)
         if self.format == "audio":
-             await self._speak_response()
+            await self._speak_response()
              # Wait for speech to likely finish before potential noisy service actions
-             await wait_until_safe_to_listen()
+            await wait_until_safe_to_listen()
 
         # 5. Check for and handle service calls based on the AI response
         await self._handle_service_call(self.current_ai_response)
@@ -465,8 +465,8 @@ class ChatManager:
         """(Internal) Handles audio input using the configured STT method."""
         # --- REFACTOR: Renamed, made async ---
         if not SPEECH_AVAILABLE:
-             logging.error("Cannot get audio input: Speech interface not available.")
-             return None # Or raise error?
+            logging.error("Cannot get audio input: Speech interface not available.")
+            return None # Or raise error?
 
         # Wait for any previous TTS to finish before listening
         logging.info("Waiting for any ongoing TTS to finish before listening...")

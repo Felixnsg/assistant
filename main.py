@@ -16,6 +16,13 @@ import os
 import traceback
 import logging # --- REFACTOR: Added logging ---
 from typing import Optional
+try:
+    print("Attempting to import speech module...")
+    from interfaces import speech
+    print("Speech module imported successfully!")
+    print(f"Available in: {speech.__file__}")
+except ImportError as e:
+    print(f"Speech module import failed: {e}")
 
 # --- REFACTOR: Standardize imports and path handling ---
 # Ensure root project directory is in path

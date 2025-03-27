@@ -6,7 +6,9 @@ Supports multiple TTS engines and includes options for local and cloud-based STT
 Handles text cleaning before synthesis and includes error handling for robustness.
 """
 
-
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from interfaces import StreamTTSPlayer
 import torch
 from typing import Optional
@@ -18,7 +20,7 @@ from playsound import playsound
 import speech_recognition as sr # Renamed import for clarity
 import edge_tts
 import asyncio
-from elevenlabs import stream, ApiError as ElevenLabsApiError
+from elevenlabs import stream
 from elevenlabs.client import ElevenLabs
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
@@ -30,8 +32,6 @@ import tempfile
 import queue # Used for continuous whisper implementation
 import threading # Used for continuous whisper implementation
 import requests # Used for Whisper API STT
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 try:
     import config
 except ImportError as e:
@@ -234,9 +234,6 @@ def elevenlabs_tts_text_to_speech(ai_response: str) -> bool:
         stream(audio_stream) # This blocks until streaming is done
         print("ElevenLabs TTS Finished Streaming.")
         return True
-    except ElevenLabsApiError as e:
-        print(f"ElevenLabs API Error: {e}. Check API key, usage limits, or request parameters.")
-        return False
     except requests.exceptions.RequestException as e:
          print(f"Network error during ElevenLabs request: {e}")
          return False

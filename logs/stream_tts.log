@@ -1,0 +1,4 @@
+2025-03-27 14:07:16,390 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
+2025-03-27 14:07:16,396 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
+2025-03-27 14:13:17,749 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
+2025-03-27 14:13:17,749 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en

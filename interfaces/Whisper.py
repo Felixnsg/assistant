@@ -86,13 +86,6 @@ def transcription():
             "Result": "Success",
             "Text": transcription
         }), 200
-
-    except whisper.errors.WhisperError as e: # Catch specific Whisper errors if available
-        logging.error(f"Whisper transcription error for file '{audio_filename}': {e}", exc_info=True)
-        return jsonify({
-            "Result": "Failure",
-            "Text": f"Transcription error: {e}"
-        }), 500 # Internal Server Error
     except FileNotFoundError:
          logging.error(f"Error: Temporary file '{audio_filename}' not found during transcription.", exc_info=True)
          return jsonify({"Result": "Failure", "Text": "Temporary file error."}), 500
