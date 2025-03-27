@@ -17,7 +17,6 @@ import traceback
 import logging # --- REFACTOR: Added logging ---
 import asyncio # --- REFACTOR: Added asyncio ---
 from typing import Optional, Dict, Any, Union, List # --- REFACTOR: Added typing ---
-from interfaces import StreamTTSPlayer
 
 # --- REFACTOR: Ensure project root is in path for sibling imports ---
 # Assuming 'core', 'interfaces', 'services' are siblings to the directory containing chat.py
@@ -195,8 +194,7 @@ class ChatManager:
                 nlp_instance: nlp.LlpCall,
                 config_instance: Any,
                 utilities_instance: Optional[utilities.Utilities], # Can be None if Utilities failed import
-                isee_client_instance: IseeYou.FelixTrackingClient,
-                StreamTTSPlayer_instance = StreamTTSPlayer.StreamTTSPlayer):
+                isee_client_instance: IseeYou.FelixTrackingClient):
         """
         Initializes the ChatManager.
 
@@ -212,7 +210,6 @@ class ChatManager:
         self.nlp = nlp_instance
         self.utilities = utilities_instance
         self.config = config_instance
-        self.StreamTTSPlayer_instance = StreamTTSPlayer_instance
         # --- REFACTOR: Renamed FelixTrackingClient attribute ---
         self.isee_client = isee_client_instance # Store the client instance
         # --- REFACTOR: Initialize attributes ---
