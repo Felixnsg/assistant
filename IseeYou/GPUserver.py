@@ -203,7 +203,7 @@ class FelixDetectionServer:
             return [] # Return empty list on error
 
     # --- REFACTOR: Improved docstring, logging, error handling ---
-    async def handle_client(self, websocket, path: None):
+    async def handle_client(self, websocket):
         """
         Handles a single client WebSocket connection.
 
