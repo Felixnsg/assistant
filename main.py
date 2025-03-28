@@ -16,6 +16,7 @@ import os
 import traceback
 import logging # --- REFACTOR: Added logging ---
 from typing import Optional
+import config
 
 def setup_logging(log_dir="logs", default_level=logging.INFO):
     """Configures file-based logging for different modules."""

@@ -1,0 +1,381 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Prevent scrollbars from minor overflows */
+    transition: background-color 0.5s ease;
+    -webkit-font-smoothing: antialiased; /* Improve font rendering */
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main Circle */
+.circle {
+    width: 250px; /* Adjust size as needed */
+    height: 250px;
+    border-radius: 50%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.5s ease, transform 0.3s ease-out, box-shadow 0.5s ease;
+    /* Base state for pulsing */
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Pulsing Animation for AI Speaking */
+.circle.pulsing {
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.08);
+        opacity: 0.85;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Status Indicator (Mic / Oscillating Circles) */
+#status-indicator {
+    position: absolute;
+    /* Position below the main circle, adjust distance as needed */
+    bottom: -80px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.indicator {
+    position: absolute; /* Overlay indicators */
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Initially not interactive */
+    display: flex; /* Use flex for centering content */
+    justify-content: center;
+    align-items: center;
+}
+
+.indicator.active {
+    opacity: 1;
+    pointer-events: auto; /* Make active indicator visible/interactive */
+}
+
+/* Mic Icon */
+#mic-icon svg {
+    width: 40px;
+    height: 40px;
+    transition: fill 0.5s ease;
+}
+
+/* Oscillating Circles Container */
+#oscillating-circles {
+    /* Inherits display:flex from .indicator */
+    justify-content: space-around; /* Space out the circles */
+    width: 80%; /* Slightly smaller than the container */
+}
+
+/* Individual Oscillating Circle */
+.osc-circle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transform-origin: bottom;
+    background-color: #888; /* Default color, theme will override */
+    /* Animation applied when parent (#oscillating-circles) is active */
+}
+
+/* Apply animation only when #oscillating-circles has the .active class */
+#oscillating-circles.active .osc-circle {
+    animation: oscillate 1.2s infinite ease-in-out;
+}
+
+/* Stagger animation delays */
+#oscillating-circles.active .osc-circle-1 { animation-delay: 0s; }
+#oscillating-circles.active .osc-circle-2 { animation-delay: 0.2s; }
+#oscillating-circles.active .osc-circle-3 { animation-delay: 0.4s; }
+
+@keyframes oscillate {
+    0%, 100% {
+        transform: scaleY(0.6);
+    }
+    50% {
+        transform: scaleY(1.2);
+    }
+}
+/* Optional Volume based oscillation (more complex JS needed) */
+/* @keyframes oscillate-low { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(0.7); } } */
+/* @keyframes oscillate-med { 0%, 100% { transform: scaleY(0.6); } 50% { transform: scaleY(1.0); } } */
+/* @keyframes oscillate-high { 0%, 100% { transform: scaleY(0.8); } 50% { transform: scaleY(1.3); } } */
+
+
+/* Transcription Area */
+#transcription-area {
+    margin-top: 30px; /* Space above transcription */
+    padding: 15px 20px; /* More padding L/R */
+    border-radius: 8px;
+    max-width: 450px; /* Slightly wider */
+    width: 85%;
+    min-height: 50px; /* Minimum height when visible */
+    text-align: left; /* Align text left */
+    font-size: 0.95em; /* Slightly larger text */
+    line-height: 1.4;
+    transition: opacity 0.4s ease, background-color 0.5s ease, color 0.5s ease,
+                max-height 0.4s ease, padding 0.4s ease, margin 0.4s ease; /* Smooth transitions */
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1); /* Default semi-transparent */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden; /* Hide content when collapsed */
+    max-height: 300px; /* Set a max-height for when it's visible */
+}
+
+#transcription-area.hidden {
+    opacity: 0;
+    pointer-events: none;
+    min-height: 0;
+    max-height: 0; /* Collapse height */
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    border: none;
+    box-shadow: none;
+}
+
+#user-text,
+#ai-text {
+    margin-bottom: 8px; /* Space between lines */
+    word-wrap: break-word; /* Wrap long words */
+}
+
+#user-text::before {
+    content: "You: ";
+    font-weight: bold;
+    display: inline-block; /* Ensure consistent spacing */
+    margin-right: 4px;
+}
+
+#ai-text::before {
+    content: "Cypher: ";
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+/* Controls Area */
+.controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    z-index: 100; /* Ensure controls are on top */
+}
+
+/* Toggle Text Button */
+#toggle-text-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white; /* Theme will override */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+#toggle-text-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+#toggle-text-btn:active {
+    transform: scale(0.95);
+}
+
+
+/* Theme Buttons Container */
+.theme-buttons {
+    display: flex;
+    gap: 8px;
+    background-color: rgba(0, 0, 0, 0.1); /* Slight background */
+    padding: 5px 8px;
+    border-radius: 15px;
+}
+
+/* Individual Theme Button */
+.theme-btn {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5); /* Theme will override */
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.theme-btn:hover {
+    border-color: rgba(255, 255, 255, 0.9); /* Theme will override */
+    transform: scale(1.15);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.theme-btn:active {
+     transform: scale(1.0);
+     box-shadow: none;
+}
+
+/* --- THEMES --- */
+
+/* Default: Dark Theme (based on image) */
+.theme-dark {
+    background-color: #222;
+}
+.theme-dark .circle {
+    background: radial-gradient(ellipse at top left, rgba(100, 100, 100, 0.8) 0%, rgba(0, 0, 0, 1) 70%),
+                linear-gradient(145deg, rgba(50, 50, 50, 1) 0%, rgba(10, 10, 10, 1) 100%);
+    background-color: #1a1a1a; /* Fallback */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.theme-dark #mic-icon svg { fill: #ccc; }
+.theme-dark .osc-circle { background-color: #aaa; }
+.theme-dark #transcription-area {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #eee;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.theme-dark #toggle-text-btn { background-color: rgba(255, 255, 255, 0.15); color: #eee;}
+.theme-dark #toggle-text-btn:hover { background-color: rgba(255, 255, 255, 0.3); }
+.theme-dark .theme-btn { border-color: rgba(255, 255, 255, 0.4); }
+.theme-dark .theme-btn:hover { border-color: rgba(255, 255, 255, 0.8); }
+.theme-dark .theme-buttons { background-color: rgba(255, 255, 255, 0.05); }
+
+
+/* Light Theme */
+.theme-light {
+    background-color: #f0f0f0;
+}
+.theme-light .circle {
+    background: radial-gradient(ellipse at top left, rgba(255, 255, 255, 0.9) 0%, rgba(200, 200, 200, 1) 70%),
+                linear-gradient(145deg, rgba(235, 235, 235, 1) 0%, rgba(190, 190, 190, 1) 100%);
+    background-color: #e0e0e0; /* Fallback */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+.theme-light #mic-icon svg { fill: #555; }
+.theme-light .osc-circle { background-color: #777; }
+.theme-light #transcription-area {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #333;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+     box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+.theme-light #toggle-text-btn { background-color: rgba(0, 0, 0, 0.08); color: #333; }
+.theme-light #toggle-text-btn:hover { background-color: rgba(0, 0, 0, 0.15); }
+.theme-light .theme-btn { border-color: rgba(0, 0, 0, 0.3); }
+.theme-light .theme-btn:hover { border-color: rgba(0, 0, 0, 0.6); }
+.theme-light .theme-buttons { background-color: rgba(0, 0, 0, 0.05); }
+
+
+/* Light Blue Theme */
+.theme-blue {
+    background-color: #e0f2f7; /* Light cyan background */
+}
+.theme-blue .circle {
+    background: radial-gradient(ellipse at top left, rgba(179, 229, 252, 1) 0%, rgba(79, 195, 247, 1) 70%), /* Light blue to blue */
+                linear-gradient(145deg, rgba(129, 212, 250, 1) 0%, rgba(41, 182, 246, 1) 100%);
+    background-color: #81d4fa; /* Fallback light blue */
+    box-shadow: 0 10px 30px rgba(41, 182, 246, 0.3);
+}
+.theme-blue #mic-icon svg { fill: #0277bd; } /* Darker blue */
+.theme-blue .osc-circle { background-color: #29b6f6; } /* Bright blue */
+.theme-blue #transcription-area {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #01579b; /* Dark blue text */
+    border: 1px solid rgba(79, 195, 247, 0.3);
+}
+.theme-blue #toggle-text-btn { background-color: rgba(0, 100, 150, 0.15); color: #01579b; }
+.theme-blue #toggle-text-btn:hover { background-color: rgba(0, 100, 150, 0.3); }
+.theme-blue .theme-btn { border-color: rgba(0, 100, 150, 0.3); }
+.theme-blue .theme-btn:hover { border-color: rgba(0, 100, 150, 0.6); }
+.theme-blue .theme-buttons { background-color: rgba(0, 100, 150, 0.08); }
+
+
+/* Light Purple Theme */
+.theme-purple {
+    background-color: #f3e5f5; /* Light purple background */
+}
+.theme-purple .circle {
+    background: radial-gradient(ellipse at top left, rgba(225, 190, 231, 1) 0%, rgba(186, 104, 200, 1) 70%), /* Light purple to purple */
+                linear-gradient(145deg, rgba(206, 147, 216, 1) 0%, rgba(171, 71, 188, 1) 100%);
+    background-color: #ce93d8; /* Fallback light purple */
+    box-shadow: 0 10px 30px rgba(171, 71, 188, 0.3);
+}
+.theme-purple #mic-icon svg { fill: #6a1b9a; } /* Darker purple */
+.theme-purple .osc-circle { background-color: #ab47bc; } /* Medium purple */
+.theme-purple #transcription-area {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #4a148c; /* Dark purple text */
+    border: 1px solid rgba(186, 104, 200, 0.3);
+}
+.theme-purple #toggle-text-btn { background-color: rgba(100, 20, 150, 0.15); color: #4a148c; }
+.theme-purple #toggle-text-btn:hover { background-color: rgba(100, 20, 150, 0.3); }
+.theme-purple .theme-btn { border-color: rgba(100, 20, 150, 0.3); }
+.theme-purple .theme-btn:hover { border-color: rgba(100, 20, 150, 0.6); }
+.theme-purple .theme-buttons { background-color: rgba(100, 20, 150, 0.08); }
+
+
+/* Light Red Theme */
+.theme-red {
+    background-color: #ffebee; /* Light red background */
+}
+.theme-red .circle {
+    background: radial-gradient(ellipse at top left, rgba(255, 205, 210, 1) 0%, rgba(239, 154, 154, 1) 70%), /* Light red to red */
+                linear-gradient(145deg, rgba(229, 115, 115, 1) 0%, rgba(244, 67, 54, 1) 100%);
+    background-color: #ef9a9a; /* Fallback light red */
+    box-shadow: 0 10px 30px rgba(244, 67, 54, 0.3);
+}
+.theme-red #mic-icon svg { fill: #c62828; } /* Darker red */
+.theme-red .osc-circle { background-color: #ef5350; } /* Medium red */
+.theme-red #transcription-area {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #b71c1c; /* Dark red text */
+    border: 1px solid rgba(239, 154, 154, 0.3);
+}
+.theme-red #toggle-text-btn { background-color: rgba(180, 30, 30, 0.15); color: #b71c1c; }
+.theme-red #toggle-text-btn:hover { background-color: rgba(180, 30, 30, 0.3); }
+.theme-red .theme-btn { border-color: rgba(180, 30, 30, 0.3); }
+.theme-red .theme-btn:hover { border-color: rgba(180, 30, 30, 0.6); }
+.theme-red .theme-buttons { background-color: rgba(180, 30, 30, 0.08); }
+
+
+/* Set background colors for theme buttons */
+.theme-btn[data-theme="theme-dark"] { background-color: #1a1a1a; }
+.theme-btn[data-theme="theme-light"] { background-color: #e0e0e0; }
+.theme-btn[data-theme="theme-blue"] { background-color: #81d4fa; }
+.theme-btn[data-theme="theme-purple"] { background-color: #ce93d8; }
+.theme-btn[data-theme="theme-red"] { background-color: #ef9a9a; }

@@ -450,3 +450,135 @@ soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp
 2025-03-27 16:43:23,063 - INFO - Playing audio with ffplay...
 2025-03-27 16:43:26,751 - ERROR - ffplay returned code 3221225786
 2025-03-27 16:43:26,753 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpqfahywvb.wav
+2025-03-27 20:40:07,025 - INFO - ffplay found and available for audio playback
+2025-03-27 20:40:07,027 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 20:40:07,030 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 20:40:07,031 - INFO - Queue processor thread started
+2025-03-27 20:40:07,032 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 20:44:24,393 - INFO - ffplay found and available for audio playback
+2025-03-27 20:44:24,393 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 20:44:24,393 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 20:44:24,393 - INFO - Queue processor thread started
+2025-03-27 20:44:24,393 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 20:44:54,849 - INFO - Added to queue: 'Hello! How can I help you today?...'
+2025-03-27 20:44:54,887 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hello%21%20How%20can%20I%2...
+2025-03-27 20:44:54,952 - INFO - Waiting for current playback to finish (timeout=59.899229526519775s)
+2025-03-27 20:44:55,091 - ERROR - Error requesting audio: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-03-27 20:46:27,444 - INFO - ffplay found and available for audio playback
+2025-03-27 20:46:27,445 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 20:46:27,445 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 20:46:27,446 - INFO - Queue processor thread started
+2025-03-27 20:46:27,446 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 20:46:56,733 - INFO - Added to queue: 'Hey there!  How can I help you today?...'
+2025-03-27 20:46:56,779 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hey%20there%21%20%20How%20...
+2025-03-27 20:46:56,835 - INFO - Waiting for current playback to finish (timeout=59.899656772613525s)
+2025-03-27 20:46:59,354 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpjam0numr.wav (133676 bytes)
+2025-03-27 20:46:59,355 - INFO - Playing audio with ffplay...
+2025-03-27 20:47:02,868 - INFO - Audio played successfully!
+2025-03-27 20:47:02,873 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpjam0numr.wav
+2025-03-27 20:47:10,652 - INFO - Added to queue: 'I'm doing great! Just waiting to assist you.  Need...'
+2025-03-27 20:47:10,722 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=I%27m%20doing%20great%21%2...
+2025-03-27 20:47:10,754 - INFO - Waiting for current playback to finish (timeout=59.89904856681824s)
+2025-03-27 20:47:13,104 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpedz0evy6.wav (194092 bytes)
+2025-03-27 20:47:13,106 - INFO - Playing audio with ffplay...
+2025-03-27 20:47:17,780 - INFO - Audio played successfully!
+2025-03-27 20:47:17,785 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpedz0evy6.wav
+2025-03-27 20:47:25,080 - INFO - Added to queue: 'No problem! Let me know if you need anything at al...'
+2025-03-27 20:47:25,119 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=No%20problem%21%20Let%20me...
+2025-03-27 20:47:25,185 - INFO - Waiting for current playback to finish (timeout=59.89537048339844s)
+2025-03-27 20:47:30,994 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmp93ll2da9.wav (492588 bytes)
+2025-03-27 20:47:30,994 - INFO - Playing audio with ffplay...
+2025-03-27 20:47:42,473 - INFO - Audio played successfully!
+2025-03-27 20:47:42,474 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmp93ll2da9.wav
+2025-03-27 20:47:50,743 - INFO - Added to queue: 'Great! Just let me know what you'd like me to do....'
+2025-03-27 20:47:50,816 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Great%21%20Just%20let%20me...
+2025-03-27 20:47:50,846 - INFO - Waiting for current playback to finish (timeout=59.898953914642334s)
+2025-03-27 20:47:52,695 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpv21lbeco.wav (135724 bytes)
+2025-03-27 20:47:52,697 - INFO - Playing audio with ffplay...
+2025-03-27 20:47:56,209 - INFO - Audio played successfully!
+2025-03-27 20:47:56,209 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpv21lbeco.wav
+2025-03-27 21:33:10,969 - INFO - ffplay found and available for audio playback
+2025-03-27 21:33:10,970 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 21:33:10,971 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 21:33:10,972 - INFO - Queue processor thread started
+2025-03-27 21:33:10,972 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 21:36:02,202 - INFO - ffplay found and available for audio playback
+2025-03-27 21:36:02,202 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 21:36:02,202 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 21:36:02,204 - INFO - Queue processor thread started
+2025-03-27 21:36:02,204 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 21:36:24,885 - INFO - Added to queue: 'Hey there! I'm doing great, thanks for asking. How...'
+2025-03-27 21:36:24,960 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hey%20there%21%20I%27m%20d...
+2025-03-27 21:36:24,994 - INFO - Waiting for current playback to finish (timeout=59.89035940170288s)
+2025-03-27 21:36:44,282 - ERROR - Error requesting audio: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-03-27 21:39:28,195 - INFO - ffplay found and available for audio playback
+2025-03-27 21:39:28,195 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 21:39:28,195 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 21:39:28,196 - INFO - Queue processor thread started
+2025-03-27 21:39:28,196 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 21:39:53,777 - INFO - Added to queue: 'Hey there! I'm doing great, thanks for asking. How...'
+2025-03-27 21:39:53,791 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hey%20there%21%20I%27m%20d...
+2025-03-27 21:39:53,889 - INFO - Waiting for current playback to finish (timeout=59.88776993751526s)
+2025-03-27 21:39:56,877 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpk0nsgise.wav (200748 bytes)
+2025-03-27 21:39:56,878 - INFO - Playing audio with ffplay...
+2025-03-27 21:40:01,509 - INFO - Audio played successfully!
+2025-03-27 21:40:01,509 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpk0nsgise.wav
+2025-03-27 21:40:08,751 - INFO - Added to queue: 'My day has been pretty smooth so far, just process...'
+2025-03-27 21:40:08,840 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=My%20day%20has%20been%20pr...
+2025-03-27 21:40:08,853 - INFO - Waiting for current playback to finish (timeout=59.89933896064758s)
+2025-03-27 21:40:15,698 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpr4a27m6o.wav (610860 bytes)
+2025-03-27 21:40:15,698 - INFO - Playing audio with ffplay...
+2025-03-27 21:40:29,469 - INFO - Audio played successfully!
+2025-03-27 21:40:29,471 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpr4a27m6o.wav
+2025-03-27 21:40:38,665 - INFO - Added to queue: 'Oh, I understand. A long day can definitely drain ...'
+2025-03-27 21:40:38,707 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Oh%2C%20I%20understand.%20...
+2025-03-27 21:40:38,767 - INFO - Waiting for current playback to finish (timeout=59.898863315582275s)
+2025-03-27 21:40:45,548 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpjtc9hazb.wav (668716 bytes)
+2025-03-27 21:40:45,549 - INFO - Playing audio with ffplay...
+2025-03-27 21:41:00,526 - INFO - Audio played successfully!
+2025-03-27 21:41:00,527 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpjtc9hazb.wav
+2025-03-27 21:41:14,736 - INFO - Added to queue: 'That sounds reflective. Sometimes it's good to jus...'
+2025-03-27 21:41:14,778 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=That%20sounds%20reflective...
+2025-03-27 21:41:14,844 - INFO - Waiting for current playback to finish (timeout=59.89205479621887s)
+2025-03-27 21:41:20,623 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpldalcfi_.wav (590892 bytes)
+2025-03-27 21:41:20,625 - INFO - Playing audio with ffplay...
+2025-03-27 21:41:33,957 - INFO - Audio played successfully!
+2025-03-27 21:41:33,958 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpldalcfi_.wav
+2025-03-27 21:41:49,656 - INFO - Added to queue: 'That's an interesting question!  I don't have pers...'
+2025-03-27 21:41:49,718 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=That%27s%20an%20interestin...
+2025-03-27 21:41:49,757 - INFO - Waiting for current playback to finish (timeout=59.899510860443115s)
+2025-03-27 21:42:02,898 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpnygwh4yh.wav (1361964 bytes)
+2025-03-27 21:42:02,898 - INFO - Playing audio with ffplay...
+2025-03-27 21:42:32,280 - INFO - Audio played successfully!
+2025-03-27 21:42:32,280 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpnygwh4yh.wav
+2025-03-27 21:42:52,804 - INFO - Added to queue: 'That's a great question that delves into the very ...'
+2025-03-27 21:42:52,866 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=That%27s%20a%20great%20que...
+2025-03-27 21:42:52,907 - INFO - Waiting for current playback to finish (timeout=59.89875245094299s)
+2025-03-27 21:43:25,328 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpji5gcifa.wav (3363372 bytes)
+2025-03-27 21:43:25,328 - INFO - Playing audio with ffplay...
+2025-03-27 21:43:52,811 - WARNING - Timeout waiting for playback to finish
+2025-03-27 21:43:58,729 - INFO - Added to queue: '"What's next" in the history of philosophy?  Or "w...'
+2025-03-27 21:43:58,730 - INFO - Waiting for current playback to finish (timeout=60.0s)
+2025-03-27 21:44:36,477 - INFO - Audio played successfully!
+2025-03-27 21:44:36,478 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpji5gcifa.wav
+2025-03-27 21:44:36,478 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=%22What%27s%20next%22%20in...
+2025-03-27 21:44:36,579 - INFO - Waiting for current playback to finish (timeout=22.15134620666504s)
+2025-03-27 21:44:40,186 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpas7ooozw.wav (341036 bytes)
+2025-03-27 21:44:40,186 - INFO - Playing audio with ffplay...
+2025-03-27 21:44:47,747 - INFO - Audio played successfully!
+2025-03-27 21:44:47,748 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpas7ooozw.wav
+2025-03-27 21:45:05,148 - INFO - Added to queue: 'It's true that philosophy often tackles questions ...'
+2025-03-27 21:45:05,217 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=It%27s%20true%20that%20phi...
+2025-03-27 21:45:05,250 - INFO - Waiting for current playback to finish (timeout=59.8988573551178s)
+2025-03-27 21:45:26,464 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmppa89fp17.wav (2230828 bytes)
+2025-03-27 21:45:26,464 - INFO - Playing audio with ffplay...
+2025-03-27 21:46:05,154 - WARNING - Timeout waiting for playback to finish
+2025-03-27 21:46:13,940 - INFO - Audio played successfully!
+2025-03-27 21:46:13,940 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmppa89fp17.wav
+2025-03-27 21:46:14,034 - INFO - Added to queue: 'You're very welcome! Is there anything else I can ...'
+2025-03-27 21:46:14,043 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=You%27re%20very%20welcome%...
+2025-03-27 21:46:14,136 - INFO - Waiting for current playback to finish (timeout=59.898940563201904s)
+2025-03-27 21:46:16,308 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmplpcxb18o.wav (169516 bytes)
+2025-03-27 21:46:16,308 - INFO - Playing audio with ffplay...
+2025-03-27 21:46:20,112 - INFO - Audio played successfully!
+2025-03-27 21:46:20,113 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmplpcxb18o.wav
