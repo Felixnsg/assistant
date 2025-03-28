@@ -203,7 +203,7 @@ class FelixDetectionServer:
             return [] # Return empty list on error
 
     # --- REFACTOR: Improved docstring, logging, error handling ---
-    async def handle_client(self, websocket, path: str):
+    async def handle_client(self, websocket, path: None):
         """
         Handles a single client WebSocket connection.
 
@@ -302,7 +302,7 @@ async def main():
 
         logging.info(f"Starting WebSocket server on ws://{host}:{port}")
         async with websockets.serve(
-            lambda websocket, path: server.handle_client(websocket, path),
+            server.handle_client,  # This should work now with the modified method
             host,
             port,
             ping_interval=ping_interval,
