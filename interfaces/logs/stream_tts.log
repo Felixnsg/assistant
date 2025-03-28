@@ -1,0 +1,5 @@
+2025-03-27 18:23:43,506 - INFO - ffplay found and available for audio playback
+2025-03-27 18:23:43,508 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 18:23:43,510 - INFO - Settings saved: Voice=female_01.wav, Language=en
+2025-03-27 18:23:43,511 - INFO - Queue processor thread started
+2025-03-27 18:23:43,511 - INFO - StreamTTSPlayer initialized (Voice: female_01.wav, Language: en)

@@ -1,0 +1,26 @@
+StreamTTS: ffplay found and available for audio playback
+StreamTTS: Creating new StreamTTSPlayer instance
+StreamTTS: Settings loaded: Voice=male_01.wav, Language=en
+StreamTTS: Queue processor thread started
+StreamTTS: StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+StreamTTS: Added to queue: 'Hey there!  Anything I can assist you with today?...'
+StreamTTS: Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hey%20there%21%20%20Anythi...
+StreamTTS: Waiting for current playback to finish (timeout=59.89871644973755s)
+StreamTTS: Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpwp_u1x08.wav (151596 bytes)
+StreamTTS: Playing audio with ffplay...
+StreamTTS: Audio played successfully!
+StreamTTS: Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpwp_u1x08.wav
+StreamTTS: Added to queue: 'That's cool!  I'm always here if you need anything...'
+StreamTTS: Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=That%27s%20cool%21%20%20I%...
+StreamTTS: Waiting for current playback to finish (timeout=59.89846396446228s)
+StreamTTS: Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmplf1i2wzk.wav (517164 bytes)
+StreamTTS: Playing audio with ffplay...
+StreamTTS: Audio played successfully!
+StreamTTS: Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmplf1i2wzk.wav
+StreamTTS: Added to queue: 'Okay, cool.  Want me to put on some relaxing music...'
+StreamTTS: Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Okay%2C%20cool.%20%20Want%...
+StreamTTS: Waiting for current playback to finish (timeout=59.898696184158325s)
+StreamTTS: Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpqfahywvb.wav (296492 bytes)
+StreamTTS: Playing audio with ffplay...
+StreamTTS: ffplay returned code 3221225786
+StreamTTS: Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpqfahywvb.wav

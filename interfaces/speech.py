@@ -31,7 +31,9 @@ import numpy as np # Used if doing local Whisper STT with audio data manipulatio
 import tempfile
 import queue # Used for continuous whisper implementation
 import threading # Used for continuous whisper implementation
-import requests # Used for Whisper API STT
+# Used for Whisper API STT
+import requests 
+from interfaces import StreamTTSPlayer
 try:
     import config
 except ImportError as e:
@@ -50,7 +52,6 @@ except Exception as e:
 TTS_OUTPUT_MP3 = "tts_output.mp3"
 STT_TEMP_WAV = "stt_input.wav" # Used if saving temp file locally
 
-StreamTTSPlayer_instance = StreamTTSPlayer.StreamTTSPlayer()
 
 
 
@@ -455,7 +456,7 @@ def text_to_speech(ai_response: str, engine_choice: str = config.DEFAULT_TTS_ENG
     elif engine_choice == 'aws':
         return aws_polly_text_to_speech(ai_response)
     elif engine_choice == 'alltalk_tts':
-        return StreamTTSPlayer_instance.say()
+        return StreamTTSPlayer._player_instance.say(ai_response)
     else:
         print(f"Error: Unknown TTS engine choice '{engine_choice}'. Falling back to pyttsx3 (if available).")
         return pyttsx3_text_to_speech(ai_response)

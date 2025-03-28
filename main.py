@@ -16,6 +16,93 @@ import os
 import traceback
 import logging # --- REFACTOR: Added logging ---
 from typing import Optional
+
+def setup_logging(log_dir="logs", default_level=logging.INFO):
+    """Configures file-based logging for different modules."""
+    try:
+        os.makedirs(log_dir, exist_ok=True)
+        print(f"Log directory '{log_dir}' ensured.") # Keep this initial print
+    except OSError as e:
+        print(f"Error creating log directory '{log_dir}': {e}. Logs might not be saved.", file=sys.stderr)
+        return # Stop if log dir creation fails
+
+    # Define log format
+    log_formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - [%(name)s] - %(message)s'
+        # Removed threadName for slightly cleaner logs, add back if needed:
+        # '%(asctime)s - %(levelname)s - [%(threadName)s/%(name)s] - %(message)s'
+    )
+
+    # --- Define loggers and their corresponding files ---
+    # Using __name__ derived names (e.g., 'core.nlp', 'interfaces.chat')
+    log_config = {
+        'core.memory': 'memory.log',
+        'core.nlp': 'nlp.log',
+        'interfaces.chat': 'chat.log',
+        'interfaces.speech': 'speech.log',
+        'interfaces.StreamTTSPlayer': 'stream_tts_player.log', # Added StreamTTSPlayer
+        'services.utilities': 'utilities.log',
+        'IseeYou.IseeYou': 'isee_you_client.log',
+        'IseeYou.GPUserver': 'gpu_server.log', # Assuming GPUserver.py is in IseeYou/
+        'IseeYou.person_detector': 'person_detector.log', # Assuming person_detector.py is in IseeYou/
+        'IseeYou.felix_recognizer': 'felix_recognizer.log', # Assuming felix_recognizer.py is in IseeYou/
+        # Add Whisper API server if its logs are desired when run via main (less common)
+        # 'Whisper': 'whisper_api.log' # Name depends on how it's run/imported
+        # Root logger for main.py itself
+        '__main__': 'main.log',
+    }
+
+    configured_loggers = []
+
+    for logger_name, log_filename in log_config.items():
+        try:
+            logger = logging.getLogger(logger_name)
+            logger.setLevel(default_level)
+
+            # Create file handler
+            file_handler = logging.FileHandler(os.path.join(log_dir, log_filename), encoding='utf-8')
+            file_handler.setFormatter(log_formatter)
+
+            # Remove existing handlers to avoid duplication if setup is called again
+            for handler in logger.handlers[:]:
+                logger.removeHandler(handler)
+
+            # Add the new file handler
+            logger.addHandler(file_handler)
+
+            # --- Crucial: Prevent propagation to root logger ---
+            logger.propagate = False
+            configured_loggers.append(logger_name)
+
+        except Exception as e:
+            print(f"Error configuring logger '{logger_name}': {e}", file=sys.stderr)
+
+    # Optional: Configure the root logger minimally if needed, but keep it quiet
+    root_logger = logging.getLogger()
+    # Remove default handlers from root logger to silence console output from libraries
+    for handler in root_logger.handlers[:]:
+        root_logger.removeHandler(handler)
+    # Set root level high so only critical library errors might appear (or set a NullHandler)
+    root_logger.setLevel(logging.ERROR)
+    # Alternatively, add a NullHandler to explicitly silence it:
+    # root_logger.addHandler(logging.NullHandler())
+
+    print(f"Configured file logging for: {', '.join(configured_loggers)}") # Keep this print
+
+# --- REFACTOR: Standardize imports and path handling ---
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+# --- Call logging setup EARLY ---
+# Determine log level from config or default
+log_level_str = getattr(config, 'LOG_LEVEL', 'INFO').upper()
+log_level = getattr(logging, log_level_str, logging.INFO)
+setup_logging(default_level=log_level) # Use configured level
+
+# --- Now get the logger for main.py itself ---
+logger = logging.getLogger(__name__) # Use __name__ for the current module
+
+
+
 try:
     print("Attempting to import speech module...")
     from interfaces import speech

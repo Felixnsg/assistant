@@ -15,12 +15,12 @@ import time
 import json
 import traceback
 import logging # --- REFACTOR: Added logging ---
+# File: chat.py
+# ... (other imports) ...
 import asyncio # --- REFACTOR: Added asyncio ---
 from typing import Optional, Dict, Any, Union, List # --- REFACTOR: Added typing ---
 
 # --- REFACTOR: Ensure project root is in path for sibling imports ---
-# Assuming 'core', 'interfaces', 'services' are siblings to the directory containing chat.py
-# Or adjust based on your actual project structure
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # --- REFACTOR: Standard module imports with error handling ---
@@ -28,34 +28,38 @@ try:
     from core import nlp # LlpCall class
     from core import memory # Memory class
     import config # config.py
-    from IseeYou import IseeYou
+    # from IseeYou import IseeYou # Keep this if needed, already handled below
     from services import utilities
 except ImportError as e:
-    print(f"FATAL: Failed to import core modules (nlp, memory, config): {e}", file=sys.stderr)
+    print(f"FATAL: Failed to import core modules (nlp, memory, config, utilities): {e}", file=sys.stderr)
     sys.exit(1)
 
-# --- REFACTOR: Updated speech/streamaudio imports and mocks ---
+# --- REFACTOR: Updated speech imports and mocks ---
 try:
     # Use the centralized functions from the refined speech module
     from interfaces import speech # Provides text_to_speech, speech_to_text
-    # streamaudio might be integrated into speech or handled differently now.
-    # Let's assume a basic wait is needed for audio playback before listening.
-    # If streamaudio provided more complex stream management, that logic might need review.
-    # from interfaces import streamaudio # Comment out if not strictly needed
+    # --- NEW: Import the StreamTTSPlayer instance ---
+    try:
+        # Assuming the singleton instance is accessible directly
+        from interfaces.StreamTTSPlayer import _player_instance as stream_tts_player_instance
+        STREAM_TTS_PLAYER_AVAILABLE = True
+    except ImportError:
+        print("Warning: Failed to import StreamTTSPlayer instance. 'alltalk_tts' wait logic will be skipped.")
+        stream_tts_player_instance = None
+        STREAM_TTS_PLAYER_AVAILABLE = False
+
     SPEECH_AVAILABLE = True
-    # Basic mock for waiting if streamaudio not used/available
-    async def wait_until_safe_to_listen(timeout=60):
-         # Basic estimate: Wait a bit after TTS finishes.
-         # A more sophisticated approach would involve checking audio output status.
-         # print("(Mock wait for audio)") # Debug
-         await asyncio.sleep(1.0) # Simple fixed delay after TTS finishes
-         return True
+    # --- REMOVE old mock wait_until_safe_to_listen ---
+    # async def wait_until_safe_to_listen(timeout=60):
+    #      await asyncio.sleep(1.0) # Simple fixed delay after TTS finishes
+    #      return True
 
 except ImportError:
     print("Warning: 'interfaces.speech' not found. Using mock speech functions.", file=sys.stderr)
     SPEECH_AVAILABLE = False
+    stream_tts_player_instance = None # Ensure it's None if speech failed import
+    STREAM_TTS_PLAYER_AVAILABLE = False
     class MockSpeech:
-        # Use the refined function names
         def text_to_speech(self, text: str, engine_choice: str = 'default') -> bool:
             print(f"TTS (mock, engine={engine_choice}): {text}")
             return True
@@ -66,10 +70,7 @@ except ImportError:
             except EOFError:
                 return "exit"
     speech = MockSpeech()
-    async def wait_until_safe_to_listen(timeout=60): # Keep mock wait
-        print("Audio Wait (mock): Assuming audio finished.")
-        await asyncio.sleep(0.1)
-        return True
+    # --- REMOVE old mock wait_until_safe_to_listen ---
 
 
 # --- REFACTOR: Standard utilities import ---
@@ -77,53 +78,39 @@ try:
     from services.utilities import Utilities # Utilities class
 except ImportError as e:
     print(f"Warning: Failed to import Utilities module: {e}. Service calls will not work.", file=sys.stderr)
-    # Define a mock Utilities if needed, or let it be None and handle checks later
     Utilities = None
 
 # --- REFACTOR: Standard IseeYou import ---
 try:
-    from IseeYou.IseeYou import FelixTrackingClient
+    # Corrected path assuming IseeYou.py is in ../IseeYou/
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "IseeYou")))
+    from IseeYou import IseeYou
 except ImportError:
     print("Warning: Cannot import FelixTrackingClient from IseeYou.py. Video features disabled.", file=sys.stderr)
     # Mock class for graceful degradation
     class MockFelixTrackingClient:
         def __init__(self, *args, **kwargs):
             print("Warning: Using MockFelixTrackingClient.")
-        async def start_tracking(self, *args, **kwargs) -> bool: # Needs to be async
+        async def start_tracking(self, *args, **kwargs) -> bool:
             print("MockFelixTrackingClient start_tracking called.")
             return True
-        async def stop_tracking(self, *args, **kwargs) -> bool: # Needs to be async
+        async def stop_tracking(self, *args, **kwargs) -> bool:
             print("MockFelixTrackingClient stop_tracking called.")
             return True
-        def shutdown(self, *args, **kwargs): # Add shutdown if main calls it
+        def shutdown(self, *args, **kwargs):
              print("MockFelixTrackingClient shutdown called.")
-        # Add any other attributes/methods accessed by ChatManager/Utilities
-        # tracked_detections = None
-
-    FelixTrackingClient = MockFelixTrackingClient # type: ignore
+        FelixTrackingClient = MockFelixTrackingClient # type: ignore
 
 
 # --- REFACTOR: Configure logging ---
-# Logging setup might be better in main.py, but adding basic config here
+# (logging setup remains the same)
 if not logging.getLogger().hasHandlers():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(module)s] %(message)s')
 
 
-# --- REFACTOR: Standalone data_prep function (mostly unchanged, added logging) ---
+# --- REFACTOR: Standalone data_prep function (remains the same) ---
 def data_prep(prompt: str, convos: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
-    """
-    Formats conversation history and current prompt for the LLM API.
-
-    Specifically structured for Google Generative AI (Gemini) API.
-
-    Args:
-        prompt (str): The current user prompt.
-        convos (Optional[List[Dict[str, Any]]]): The existing conversation history.
-
-    Returns:
-        Dict[str, Any]: The data dictionary ready for the LLM API request,
-                        or an empty dict if an error occurs.
-    """
+    # ... (data_prep content remains unchanged) ...
     if not isinstance(prompt, str):
         logging.error("data_prep: Prompt must be a string.")
         return {}
@@ -174,27 +161,13 @@ def data_prep(prompt: str, convos: Optional[List[Dict[str, Any]]] = None) -> Dic
 
 
 class ChatManager:
-    """
-    Orchestrates the conversation flow, LLM interaction, service execution,
-    and user interface (text/audio).
-
-    Attributes:
-        memory (Memory): Instance for managing conversation history.
-        nlp (LlpCall): Instance for interacting with the LLM.
-        utilities (Optional[Utilities]): Instance for executing utility services.
-        config (Any): Loaded configuration module.
-        isee_client (FelixTrackingClient): Instance for controlling video tracking.
-        format (str): Interaction format ('text' or 'audio').
-        current_prompt (str): The user input currently being processed.
-        current_ai_response (str): The LLM response currently being processed.
-    """
-    # --- REFACTOR: Updated init signature, type hints, logging ---
+    # ... (__init__ remains the same) ...
     def __init__(self,
                 memory_instance: memory.Memory,
                 nlp_instance: nlp.LlpCall,
                 config_instance: Any,
                 utilities_instance: Optional[utilities.Utilities], # Can be None if Utilities failed import
-                isee_client_instance: IseeYou.FelixTrackingClient):
+                isee_client_instance: IseeYou): # Use correct type hint
         """
         Initializes the ChatManager.
 
@@ -230,6 +203,7 @@ class ChatManager:
         logging.info(f"ChatManager initialized with format: {self.format}")
 
 
+    # ... (_choose_format, _call_llm, _save_current_turn remain the same) ...
     def _choose_format(self) -> str:
         """(Internal) Prompts the user to choose interaction format."""
         while True:
@@ -252,7 +226,6 @@ class ChatManager:
                  logging.error(f"Error during format input: {e}. Defaulting to 'text'.")
                  return "text"
 
-
     async def _call_llm(self, prompt_to_send: str) -> str:
         """(Internal) Prepares data and makes the API request to get AI response."""
         # --- REFACTOR: Renamed, made async (though LLM call itself is sync here), improved error handling ---
@@ -271,18 +244,16 @@ class ChatManager:
             # Make API request via the NLP instance
             logging.info("Sending request to LLM...")
             start_time = time.monotonic()
-            response = self.nlp.send_request(llm_data) # This is currently synchronous
+            # --- Run synchronous call in thread ---
+            response = await asyncio.to_thread(self.nlp.send_request, llm_data)
             duration = time.monotonic() - start_time
             logging.info(f"LLM response received in {duration:.2f} seconds.")
 
             # --- REFACTOR: Handle different response types from nlp.send_request ---
             if isinstance(response, str):
-                 # Check for safety blocking message
                  if response.startswith("Blocked:"):
                       logging.warning(f"LLM response blocked by safety settings: {response}")
-                      # Return a user-friendly message or the block reason
                       return f"I cannot provide a response due to safety settings ({response})."
-                 # Successful response or empty string
                  self.current_ai_response = response
                  logging.debug(f"LLM Raw Response: '{self.current_ai_response[:100]}...'")
             elif isinstance(response, int): # HTTP status code indicates error
@@ -294,16 +265,10 @@ class ChatManager:
 
             return self.current_ai_response
 
-        # --- REFACTOR: Catch specific exceptions if nlp.send_request raises them ---
-        # except (requests.exceptions.RequestException, TimeoutError, ConnectionError) as e:
-        #     logging.error(f"Network or connection error during LLM request: {e}", exc_info=True)
-        #     self.current_ai_response = "Sorry, I'm having trouble connecting to the AI service."
-        #     return self.current_ai_response
         except Exception as e:
              logging.error(f"An unexpected error occurred in _call_llm: {e}", exc_info=True)
              self.current_ai_response = "Sorry, an unexpected error occurred while processing your request."
              return self.current_ai_response
-
 
     def _save_current_turn(self) -> None:
         """(Internal) Save the current user prompt and AI response to memory."""
@@ -322,10 +287,8 @@ class ChatManager:
         except Exception as e:
             logging.error(f"Error saving conversation turn to memory: {e}", exc_info=True)
 
-
     async def _speak_response(self) -> None:
         """(Internal) Handle text-to-speech output using the speech interface."""
-        # --- REFACTOR: Renamed, made async, use central speech function ---
         if not self.current_ai_response:
             logging.warning("No AI response available to speak.")
             return
@@ -333,25 +296,32 @@ class ChatManager:
              logging.warning("Speech interface not available, skipping TTS.")
              return
         if self.format != "audio":
-             # Don't speak if in text mode
              return
 
         logging.info("Sending response to TTS engine...")
         try:
             # Use the configured TTS engine from config
             tts_engine = getattr(self.config, 'DEFAULT_TTS_ENGINE', 'pyttsx3')
-            success = speech.text_to_speech(self.current_ai_response, engine_choice=tts_engine)
+            logging.info(f"Using TTS engine: {tts_engine}")
+
+            # --- Run potentially blocking TTS in a thread ---
+            success = await asyncio.to_thread(
+                speech.text_to_speech,
+                self.current_ai_response,
+                engine_choice=tts_engine
+            )
+
             if not success:
                 logging.error(f"Text-to-speech synthesis failed using engine: {tts_engine}")
             else:
-                logging.info("TTS playback finished.")
+                logging.info("TTS call finished (playback might continue for some engines).")
         except Exception as e:
             logging.error(f"Error during text-to-speech call: {e}", exc_info=True)
 
 
     async def _handle_service_call(self, ai_response: str):
         """(Internal) Checks for and executes utility service triggers."""
-        # --- REFACTOR: Renamed, made async ---
+        # ... (handle_service_call content remains unchanged) ...
         if not self.utilities:
             # logging.debug("Utilities not available, skipping service check.") # Debug
             return # No utilities instance to dispatch to
@@ -370,31 +340,6 @@ class ChatManager:
                 logging.info(f"--- Service '{service_name}' executed ---")
                 logging.info(f"Result: {str(result)[:200]}") # Log partial result
 
-                # --- REFACTOR: Handle service results (optional follow-up) ---
-                # Option 1: Just log and move on (current implementation)
-
-                # Option 2: Generate a follow-up message based on the result
-                # This would likely involve another LLM call or predefined messages.
-                # Example: If weather service ran:
-                # if service_name == utilities.SERVICE_GET_WEATHER and result:
-                #     weather_summary = f"Got the weather for {result['location']}. Current condition is {result['condition']}..."
-                #     # Maybe send this summary to LLM for a natural language response?
-                #     # followup_prompt = f"Here is the weather data you requested: {json.dumps(result)}. Please summarize it for the user."
-                #     # followup_response = await self._call_llm(followup_prompt)
-                #     # print(f"{self.config.MODEL_NAME}: {followup_response}")
-                #     # await self._speak_response() # Speak the summary
-                #     # self._save_current_turn() # Save this extra turn?
-                # elif service_name == utilities.SERVICE_START_VIDEO:
-                #     if result is True:
-                #          # Inform user video started (LLM already did, but confirm action)
-                #          print(f"{self.config.MODEL_NAME}: (Action confirmed: Video tracking started)")
-                #     else:
-                #          print(f"{self.config.MODEL_NAME}: (Action failed: Could not start video tracking)")
-                #          # Optionally inform user via TTS
-
-                # For now, keep it simple: The LLM's response *before* the trigger
-                # is the primary user feedback. The logs confirm execution.
-
             # else: # Debug log
                  # logging.debug("No service trigger executed.")
 
@@ -405,95 +350,110 @@ class ChatManager:
     async def process_conversation_turn(self, user_input: str) -> Optional[str]:
         """
         Processes a single turn of the conversation (user input -> AI response -> potential service call).
-
-        Args:
-            user_input (str): The text input from the user.
-
-        Returns:
-            Optional[str]: The AI's final response text for this turn, or "exit" if
-                           the user entered exit, or None if input was empty/invalid.
         """
-        # --- REFACTOR: Renamed from process_conversation, made async ---
         self.current_prompt = user_input.strip()
         if not self.current_prompt:
             logging.warning("Received empty user input.")
-            return None # Indicate no valid input processed
+            return None
 
         print(f"You: {self.current_prompt}")
 
-        # Check for local exit command *before* sending to LLM
         if self.current_prompt.lower() == "exit":
-            return "exit" # Signal to the main loop to terminate
+            return "exit"
 
-        # 1. Get AI response (updates self.current_ai_response)
+        # 1. Get AI response
         await self._call_llm(self.current_prompt)
 
-        # Check for errors during LLM call
+        # Handle errors during LLM call
         if "Sorry, I encountered an error" in self.current_ai_response or \
            "Sorry, I'm having trouble connecting" in self.current_ai_response or \
            "Sorry, I received an unexpected response format" in self.current_ai_response or \
            "I cannot provide a response due to safety settings" in self.current_ai_response:
-             # Print the error message from LLM call
             print(f"{self.config.MODEL_NAME}: {self.current_ai_response}")
-             # Speak the error if in audio mode
             if self.format == "audio":
-                await self._speak_response()
-             # Don't save this turn? Or save the error response? Save for now.
+                await self._speak_response() # Speak the error
+                # --- NEW: Add wait after speaking error ---
+                await self._wait_after_tts()
             self._save_current_turn()
-            return self.current_ai_response # Return the error response
+            return self.current_ai_response
 
-        # 2. Display the valid AI response (before potential service call modifies context)
+        # 2. Display valid AI response
         print(f"{self.config.MODEL_NAME}: {self.current_ai_response}")
 
-        # 3. Save this turn (User Prompt + Initial AI Response)
+        # 3. Save turn
         self._save_current_turn()
 
-        # 4. Speak the initial AI response *before* service execution (gives user feedback faster)
+        # 4. Speak the initial AI response
         if self.format == "audio":
             await self._speak_response()
-             # Wait for speech to likely finish before potential noisy service actions
-            await wait_until_safe_to_listen()
+            # --- NEW: Call the dedicated wait function ---
+            await self._wait_after_tts()
 
-        # 5. Check for and handle service calls based on the AI response
+        # 5. Handle service calls
         await self._handle_service_call(self.current_ai_response)
 
-        # 6. Return the initial AI response (or modify if follow-up logic was added in _handle_service_call)
+        # 6. Return response
         return self.current_ai_response
+
+    # --- NEW: Dedicated wait function ---
+    async def _wait_after_tts(self, timeout_sec: float = 60.0):
+        """Waits appropriately after TTS, especially for streaming engines."""
+        tts_engine = getattr(self.config, 'DEFAULT_TTS_ENGINE', 'pyttsx3')
+        logging.debug(f"Waiting after TTS engine: {tts_engine}")
+
+        if tts_engine == 'alltalk_tts' and STREAM_TTS_PLAYER_AVAILABLE and stream_tts_player_instance:
+            logging.info(f"Waiting for StreamTTSPlayer playback (timeout={timeout_sec}s)...")
+            try:
+                # Run the player's synchronous wait method in a thread
+                success = await asyncio.to_thread(
+                    stream_tts_player_instance.wait_until_safe_to_listen,
+                    timeout=timeout_sec
+                )
+                if success:
+                    logging.info("StreamTTSPlayer playback finished.")
+                else:
+                    logging.warning("Timeout or error waiting for StreamTTSPlayer playback.")
+            except Exception as e:
+                logging.error(f"Error waiting for StreamTTSPlayer: {e}", exc_info=True)
+        else:
+            # Fallback for other engines (or if StreamTTSPlayer not available)
+            # Use a simple sleep, adjust duration as needed. 1.0s might be short for some offline engines.
+            wait_duration = 1.5 # Slightly longer default wait
+            logging.debug(f"Using generic wait of {wait_duration}s after TTS.")
+            await asyncio.sleep(wait_duration)
 
 
     async def _get_audio_input(self) -> Optional[str]:
         """(Internal) Handles audio input using the configured STT method."""
-        # --- REFACTOR: Renamed, made async ---
         if not SPEECH_AVAILABLE:
             logging.error("Cannot get audio input: Speech interface not available.")
-            return None # Or raise error?
+            return None
 
-        # Wait for any previous TTS to finish before listening
-        logging.info("Waiting for any ongoing TTS to finish before listening...")
-        await wait_until_safe_to_listen() # Use the async wait function
+        # --- Note: The wait is now handled in process_conversation_turn *after* TTS ---
+        # logging.info("Waiting for any ongoing TTS to finish before listening...")
+        # await wait_until_safe_to_listen() # <= REMOVED FROM HERE
 
         logging.info("Listening via STT...")
         try:
-            # --- REFACTOR: Use configured STT method ---
-            stt_method = getattr(self.config, 'DEFAULT_STT_METHOD', 'whisper_api') # Add DEFAULT_STT_METHOD to config
-            audio_prompt = speech.speech_to_text(method=stt_method) # Use central STT function
+            stt_method = getattr(self.config, 'DEFAULT_STT_METHOD', 'whisper_api')
+            # --- Run potentially blocking STT in a thread ---
+            audio_prompt = await asyncio.to_thread(speech.speech_to_text, method=stt_method)
 
-            if audio_prompt is None: # Handle None return explicitly
+            if audio_prompt is None:
                  logging.warning("STT returned None.")
                  return None
             elif not audio_prompt.strip():
                  logging.info("No speech detected or STT resulted in empty string.")
-                 return None # Indicate no turn happened, main loop might reprompt
+                 return None
             else:
-                 # Return the recognized text (already lowercase from speech.py)
-                 return audio_prompt
+                 return audio_prompt # Already lowercase from speech.py
         except Exception as e:
             logging.error(f"Error during speech recognition: {e}", exc_info=True)
-            return None # Indicate failure
+            return None
 
     async def _get_text_input(self) -> Optional[str]:
         """(Internal) Handles text input from the console."""
-        # --- REFACTOR: Renamed, made async (though input is sync), added error handling ---
+        # ... (_get_text_input remains the same) ...
         try:
             text_prompt = await asyncio.to_thread(input, "You: ") # Run sync input in thread
             return text_prompt
@@ -508,20 +468,15 @@ class ChatManager:
     async def discussion_turn(self) -> Optional[str]:
         """
         Handles one full turn of the discussion based on the chosen format.
-
-        Gets user input (text or audio), processes it, gets AI response,
-        handles service calls, and provides output (text or audio).
-
-        Returns:
-            Optional[str]: The AI response text, "exit" to signal termination,
-                           or None if the turn failed (e.g., no input).
         """
-        # --- REFACTOR: Renamed from discussion, made async ---
+        # ... (discussion_turn logic remains largely the same, calls the updated methods) ...
         user_input: Optional[str] = None
 
         if self.format == "text":
             user_input = await self._get_text_input()
         elif self.format == "audio":
+            # --- Wait happens *after* TTS in process_conversation_turn ---
+            # --- Now directly call STT ---
             user_input = await self._get_audio_input()
         else:
             logging.error(f"Invalid format '{self.format}'. Defaulting to text.")
@@ -530,21 +485,15 @@ class ChatManager:
 
         # Process the input if received
         if user_input is not None:
-             # process_conversation_turn handles None/empty input internally too,
-             # but checking here prevents unnecessary call
              if user_input == "exit":
                   return "exit"
              if user_input.strip():
-                  # This is the main call that orchestrates the turn
+                  # This call now handles the correct waiting internally
                   ai_response = await self.process_conversation_turn(user_input)
                   return ai_response
              else:
-                  # Input was empty or only whitespace
                   return None
         else:
-             # Getting input failed or resulted in None
              return None
-
-# --- REFACTOR: Removed old sync methods audio_convos, text_convos ---
 
 # --- END OF REFINED FILE chat.py ---

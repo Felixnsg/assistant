@@ -2,3 +2,451 @@
 2025-03-27 14:07:16,396 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
 2025-03-27 14:13:17,749 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
 2025-03-27 14:13:17,749 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
+2025-03-27 14:18:15,255 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
+2025-03-27 14:18:15,255 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
+2025-03-27 14:24:41,944 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
+2025-03-27 14:24:41,945 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
+2025-03-27 14:26:52,765 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
+2025-03-27 14:26:52,765 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
+2025-03-27 14:27:25,247 - INFO - [MainThread] - Added to queue: 'Hey there!  How can I help you today?...'
+2025-03-27 14:27:25,250 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 14:27:25,250 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'Hey there!  How can I help you today?...' (Voice: male_01.wav, Lang: en)
+2025-03-27 14:27:41,233 - INFO - [MainThread] - Added to queue: 'Hey again!  Is there anything I can assist you wit...'
+2025-03-27 14:27:44,540 - ERROR - [Thread-1 (_process_queue)] - Error requesting TTS stream from http://localhost:7851/api/tts-generate-streaming: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2025-03-27 14:27:44,540 - WARNING - [Thread-1 (_process_queue)] - Playback finished (or errored out), setting finished event.
+2025-03-27 14:27:44,540 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 14:27:44,540 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 14:27:44,540 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'Hey again!  Is there anything I can assist you wit...' (Voice: male_01.wav, Lang: en)
+2025-03-27 14:27:48,631 - ERROR - [Thread-1 (_process_queue)] - Error requesting TTS stream from http://localhost:7851/api/tts-generate-streaming: HTTPConnectionPool(host='localhost', port=7851): Max retries exceeded with url: /api/tts-generate-streaming (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000002B84D55CF20>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))
+2025-03-27 14:27:48,631 - WARNING - [Thread-1 (_process_queue)] - Playback finished (or errored out), setting finished event.
+2025-03-27 14:27:48,631 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 14:33:09,772 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
+2025-03-27 14:33:09,772 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
+2025-03-27 14:33:26,417 - INFO - [MainThread] - Added to queue: 'Hello! How can I help you today?...'
+2025-03-27 14:33:26,417 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 14:33:26,418 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'Hello! How can I help you today?...' (Voice: male_01.wav, Lang: en)
+2025-03-27 14:33:29,638 - WARNING - [Thread-1 (_process_queue)] - Playback finished (or errored out), setting finished event.
+2025-03-27 14:33:29,638 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 14:33:43,680 - INFO - [MainThread] - Added to queue: 'I'm doing great, thanks for asking!  Ready to assi...'
+2025-03-27 14:33:43,680 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 14:33:43,680 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'I'm doing great, thanks for asking!  Ready to assi...' (Voice: male_01.wav, Lang: en)
+2025-03-27 14:33:46,370 - ERROR - [Thread-1 (_process_queue)] - Error converting chunk to audio data (check dtype/chunk size?): buffer size must be a multiple of element size
+2025-03-27 14:33:46,383 - WARNING - [Thread-1 (_process_queue)] - Playback finished (or errored out), setting finished event.
+2025-03-27 14:33:46,383 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 14:33:57,415 - INFO - [MainThread] - Added to queue: 'Life is going well for me!  I've been helping peop...'
+2025-03-27 14:33:57,415 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 14:33:57,415 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'Life is going well for me!  I've been helping peop...' (Voice: male_01.wav, Lang: en)
+2025-03-27 14:34:03,747 - WARNING - [Thread-1 (_process_queue)] - Playback finished (or errored out), setting finished event.
+2025-03-27 14:34:03,748 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 14:34:16,947 - INFO - [MainThread] - Added to queue: 'Sounds relaxing!  Is there anything I can help you...'
+2025-03-27 14:34:16,947 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 14:34:16,947 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'Sounds relaxing!  Is there anything I can help you...' (Voice: male_01.wav, Lang: en)
+2025-03-27 14:34:21,393 - WARNING - [Thread-1 (_process_queue)] - Playback finished (or errored out), setting finished event.
+2025-03-27 14:34:21,394 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 14:57:11,527 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
+2025-03-27 14:57:11,527 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
+2025-03-27 14:57:36,067 - INFO - [MainThread] - Added to queue: 'Hello! How can I help you today?...'
+2025-03-27 14:57:36,067 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 14:57:36,067 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'Hello! How can I help you today?...' (Voice: male_01.wav, Lang: en)
+2025-03-27 14:57:38,036 - WARNING - [Thread-1 (_process_queue)] - Playback finished (or errored out), setting finished event.
+2025-03-27 14:57:38,037 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 15:05:44,791 - INFO - [MainThread] - Creating StreamTTSPlayer instance.
+2025-03-27 15:05:44,791 - INFO - [MainThread] - Settings loaded. Voice: male_01.wav, Language: en
+2025-03-27 15:06:02,833 - INFO - [MainThread] - Added to queue: 'Hello! How can I help you today?...'
+2025-03-27 15:06:02,833 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 15:06:02,833 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'Hello! How can I help you today?...' (Voice: male_01.wav, Lang: en)
+2025-03-27 15:06:04,553 - ERROR - [Thread-1 (_process_queue)] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpw7dtfdvt.wav': Format not recognised.
+2025-03-27 15:06:06,316 - ERROR - [Thread-1 (_process_queue)] - Error converting chunk to audio data (check dtype/chunk size?): buffer size must be a multiple of element size
+2025-03-27 15:06:06,338 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 15:06:12,334 - INFO - [MainThread] - Added to queue: 'I'm doing great, thanks for asking!  Ready to assi...'
+2025-03-27 15:06:12,334 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 15:06:12,335 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'I'm doing great, thanks for asking!  Ready to assi...' (Voice: male_01.wav, Lang: en)
+2025-03-27 15:06:14,959 - ERROR - [Thread-1 (_process_queue)] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpqeecqkdb.wav': Format not recognised.
+2025-03-27 15:06:17,971 - ERROR - [Thread-1 (_process_queue)] - Error converting chunk to audio data (check dtype/chunk size?): buffer size must be a multiple of element size
+2025-03-27 15:06:17,993 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 15:06:32,085 - INFO - [MainThread] - Added to queue: 'Great to hear!  Is there anything I can help you w...'
+2025-03-27 15:06:32,085 - INFO - [Thread-1 (_process_queue)] - Processing item from queue.
+2025-03-27 15:06:32,085 - INFO - [Thread-1 (_process_queue)] - Starting playback for: 'Great to hear!  Is there anything I can help you w...' (Voice: male_01.wav, Lang: en)
+2025-03-27 15:06:33,729 - ERROR - [Thread-1 (_process_queue)] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpvc52vb8a.wav': Format not recognised.
+2025-03-27 15:06:35,776 - INFO - [Thread-1 (_process_queue)] - Finished processing queue item.
+2025-03-27 15:09:00,475 - INFO - [MainThread] - Audio system initialized: sounddevice and soundfile available
+2025-03-27 15:09:02,974 - INFO - [MainThread] - Creating new StreamTTSPlayer instance
+2025-03-27 15:09:02,974 - INFO - [MainThread] - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:09:02,974 - INFO - [TTSWorker] - TTS worker thread started
+2025-03-27 15:09:02,974 - INFO - [MainThread] - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:09:22,576 - INFO - [MainThread] - Added to TTS queue: 'Hey there! How can I help you today?'
+2025-03-27 15:09:22,576 - INFO - [TTSWorker] - Processing TTS request: Hey there! How can I help you today?...
+2025-03-27 15:09:22,576 - INFO - [TTSWorker] - Requesting TTS from server: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:09:24,076 - INFO - [TTSWorker] - Saving TTS audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmpbv5d0wg_.wav
+2025-03-27 15:09:24,076 - INFO - [TTSWorker] - Playing audio file: C:\Users\Felix\AppData\Local\Temp\tmpbv5d0wg_.wav
+2025-03-27 15:09:24,086 - ERROR - [TTSWorker] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpbv5d0wg_.wav': Format not recognised.
+Traceback (most recent call last):
+  File "c:\Users\Felix\Documents\assistant\interfaces\StreamTTSPlayer.py", line 281, in _play_audio_file
+    data, samplerate = sf.read(file_path)
+                       ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 305, in read
+    with SoundFile(file, 'r', samplerate, channels,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpbv5d0wg_.wav': Format not recognised.
+2025-03-27 15:09:24,086 - INFO - [TTSWorker] - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpbv5d0wg_.wav
+2025-03-27 15:09:24,086 - INFO - [TTSWorker] - TTS request completed (success=True)
+2025-03-27 15:09:30,760 - INFO - [MainThread] - Added to TTS queue: 'I'm doing great, thanks for asking! Ready to assis'
+2025-03-27 15:09:30,761 - INFO - [TTSWorker] - Processing TTS request: I'm doing great, thanks for asking! Ready to assis...
+2025-03-27 15:09:30,761 - INFO - [TTSWorker] - Requesting TTS from server: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:09:33,342 - INFO - [TTSWorker] - Saving TTS audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmpbwqfyyiv.wav
+2025-03-27 15:09:33,343 - INFO - [TTSWorker] - Playing audio file: C:\Users\Felix\AppData\Local\Temp\tmpbwqfyyiv.wav
+2025-03-27 15:09:33,354 - ERROR - [TTSWorker] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpbwqfyyiv.wav': Format not recognised.
+Traceback (most recent call last):
+  File "c:\Users\Felix\Documents\assistant\interfaces\StreamTTSPlayer.py", line 281, in _play_audio_file
+    data, samplerate = sf.read(file_path)
+                       ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 305, in read
+    with SoundFile(file, 'r', samplerate, channels,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpbwqfyyiv.wav': Format not recognised.
+2025-03-27 15:09:33,355 - INFO - [TTSWorker] - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpbwqfyyiv.wav
+2025-03-27 15:09:33,355 - INFO - [TTSWorker] - TTS request completed (success=True)
+2025-03-27 15:09:47,091 - INFO - [MainThread] - Added to TTS queue: 'I'm functioning optimally, thank you! Is there any'
+2025-03-27 15:09:47,091 - INFO - [TTSWorker] - Processing TTS request: I'm functioning optimally, thank you! Is there any...
+2025-03-27 15:09:47,091 - INFO - [TTSWorker] - Requesting TTS from server: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:09:49,582 - INFO - [TTSWorker] - Saving TTS audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmpprfndunp.wav
+2025-03-27 15:09:49,582 - INFO - [TTSWorker] - Playing audio file: C:\Users\Felix\AppData\Local\Temp\tmpprfndunp.wav
+2025-03-27 15:09:49,591 - ERROR - [TTSWorker] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpprfndunp.wav': Format not recognised.
+Traceback (most recent call last):
+  File "c:\Users\Felix\Documents\assistant\interfaces\StreamTTSPlayer.py", line 281, in _play_audio_file
+    data, samplerate = sf.read(file_path)
+                       ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 305, in read
+    with SoundFile(file, 'r', samplerate, channels,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpprfndunp.wav': Format not recognised.
+2025-03-27 15:09:49,592 - INFO - [TTSWorker] - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpprfndunp.wav
+2025-03-27 15:09:49,592 - INFO - [TTSWorker] - TTS request completed (success=True)
+2025-03-27 15:09:59,474 - INFO - [MainThread] - Added to TTS queue: 'As an AI, I don't experience emotions like love. I'
+2025-03-27 15:09:59,474 - INFO - [TTSWorker] - Processing TTS request: As an AI, I don't experience emotions like love. I...
+2025-03-27 15:09:59,474 - INFO - [TTSWorker] - Requesting TTS from server: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:10:04,260 - INFO - [TTSWorker] - Saving TTS audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmpngo7stxh.wav
+2025-03-27 15:10:04,260 - INFO - [TTSWorker] - Playing audio file: C:\Users\Felix\AppData\Local\Temp\tmpngo7stxh.wav
+2025-03-27 15:10:04,269 - ERROR - [TTSWorker] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpngo7stxh.wav': Format not recognised.
+Traceback (most recent call last):
+  File "c:\Users\Felix\Documents\assistant\interfaces\StreamTTSPlayer.py", line 281, in _play_audio_file
+    data, samplerate = sf.read(file_path)
+                       ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 305, in read
+    with SoundFile(file, 'r', samplerate, channels,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpngo7stxh.wav': Format not recognised.
+2025-03-27 15:10:04,270 - INFO - [TTSWorker] - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpngo7stxh.wav
+2025-03-27 15:10:04,270 - INFO - [TTSWorker] - TTS request completed (success=True)
+2025-03-27 15:10:08,438 - INFO - [MainThread] - Added to TTS queue: 'Goodbye! Have a great day.'
+2025-03-27 15:10:08,438 - INFO - [TTSWorker] - Processing TTS request: Goodbye! Have a great day....
+2025-03-27 15:10:08,438 - INFO - [TTSWorker] - Requesting TTS from server: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:10:09,766 - INFO - [TTSWorker] - Saving TTS audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmpa7caaxb1.wav
+2025-03-27 15:10:09,766 - INFO - [TTSWorker] - Playing audio file: C:\Users\Felix\AppData\Local\Temp\tmpa7caaxb1.wav
+2025-03-27 15:10:09,775 - ERROR - [TTSWorker] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpa7caaxb1.wav': Format not recognised.
+Traceback (most recent call last):
+  File "c:\Users\Felix\Documents\assistant\interfaces\StreamTTSPlayer.py", line 281, in _play_audio_file
+    data, samplerate = sf.read(file_path)
+                       ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 305, in read
+    with SoundFile(file, 'r', samplerate, channels,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmpa7caaxb1.wav': Format not recognised.
+2025-03-27 15:10:09,776 - INFO - [TTSWorker] - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpa7caaxb1.wav
+2025-03-27 15:10:09,776 - INFO - [TTSWorker] - TTS request completed (success=True)
+2025-03-27 15:12:40,902 - INFO - [MainThread] - Audio system initialized: sounddevice and soundfile available
+2025-03-27 15:12:43,584 - INFO - [MainThread] - Creating new StreamTTSPlayer instance
+2025-03-27 15:12:43,584 - INFO - [MainThread] - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:12:43,584 - INFO - [TTSWorker] - TTS worker thread started
+2025-03-27 15:12:43,584 - INFO - [MainThread] - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:12:43,585 - INFO - [MainThread] - Audio system initialized: sounddevice and soundfile available
+2025-03-27 15:12:43,585 - INFO - [MainThread] - Creating new StreamTTSPlayer instance
+2025-03-27 15:12:43,585 - INFO - [MainThread] - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:12:43,585 - INFO - [TTSWorker] - TTS worker thread started
+2025-03-27 15:12:43,585 - INFO - [MainThread] - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:12:43,586 - INFO - [MainThread] - Added to TTS queue: 'This is a test of the audio system'
+2025-03-27 15:12:43,586 - INFO - [TTSWorker] - Processing TTS request: This is a test of the audio system...
+2025-03-27 15:12:43,586 - INFO - [MainThread] - Waiting for TTS to finish (timeout=30.0s)
+2025-03-27 15:12:43,586 - INFO - [TTSWorker] - TTS Debug - Text: 'This is a test of the audio system'
+2025-03-27 15:12:43,586 - INFO - [MainThread] - Waiting for current TTS playback to finish
+2025-03-27 15:12:43,586 - INFO - [TTSWorker] - TTS Debug - Voice: male_01.wav, Language: en
+2025-03-27 15:12:43,586 - INFO - [TTSWorker] - TTS Debug - Server URL: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:12:43,586 - INFO - [TTSWorker] - Requesting TTS from server: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:12:44,962 - INFO - [TTSWorker] - Saving TTS audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmp6okpz872.wav
+2025-03-27 15:12:44,963 - INFO - [TTSWorker] - Playing audio file: C:\Users\Felix\AppData\Local\Temp\tmp6okpz872.wav
+2025-03-27 15:12:44,972 - ERROR - [TTSWorker] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmp6okpz872.wav': Format not recognised.
+Traceback (most recent call last):
+  File "c:\Users\Felix\Documents\assistant\interfaces\StreamTTSPlayer.py", line 281, in _play_audio_file
+    data, samplerate = sf.read(file_path)
+                       ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 305, in read
+    with SoundFile(file, 'r', samplerate, channels,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmp6okpz872.wav': Format not recognised.
+2025-03-27 15:12:44,973 - INFO - [TTSWorker] - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmp6okpz872.wav
+2025-03-27 15:12:44,974 - INFO - [TTSWorker] - TTS request completed (success=True)
+2025-03-27 15:12:44,974 - INFO - [MainThread] - TTS finished, safe to listen
+2025-03-27 15:12:59,269 - INFO - [MainThread] - Audio system initialized: sounddevice and soundfile available
+2025-03-27 15:13:01,788 - INFO - [MainThread] - Creating new StreamTTSPlayer instance
+2025-03-27 15:13:01,788 - INFO - [MainThread] - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:13:01,788 - INFO - [TTSWorker] - TTS worker thread started
+2025-03-27 15:13:01,788 - INFO - [MainThread] - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:13:01,789 - INFO - [MainThread] - Audio system initialized: sounddevice and soundfile available
+2025-03-27 15:13:01,789 - INFO - [MainThread] - Creating new StreamTTSPlayer instance
+2025-03-27 15:13:01,789 - INFO - [MainThread] - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:13:01,790 - INFO - [TTSWorker] - TTS worker thread started
+2025-03-27 15:13:01,790 - INFO - [MainThread] - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:13:01,790 - INFO - [MainThread] - Added to TTS queue: 'This is a test of the audio system'
+2025-03-27 15:13:01,790 - INFO - [TTSWorker] - Processing TTS request: This is a test of the audio system...
+2025-03-27 15:13:01,790 - INFO - [MainThread] - Waiting for TTS to finish (timeout=30.0s)
+2025-03-27 15:13:01,790 - INFO - [TTSWorker] - TTS Debug - Text: 'This is a test of the audio system'
+2025-03-27 15:13:01,790 - INFO - [MainThread] - Waiting for current TTS playback to finish
+2025-03-27 15:13:01,790 - INFO - [TTSWorker] - TTS Debug - Voice: male_01.wav, Language: en
+2025-03-27 15:13:01,790 - INFO - [TTSWorker] - TTS Debug - Server URL: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:13:01,790 - INFO - [TTSWorker] - Requesting TTS from server: http://localhost:7851/api/tts-generate-streaming
+2025-03-27 15:13:03,097 - INFO - [TTSWorker] - Saving TTS audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmp1yrhugix.wav
+2025-03-27 15:13:03,098 - INFO - [TTSWorker] - Playing audio file: C:\Users\Felix\AppData\Local\Temp\tmp1yrhugix.wav
+2025-03-27 15:13:03,109 - ERROR - [TTSWorker] - Error playing audio file: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmp1yrhugix.wav': Format not recognised.
+Traceback (most recent call last):
+  File "c:\Users\Felix\Documents\assistant\interfaces\StreamTTSPlayer.py", line 281, in _play_audio_file
+    data, samplerate = sf.read(file_path)
+                       ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 305, in read
+    with SoundFile(file, 'r', samplerate, channels,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 690, in __init__
+    self._file = self._open(file, mode_int, closefd)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Felix\AppData\Local\Programs\Python\Python312\Lib\site-packages\soundfile.py", line 1265, in _open
+    raise LibsndfileError(err, prefix="Error opening {0!r}: ".format(self.name))
+soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp\\tmp1yrhugix.wav': Format not recognised.
+2025-03-27 15:13:03,111 - INFO - [TTSWorker] - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmp1yrhugix.wav
+2025-03-27 15:13:03,111 - INFO - [TTSWorker] - TTS request completed (success=True)
+2025-03-27 15:13:03,111 - INFO - [MainThread] - TTS finished, safe to listen
+2025-03-27 15:26:33,373 - INFO - Audio player found: powershell -c (New-Object Media.SoundPlayer '{}'). PlaySync()
+2025-03-27 15:26:33,374 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:26:33,375 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:26:33,375 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:26:37,330 - INFO - Audio player found: powershell -c (New-Object Media.SoundPlayer '{}'). PlaySync()
+2025-03-27 15:26:37,331 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:26:37,331 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:26:37,331 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:33:09,645 - INFO - Audio player found: powershell -c (New-Object Media.SoundPlayer '{}'). PlaySync()
+2025-03-27 15:33:09,645 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:33:09,646 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:33:09,646 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:33:09,646 - INFO - Created streaming URL: http://localhost:7851/api/tts-generate-streaming?text=Hello%2C%20if%20you%20can%20hear%20this%20mess...
+2025-03-27 15:33:09,646 - INFO - Starting TTS for: 'Hello, if you can hear this message, the text to s...'
+2025-03-27 15:33:09,647 - INFO - Running audio player command: powershell -c (New-Object Media.SoundPlayer 'http://localhost:7851/api/tts-generate-streaming?text=Hello%2C%20if%20you%20can%20hear%20this%20message%2C%20the%20text%20to%20speech%20system%20is%20working%20correctly.&voice=male_01.wav&language=en&output_file=stream_1743114789.wav'). PlaySync()
+2025-03-27 15:33:09,648 - INFO - Waiting for TTS to finish (timeout=10s)
+2025-03-27 15:33:09,987 - INFO - Audio playback completed with return code: 1
+2025-03-27 15:33:09,987 - INFO - TTS finished, safe to listen
+2025-03-27 15:34:03,486 - INFO - Audio player found: powershell -c (New-Object Media.SoundPlayer '{}'). PlaySync()
+2025-03-27 15:34:03,487 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:34:03,487 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:34:03,487 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:34:03,487 - INFO - Created streaming URL: http://localhost:7851/api/tts-generate-streaming?text=Hello%2C%20if%20you%20can%20hear%20this%20mess...
+2025-03-27 15:34:03,487 - INFO - Starting TTS for: 'Hello, if you can hear this message, the text to s...'
+2025-03-27 15:34:03,487 - INFO - Running audio player command: powershell -c (New-Object Media.SoundPlayer 'http://localhost:7851/api/tts-generate-streaming?text=Hello%2C%20if%20you%20can%20hear%20this%20message%2C%20the%20text%20to%20speech%20system%20is%20working%20correctly.&voice=male_01.wav&language=en&output_file=stream_1743114843.wav'). PlaySync()
+2025-03-27 15:34:03,487 - INFO - Waiting for TTS to finish (timeout=10s)
+2025-03-27 15:34:03,692 - INFO - Audio playback completed with return code: 1
+2025-03-27 15:34:03,692 - INFO - TTS finished, safe to listen
+2025-03-27 15:34:29,008 - INFO - Audio player found: powershell -c (New-Object Media.SoundPlayer '{}'). PlaySync()
+2025-03-27 15:34:29,009 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:34:29,009 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:34:29,009 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:34:29,010 - INFO - Created streaming URL: http://localhost:7851/api/tts-generate-streaming?text=Hello%2C%20if%20you%20can%20hear%20this%20mess...
+2025-03-27 15:34:29,010 - INFO - Starting TTS for: 'Hello, if you can hear this message, the text to s...'
+2025-03-27 15:34:29,010 - INFO - Running audio player command: powershell -c (New-Object Media.SoundPlayer 'http://localhost:7851/api/tts-generate-streaming?text=Hello%2C%20if%20you%20can%20hear%20this%20message%2C%20the%20text%20to%20speech%20system%20is%20working%20correctly.&voice=male_01.wav&language=en&output_file=stream_1743114869.wav'). PlaySync()
+2025-03-27 15:34:29,012 - INFO - Waiting for TTS to finish (timeout=10s)
+2025-03-27 15:34:29,222 - INFO - Audio playback completed with return code: 1
+2025-03-27 15:34:29,222 - INFO - TTS finished, safe to listen
+2025-03-27 15:44:04,428 - INFO - Audio player found: powershell -c (New-Object Media.SoundPlayer '{}').PlaySync()
+2025-03-27 15:44:04,428 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:44:04,428 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:44:04,428 - INFO - Queue processor thread started
+2025-03-27 15:44:04,428 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:44:04,428 - INFO - Added to queue: 'Hello! This is a test of the text to speech system...'
+2025-03-27 15:44:04,537 - INFO - Sending GET request to http://localhost:7851/api/tts-generate-streaming?text=Hello%21%20This%20is%20a%2...
+2025-03-27 15:44:04,538 - INFO - Waiting for current playback to finish (timeout=14.890389204025269s)
+2025-03-27 15:44:04,947 - INFO - Saving audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmpd549brt_.wav
+2025-03-27 15:44:08,270 - INFO - Audio file size: 305196 bytes
+2025-03-27 15:44:08,270 - INFO - Playing audio with command: powershell -c (New-Object Media.SoundPlayer 'C:\Users\Felix\AppData\Local\Temp\tmpd549brt_.wav').PlaySync()
+2025-03-27 15:44:09,431 - INFO - Audio playback completed with return code: 0
+2025-03-27 15:44:09,431 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpd549brt_.wav
+2025-03-27 15:44:09,536 - INFO - Added to queue: 'This is the second test with a different voice....'
+2025-03-27 15:44:09,635 - INFO - Sending GET request to http://localhost:7851/api/tts-generate-streaming?text=This%20is%20the%20second%2...
+2025-03-27 15:44:09,636 - INFO - Waiting for current playback to finish (timeout=9.899040460586548s)
+2025-03-27 15:44:09,988 - INFO - Saving audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmp5g2p_viz.wav
+2025-03-27 15:44:11,219 - INFO - Audio file size: 115756 bytes
+2025-03-27 15:44:11,219 - INFO - Playing audio with command: powershell -c (New-Object Media.SoundPlayer 'C:\Users\Felix\AppData\Local\Temp\tmp5g2p_viz.wav').PlaySync()
+2025-03-27 15:44:11,594 - INFO - Audio playback completed with return code: 0
+2025-03-27 15:44:11,595 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmp5g2p_viz.wav
+2025-03-27 15:44:44,251 - INFO - Audio player found: powershell -c (New-Object Media.SoundPlayer '{}').PlaySync()
+2025-03-27 15:44:44,251 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:44:44,251 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:44:44,251 - INFO - Queue processor thread started
+2025-03-27 15:44:44,251 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:44:44,251 - INFO - Added to queue: 'Hello! This is a test of the text to speech system...'
+2025-03-27 15:44:44,354 - INFO - Sending GET request to http://localhost:7851/api/tts-generate-streaming?text=Hello%21%20This%20is%20a%2...
+2025-03-27 15:44:44,355 - INFO - Waiting for current playback to finish (timeout=14.896300792694092s)
+2025-03-27 15:44:44,711 - INFO - Saving audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmpeg_j_cgs.wav
+2025-03-27 15:44:46,961 - INFO - Audio file size: 222764 bytes
+2025-03-27 15:44:46,964 - INFO - Playing audio with command: powershell -c (New-Object Media.SoundPlayer 'C:\Users\Felix\AppData\Local\Temp\tmpeg_j_cgs.wav').PlaySync()
+2025-03-27 15:44:48,097 - INFO - Audio playback completed with return code: 0
+2025-03-27 15:44:48,103 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpeg_j_cgs.wav
+2025-03-27 15:44:48,204 - INFO - Added to queue: 'This is the second test with a different voice....'
+2025-03-27 15:44:48,305 - INFO - Sending GET request to http://localhost:7851/api/tts-generate-streaming?text=This%20is%20the%20second%2...
+2025-03-27 15:44:48,306 - INFO - Waiting for current playback to finish (timeout=9.89803147315979s)
+2025-03-27 15:44:48,656 - INFO - Saving audio to temporary file: C:\Users\Felix\AppData\Local\Temp\tmpakvzjyqy.wav
+2025-03-27 15:44:49,760 - INFO - Audio file size: 111660 bytes
+2025-03-27 15:44:49,760 - INFO - Playing audio with command: powershell -c (New-Object Media.SoundPlayer 'C:\Users\Felix\AppData\Local\Temp\tmpakvzjyqy.wav').PlaySync()
+2025-03-27 15:44:50,133 - INFO - Audio playback completed with return code: 0
+2025-03-27 15:44:50,133 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpakvzjyqy.wav
+2025-03-27 15:55:57,265 - INFO - ffplay found and available for audio playback
+2025-03-27 15:55:57,266 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:55:57,268 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:55:57,268 - INFO - Queue processor thread started
+2025-03-27 15:55:57,268 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 15:59:46,759 - INFO - ffplay found and available for audio playback
+2025-03-27 15:59:46,759 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 15:59:46,759 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 15:59:46,759 - INFO - Queue processor thread started
+2025-03-27 15:59:46,759 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 16:00:14,658 - INFO - Added to queue: 'Hey there! I'm doing great, thanks for asking.  Ho...'
+2025-03-27 16:00:14,734 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hey%20there%21%20I%27m%20d...
+2025-03-27 16:00:17,649 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpp345t8m9.wav (256556 bytes)
+2025-03-27 16:00:17,651 - INFO - Playing audio with ffplay...
+2025-03-27 16:00:23,390 - INFO - Audio played successfully!
+2025-03-27 16:00:23,391 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpp345t8m9.wav
+2025-03-27 16:00:27,632 - INFO - Added to queue: 'Hey!  Anything I can assist you with?...'
+2025-03-27 16:00:27,714 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hey%21%20%20Anything%20I%2...
+2025-03-27 16:00:29,351 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmppwdkgnph.wav (113708 bytes)
+2025-03-27 16:00:29,353 - INFO - Playing audio with ffplay...
+2025-03-27 16:00:32,000 - ERROR - ffplay returned code 3221225786
+2025-03-27 16:00:32,001 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmppwdkgnph.wav
+2025-03-27 16:16:48,818 - INFO - ffplay found and available for audio playback
+2025-03-27 16:16:48,820 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 16:16:48,822 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 16:16:48,824 - INFO - Queue processor thread started
+2025-03-27 16:16:48,824 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 16:19:33,345 - INFO - ffplay found and available for audio playback
+2025-03-27 16:19:33,346 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 16:19:33,347 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 16:19:33,349 - INFO - Queue processor thread started
+2025-03-27 16:19:33,349 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 16:19:58,282 - INFO - Added to queue: 'Hey there! How can I help you today?...'
+2025-03-27 16:19:58,327 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hey%20there%21%20How%20can...
+2025-03-27 16:19:58,384 - INFO - Waiting for current playback to finish (timeout=59.89803743362427s)
+2025-03-27 16:19:59,849 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmp6mfqp3id.wav (102444 bytes)
+2025-03-27 16:19:59,849 - INFO - Playing audio with ffplay...
+2025-03-27 16:20:02,676 - INFO - Audio played successfully!
+2025-03-27 16:20:02,677 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmp6mfqp3id.wav
+2025-03-27 16:20:10,977 - INFO - Added to queue: 'I'm doing great, thanks for asking!  Ready to assi...'
+2025-03-27 16:20:11,020 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=I%27m%20doing%20great%2C%2...
+2025-03-27 16:20:11,080 - INFO - Waiting for current playback to finish (timeout=59.89824295043945s)
+2025-03-27 16:20:13,434 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpvw7rhu6w.wav (200748 bytes)
+2025-03-27 16:20:13,434 - INFO - Playing audio with ffplay...
+2025-03-27 16:20:18,158 - INFO - Audio played successfully!
+2025-03-27 16:20:18,158 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpvw7rhu6w.wav
+2025-03-27 16:20:25,719 - INFO - Added to queue: 'My name is Cypher.  Is there anything else I can h...'
+2025-03-27 16:20:25,795 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=My%20name%20is%20Cypher.%2...
+2025-03-27 16:20:25,821 - INFO - Waiting for current playback to finish (timeout=59.89798164367676s)
+2025-03-27 16:20:27,835 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpn_m3jn3h.wav (160300 bytes)
+2025-03-27 16:20:27,835 - INFO - Playing audio with ffplay...
+2025-03-27 16:20:31,807 - INFO - Audio played successfully!
+2025-03-27 16:20:31,807 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpn_m3jn3h.wav
+2025-03-27 16:20:41,211 - INFO - Added to queue: 'I'm glad I could help clarify that!  Is there anyt...'
+2025-03-27 16:20:41,257 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=I%27m%20glad%20I%20could%2...
+2025-03-27 16:20:41,313 - INFO - Waiting for current playback to finish (timeout=59.89901566505432s)
+2025-03-27 16:20:44,042 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpdhunzjdf.wav (238636 bytes)
+2025-03-27 16:20:44,043 - INFO - Playing audio with ffplay...
+2025-03-27 16:20:49,631 - INFO - Audio played successfully!
+2025-03-27 16:20:49,631 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpdhunzjdf.wav
+2025-03-27 16:20:57,488 - INFO - Added to queue: 'You're welcome! Have a great day, and see you soon...'
+2025-03-27 16:20:57,573 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=You%27re%20welcome%21%20Ha...
+2025-03-27 16:20:57,595 - INFO - Waiting for current playback to finish (timeout=59.89330697059631s)
+2025-03-27 16:21:00,198 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpkb5nflly.wav (207404 bytes)
+2025-03-27 16:21:00,198 - INFO - Playing audio with ffplay...
+2025-03-27 16:21:05,112 - INFO - Audio played successfully!
+2025-03-27 16:21:05,113 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpkb5nflly.wav
+2025-03-27 16:29:43,055 - INFO - ffplay found and available for audio playback
+2025-03-27 16:29:43,055 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 16:29:43,056 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 16:29:43,057 - INFO - Queue processor thread started
+2025-03-27 16:29:43,058 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 16:38:25,877 - INFO - ffplay found and available for audio playback
+2025-03-27 16:38:25,879 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 16:38:25,879 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 16:38:25,879 - INFO - Queue processor thread started
+2025-03-27 16:38:25,879 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 16:38:53,950 - INFO - Added to queue: 'Well hello there!  Things are going swimmingly her...'
+2025-03-27 16:38:54,017 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Well%20hello%20there%21%20...
+2025-03-27 16:38:54,052 - INFO - Waiting for current playback to finish (timeout=59.899757862091064s)
+2025-03-27 16:38:57,423 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmppm8m6q30.wav (298540 bytes)
+2025-03-27 16:38:57,423 - INFO - Playing audio with ffplay...
+2025-03-27 16:39:04,356 - INFO - Audio played successfully!
+2025-03-27 16:39:04,356 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmppm8m6q30.wav
+2025-03-27 16:39:10,837 - INFO - Added to queue: 'Great!  Let me know if you need anything.  I can t...'
+2025-03-27 16:39:10,895 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Great%21%20%20Let%20me%20k...
+2025-03-27 16:39:10,939 - INFO - Waiting for current playback to finish (timeout=59.89854073524475s)
+2025-03-27 16:39:15,961 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpskx58i7g.wav (472620 bytes)
+2025-03-27 16:39:15,962 - INFO - Playing audio with ffplay...
+2025-03-27 16:39:27,014 - INFO - Audio played successfully!
+2025-03-27 16:39:27,015 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpskx58i7g.wav
+2025-03-27 16:42:03,241 - INFO - ffplay found and available for audio playback
+2025-03-27 16:42:03,242 - INFO - Creating new StreamTTSPlayer instance
+2025-03-27 16:42:03,242 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-03-27 16:42:03,243 - INFO - Queue processor thread started
+2025-03-27 16:42:03,243 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-03-27 16:42:44,765 - INFO - Added to queue: 'Hey there!  Anything I can assist you with today?...'
+2025-03-27 16:42:44,858 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Hey%20there%21%20%20Anythi...
+2025-03-27 16:42:44,866 - INFO - Waiting for current playback to finish (timeout=59.89871644973755s)
+2025-03-27 16:42:46,848 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpwp_u1x08.wav (151596 bytes)
+2025-03-27 16:42:46,848 - INFO - Playing audio with ffplay...
+2025-03-27 16:42:50,540 - INFO - Audio played successfully!
+2025-03-27 16:42:50,541 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpwp_u1x08.wav
+2025-03-27 16:42:56,330 - INFO - Added to queue: 'That's cool!  I'm always here if you need anything...'
+2025-03-27 16:42:56,363 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=That%27s%20cool%21%20%20I%...
+2025-03-27 16:42:56,431 - INFO - Waiting for current playback to finish (timeout=59.89846396446228s)
+2025-03-27 16:43:01,871 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmplf1i2wzk.wav (517164 bytes)
+2025-03-27 16:43:01,871 - INFO - Playing audio with ffplay...
+2025-03-27 16:43:13,882 - INFO - Audio played successfully!
+2025-03-27 16:43:13,883 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmplf1i2wzk.wav
+2025-03-27 16:43:19,578 - INFO - Added to queue: 'Okay, cool.  Want me to put on some relaxing music...'
+2025-03-27 16:43:19,610 - INFO - Requesting audio from server: http://localhost:7851/api/tts-generate-streaming?text=Okay%2C%20cool.%20%20Want%...
+2025-03-27 16:43:19,679 - INFO - Waiting for current playback to finish (timeout=59.898696184158325s)
+2025-03-27 16:43:23,063 - INFO - Downloaded audio file: C:\Users\Felix\AppData\Local\Temp\tmpqfahywvb.wav (296492 bytes)
+2025-03-27 16:43:23,063 - INFO - Playing audio with ffplay...
+2025-03-27 16:43:26,751 - ERROR - ffplay returned code 3221225786
+2025-03-27 16:43:26,753 - INFO - Temporary file removed: C:\Users\Felix\AppData\Local\Temp\tmpqfahywvb.wav

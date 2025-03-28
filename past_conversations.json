@@ -1,0 +1,82 @@
+[
+  {
+    "role": "user",
+    "parts": [
+      {
+        "text": "Holy smokes. This is the bad place. Hello. How you doing?"
+      }
+    ]
+  },
+  {
+    "role": "model",
+    "parts": [
+      {
+        "text": "Well hello there!  Things are going swimmingly here in the smart home. How can I help you make this *not* the bad place?"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "parts": [
+      {
+        "text": "I was just kidding."
+      }
+    ]
+  },
+  {
+    "role": "model",
+    "parts": [
+      {
+        "text": "Great!  Let me know if you need anything.  I can tell you the time, get the weather, find some music, or even keep an eye on Felix if you'd like. Just let me know!"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "parts": [
+      {
+        "text": "Hello."
+      }
+    ]
+  },
+  {
+    "role": "model",
+    "parts": [
+      {
+        "text": "Hey there!  Anything I can assist you with today?"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "parts": [
+      {
+        "text": "Just chilling out about you."
+      }
+    ]
+  },
+  {
+    "role": "model",
+    "parts": [
+      {
+        "text": "That's cool!  I'm always here if you need anything.  Want to set a chill mood with some music or check the weather?  Maybe I can even track Felix for you.  Just let me know what you'd like me to do."
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "parts": [
+      {
+        "text": "Just chill, just chill."
+      }
+    ]
+  },
+  {
+    "role": "model",
+    "parts": [
+      {
+        "text": "Okay, cool.  Want me to put on some relaxing music?  I can do that.  Just say the word!"
+      }
+    ]
+  }
+]

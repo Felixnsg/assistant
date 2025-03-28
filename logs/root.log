@@ -1,0 +1,4 @@
+2025-03-27 16:38:36,240 - ERROR - [root] - Connection refused by server (ws://localhost:8765). Is the detection server running?
+2025-03-27 16:38:36,240 - ERROR - [root] - Failed to connect to server. Cannot start tracking.
+2025-03-27 16:42:13,706 - ERROR - [root] - Connection refused by server (ws://localhost:8765). Is the detection server running?
+2025-03-27 16:42:13,707 - ERROR - [root] - Failed to connect to server. Cannot start tracking.
