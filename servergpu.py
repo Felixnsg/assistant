@@ -2,10 +2,16 @@
 import os
 import io
 import base64
+import logging
+import multiprocessing
+
+# IMPORTANT: Set the multiprocessing start method to 'spawn' before any imports that use torch
+# This fixes the "Cannot re-initialize CUDA in forked subprocess" error
+multiprocessing.set_start_method('spawn', force=True)
+
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import torch
-import logging
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -23,29 +29,48 @@ else:
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# Import RealtimeTTS after checking for GPU to ensure proper device assignment
-from RealtimeTTS import TextToAudioStream
-# Choose the appropriate engine based on GPU capability
-# CoquiEngine is good for high-quality local synthesis with GPU acceleration
-from RealtimeTTS import CoquiEngine, PiperEngine, SystemEngine
-
-# Initialize TTS engine with GPU support
-try:
-    logger.info("Initializing CoquiEngine (primary choice for GPU)...")
-    engine = CoquiEngine(device=device)
-    logger.info("CoquiEngine initialized successfully")
-except Exception as e:
-    logger.error(f"Failed to initialize CoquiEngine: {e}")
+# Try different TTS engines in order of preference
+def init_tts_engine():
+    # Initialize with a simple engine that always works
+    from RealtimeTTS import SystemEngine
+    current_engine = SystemEngine()
+    engine_name = "SystemEngine"
+    
+    # Try to load better engines if possible
     try:
-        logger.info("Falling back to PiperEngine...")
-        # Default to a standard Piper voice model
-        engine = PiperEngine()
+        from RealtimeTTS import GTTSEngine
+        logger.info("Initializing GTTSEngine...")
+        current_engine = GTTSEngine()
+        engine_name = "GTTSEngine"
+        logger.info("GTTSEngine initialized successfully")
+    except Exception as e:
+        logger.warning(f"Failed to initialize GTTSEngine: {e}")
+
+    # Only try CoquiEngine if we have CUDA
+    if device == "cuda":
+        try:
+            from RealtimeTTS import CoquiEngine
+            logger.info("Initializing CoquiEngine with CUDA...")
+            current_engine = CoquiEngine(device=device)
+            engine_name = "CoquiEngine (GPU accelerated)"
+            logger.info("CoquiEngine initialized successfully")
+        except Exception as e:
+            logger.warning(f"Failed to initialize CoquiEngine: {e}")
+
+    try:
+        from RealtimeTTS import PiperEngine
+        logger.info("Initializing PiperEngine...")
+        current_engine = PiperEngine()
+        engine_name = "PiperEngine"
         logger.info("PiperEngine initialized successfully")
     except Exception as e:
-        logger.error(f"Failed to initialize PiperEngine: {e}")
-        logger.info("Falling back to SystemEngine...")
-        engine = SystemEngine()
-        logger.info("SystemEngine initialized successfully")
+        logger.warning(f"Failed to initialize PiperEngine: {e}")
+            
+    return current_engine, engine_name
+
+# Initialize the TTS engine
+engine, engine_name = init_tts_engine()
+logger.info(f"Using {engine_name} for text-to-speech")
 
 @app.route('/tts', methods=['POST'])
 def text_to_speech():
@@ -62,6 +87,9 @@ def text_to_speech():
         # Configure engine if voice is specified
         if voice and hasattr(engine, 'set_voice'):
             engine.set_voice(voice)
+        
+        # Import here to avoid circular imports
+        from RealtimeTTS import TextToAudioStream
         
         # Create a stream to a file instead of playing
         stream = TextToAudioStream(engine, muted=True)
@@ -84,23 +112,48 @@ def text_to_speech():
     
     except Exception as e:
         logger.error(f"Error in text_to_speech: {e}")
-        return jsonify({'error': str(e)}), 500
+        
+        # Fallback to gTTS if RealtimeTTS fails
+        try:
+            from gtts import gTTS
+            memory_file = io.BytesIO()
+            tts = gTTS(text=text, lang='en')
+            tts.write_to_fp(memory_file)
+            memory_file.seek(0)
+            
+            logger.info("Falling back to gTTS for this request")
+            
+            return send_file(
+                memory_file,
+                mimetype='audio/mp3',
+                as_attachment=True,
+                download_name='tts_output.mp3'
+            )
+        except Exception as fallback_error:
+            logger.error(f"Fallback also failed: {fallback_error}")
+            return jsonify({'error': str(e), 'fallback_error': str(fallback_error)}), 500
 
 @app.route('/voices', methods=['GET'])
 def list_voices():
     try:
         if hasattr(engine, 'list_voices'):
             voices = engine.list_voices()
-            return jsonify({'voices': voices})
+            return jsonify({'voices': voices, 'engine': engine_name})
         else:
-            return jsonify({'voices': ["default"]})
+            return jsonify({'voices': ["default"], 'engine': engine_name})
     except Exception as e:
         logger.error(f"Error in list_voices: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    return jsonify({'status': 'ok', 'device': device})
+    return jsonify({
+        'status': 'ok', 
+        'device': device, 
+        'engine': engine_name,
+        'cuda_available': torch.cuda.is_available(),
+        'cuda_device': torch.cuda.get_device_name(0) if torch.cuda.is_available() else None
+    })
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
