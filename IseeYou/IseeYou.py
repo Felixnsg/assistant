@@ -187,7 +187,7 @@ class FelixTrackingClient:
                 ]
                 
                 # Create box annotator with custom colors
-                box_annotator = sv.BoundingBoxAnnotator.annotate(
+                box_annotator = sv.BoundingBoxAnnotator(
                     thickness=2,
                     color_lookup=lambda class_id: (0, 255, 0) if class_id == 0 else (0, 0, 255)  # Green for Felix, Red for others
                 )
