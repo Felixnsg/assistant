@@ -9,6 +9,7 @@ asyncio>=3.4.3
 
 # YOLOv8 for person detection
 ultralytics>=8.0.0
+supervision>=0.18.0
 
 # Face recognition
 facenet-pytorch>=2.5.3

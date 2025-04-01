@@ -31,7 +31,7 @@ except ImportError as e:
      logging.error(f"Error importing config module: {e}. Ensure config.py exists.", exc_info=True)
      # Use defaults if config import fails, or exit
      class config: # Dummy class with defaults
-         FELIX_SERVER_URL = "ws://localhost:8765"
+         FELIX_SERVER_URL = "ws://localhost:8000"
          FELIX_VIDEO_SOURCE = "0"
          # Add other needed defaults for tracker params if not hardcoded
      logging.warning("Using default configuration values as config.py could not be imported.")

@@ -109,7 +109,7 @@ YOUTUBE_MOOD_URL = "https://www.youtube.com/watch?v=ztVV54sPOns&t=461s"
 NUMBER_STORIES = 3
 
 # --- Vision System (IseeYou & GPU Server) ---
-FELIX_SERVER_URL = os.getenv("FELIX_SERVER_URL", "ws://localhost:8765")
+FELIX_SERVER_URL = os.getenv("FELIX_SERVER_URL", "ws://localhost:8080")
 FELIX_VIDEO_SOURCE = os.getenv("FELIX_VIDEO_SOURCE", "0")  # Can be "0", "1", etc. for webcam, or a file/URL
 FELIX_RECOGNIZER_THRESHOLD = 0.6
 PERSON_DETECTION_THRESHOLD = 0.6
