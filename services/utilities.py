@@ -38,7 +38,6 @@ try:
     import config
     from core import nlp # Assumed LlpCall class is needed if follow-up calls remained (they are removed for now)
     # from interfaces import streamaudio # Assumed needed for .say() if used directly (removed for now)
-    from interfaces import chat # Assumed needed for data_prep if used directly (removed for now)
     # --- REFACTOR: Import Felix client for control ---
     from IseeYou.IseeYou import FelixTrackingClient # Import the class definition
 except ImportError as e:
@@ -65,10 +64,8 @@ class Utilities:
     """
     Handles execution of various utility services triggered by the ChatManager.
     """
-    # --- REFACTOR: Updated init signature, removed self.convos, added isee_client ---
     def __init__(self,
                  config_instance: Any,
-                 isee_client_instance: FelixTrackingClient,
                  nlp_instance: Optional[nlp.LlpCall] = None, # Optional, may not be needed directly
                  chat_instance: Optional[Any] = None): # Optional, avoid tight coupling if possible
         """
@@ -76,7 +73,6 @@ class Utilities:
 
         Args:
             config_instance: The loaded configuration module or object.
-            isee_client_instance (FelixTrackingClient): An instance of the tracking client.
             nlp_instance (Optional[nlp.LlpCall]): Instance for LLM calls (potentially removed).
             chat_instance (Optional[Any]): Instance of ChatManager (potentially removed).
         """
@@ -84,7 +80,6 @@ class Utilities:
         self.config = config_instance
         self.nlp = nlp_instance # Store if needed, but aim to remove direct use
         self.chat = chat_instance # Store if needed, but aim to remove direct use
-        self.isee_client = isee_client_instance # Store the Felix client instance
 
         # --- REFACTOR: Removed self.location and self.weather_info ---
         # Location should be passed per request, weather info returned by function
@@ -276,38 +271,6 @@ class Utilities:
              return True # Nothing to stop
 
 
-    # --- REFACTOR: Video service execution methods ---
-    async def _execute_start_video(self) -> bool:
-        """(Internal) Starts the Felix video tracking client."""
-        logging.info("Executing: Start Video Tracking")
-        if not self.isee_client:
-            logging.error("Cannot start video: FelixTrackingClient instance not available.")
-            return False
-        try:
-            success = await self.isee_client.start_tracking()
-            if success:
-                 logging.info("FelixTrackingClient started successfully.")
-                 return True
-            else:
-                 logging.warning("FelixTrackingClient start_tracking() returned False.")
-                 return False
-        except Exception as e:
-             logging.error(f"Error calling start_tracking on FelixTrackingClient: {e}", exc_info=True)
-             return False
-
-    async def _execute_stop_video(self) -> bool:
-        """(Internal) Stops the Felix video tracking client."""
-        logging.info("Executing: Stop Video Tracking")
-        if not self.isee_client:
-            logging.error("Cannot stop video: FelixTrackingClient instance not available.")
-            return False
-        try:
-            await self.isee_client.stop_tracking() # stop_tracking is now async
-            logging.info("FelixTrackingClient stopped successfully.")
-            return True
-        except Exception as e:
-             logging.error(f"Error calling stop_tracking on FelixTrackingClient: {e}", exc_info=True)
-             return False
 
 
     # --- REFACTOR: Central service dispatcher ---

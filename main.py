@@ -1,5 +1,4 @@
 # File: main.py
-# --- REFACTOR: Renamed from main_app.py ---
 """
 Main entry point for the Smart Assistant application.
 
@@ -10,11 +9,9 @@ interaction loop managed by the ChatManager. Handles graceful shutdown.
 
 import threading
 import asyncio
-import time
 import sys
 import os
-import traceback
-import logging # --- REFACTOR: Added logging ---
+import logging
 from typing import Optional
 import config
 
@@ -30,8 +27,6 @@ def setup_logging(log_dir="logs", default_level=logging.INFO):
     # Define log format
     log_formatter = logging.Formatter(
         '%(asctime)s - %(levelname)s - [%(name)s] - %(message)s'
-        # Removed threadName for slightly cleaner logs, add back if needed:
-        # '%(asctime)s - %(levelname)s - [%(threadName)s/%(name)s] - %(message)s'
     )
 
     # --- Define loggers and their corresponding files ---
@@ -71,7 +66,7 @@ def setup_logging(log_dir="logs", default_level=logging.INFO):
             # Add the new file handler
             logger.addHandler(file_handler)
 
-            # --- Crucial: Prevent propagation to root logger ---
+            # Crucial: Prevent propagation to root logger ---
             logger.propagate = False
             configured_loggers.append(logger_name)
 
@@ -90,7 +85,6 @@ def setup_logging(log_dir="logs", default_level=logging.INFO):
 
     print(f"Configured file logging for: {', '.join(configured_loggers)}") # Keep this print
 
-# --- REFACTOR: Standardize imports and path handling ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # --- Call logging setup EARLY ---
@@ -99,7 +93,6 @@ log_level_str = getattr(config, 'LOG_LEVEL', 'INFO').upper()
 log_level = getattr(logging, log_level_str, logging.INFO)
 setup_logging(default_level=log_level) # Use configured level
 
-# --- Now get the logger for main.py itself ---
 logger = logging.getLogger(__name__) # Use __name__ for the current module
 
 
@@ -112,7 +105,6 @@ try:
 except ImportError as e:
     print(f"Speech module import failed: {e}")
 
-# --- REFACTOR: Standardize imports and path handling ---
 # Ensure root project directory is in path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -124,13 +116,11 @@ try:
     from IseeYou.IseeYou import FelixTrackingClient # Assuming IseeYou.py is in IseeYou/
     import config # Your configuration file (config.py)
 except ImportError as e:
-     # --- REFACTOR: Use logging for critical errors ---
      logging.critical(f"FATAL: Failed to import core modules: {e}", exc_info=True)
      logging.critical("Please ensure core/, interfaces/, services/, IseeYou/, and config.py are accessible.")
      sys.exit(1)
 
 
-# --- REFACTOR: Configure logging ---
 # Setup basic logging config. Consider moving to a dedicated logging config function/file.
 log_level = getattr(config, 'LOG_LEVEL', 'INFO').upper() # Allow configuring level via config.py
 logging.basicConfig(level=log_level,
@@ -138,40 +128,10 @@ logging.basicConfig(level=log_level,
                     handlers=[logging.StreamHandler(sys.stdout)]) # Ensure logs go to stdout
 
 
-# --- REFACTOR: Shutdown signal using asyncio.Event for the main async loop ---
 # Keep threading.Event for signaling the separate Felix client thread if needed,
 # although calling client.shutdown() should be the primary mechanism.
 # Using only client.shutdown() might be sufficient. Let's try that first.
 # shutdown_event = asyncio.Event() # For main async loop coordination if needed
-
-# --- REFACTOR: Simplified Felix client runner ---
-def run_felix_client_thread(client_instance: FelixTrackingClient):
-    """Target function for the Felix client thread."""
-    thread_name = threading.current_thread().name
-    logging.info(f"Starting FelixTrackingClient thread '{thread_name}'...")
-    try:
-        # Create an asyncio loop for this thread
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
-        # Use client's video source attribute
-        video_source = client_instance.video_source
-        logging.info(f"Thread '{thread_name}' starting client.start_tracking() with source: {video_source}")
-        
-        # Start tracking (non-blocking)
-        started = loop.run_until_complete(client_instance.start_tracking(video_source=video_source))
-        
-        if started:
-            # Keep thread running until client signals shutdown
-            while client_instance._is_running:
-                loop.run_until_complete(asyncio.sleep(1))
-        else:
-            logging.error(f"Failed to start tracking in thread '{thread_name}'")
-            
-    except Exception as e:
-        logging.error(f"Error in Felix client thread '{thread_name}': {e}", exc_info=True)
-    finally:
-        logging.info(f"Felix client thread '{thread_name}' finished.")
 
 async def main():
     """Main asynchronous entry point: Initializes components and runs the application."""
@@ -195,38 +155,12 @@ async def main():
         memory_instance = Memory(system_prompt=config.SYSTEM_PROMPT)
         logging.info("NLP and Memory initialized.")
 
-        # --- Initialize FelixTrackingClient ---
-        logging.info("Initializing Felix Tracking Client...")
-        # server_url is now fetched from config inside FelixTrackingClient init
-        isee_client = FelixTrackingClient(server_url=config.FELIX_SERVER_URL)
-        # Basic check if tracker component failed internal init
-        if isee_client.byte_tracker is None:
-             raise RuntimeError("FelixTrackingClient failed internal initialization (ByteTrack). Cannot proceed.")
-        logging.info("Felix Tracking Client initialized.")
-
-        # --- Start FelixTrackingClient in Background Thread ---
-        logging.info("Starting Felix Tracking Client thread...")
-        client_thread = threading.Thread(
-            target=run_felix_client_thread,
-            args=(isee_client,), # Pass only the client instance
-            name="FelixClientThread", # Give the thread a name
-            daemon=True # Allows main program to exit even if this thread is running (though we join on shutdown)
-        )
-        client_thread.start()
-
-        # Give the client a moment to start up (optional, but can help avoid race conditions)
-        await asyncio.sleep(2)
-        if not client_thread.is_alive():
-            logging.warning("Felix client thread did not stay alive after starting. Check client logs.")
-            # Decide if this is critical - maybe connection failed immediately?
-
         # --- Initialize Utilities and ChatManager (pass the client instance) ---
         logging.info("Initializing Utilities and Chat Manager...")
         # Note: Utilities now requires isee_client
         utilities_instance = Utilities(
             config_instance=config,
-            isee_client_instance=isee_client,
-            nlp_instance=nlp_instance, # Pass nlp if needed by utilities (currently not)
+            nlp_instance=nlp_instance
             # chat_instance=None # Avoid circular dependency if possible
         )
 
@@ -235,10 +169,8 @@ async def main():
             nlp_instance=nlp_instance,
             config_instance=config,
             utilities_instance=utilities_instance, # Pass utilities instance
-            isee_client_instance=isee_client # Pass Felix client instance
         )
-        # If Utilities needs ChatManager after init (try to avoid):
-        # utilities_instance.chat = chat_instance
+
         logging.info("Utilities and Chat Manager initialized.")
 
 
@@ -251,7 +183,7 @@ async def main():
         while True: # Loop indefinitely until 'exit' or shutdown signal
             if first_prompt:
                 try:
-                    # Run blocking input in a separate thread to not block asyncio loop
+                    # Run blocking input in a separate thread to not block the asyncio loop that looks like we removed. (I believe the tracking)
                     choice = await asyncio.to_thread(
                         input, "Options: [Enter] to start, 'delete' memory, 'exit': "
                     )
@@ -267,7 +199,7 @@ async def main():
                         logging.info("Exit choice received on initial prompt.")
                         break # Exit the main loop
                     # Any other input (including Enter) just continues
-                    first_prompt = False # Don't ask again in this session
+                    first_prompt = False # Don't ask again in this session, if the user wanna delete something, he needs to restart the session.
 
                 except EOFError:
                     logging.info("Input stream closed (EOF). Exiting.")
@@ -302,34 +234,14 @@ async def main():
     finally:
         logging.info("\n--- Starting Application Cleanup ---")
 
-        # 1. Signal Felix client to stop its loops gracefully
-        if isee_client:
-            logging.info("Signaling Felix client thread to shutdown...")
-            isee_client.shutdown() # Call the client's shutdown method
 
-        # 2. Cleanup Utilities (e.g., close Selenium browser)
+        # 1. Cleanup Utilities (e.g., close Selenium browser)
         if utilities_instance and hasattr(utilities_instance, 'cleanup'):
             logging.info("Cleaning up Utilities...")
             try:
                  utilities_instance.cleanup()
             except Exception as e:
                  logging.error(f"Error during Utilities cleanup: {e}", exc_info=True)
-
-        # 3. Wait briefly for the client thread to finish
-        if client_thread and client_thread.is_alive():
-            logging.info("Waiting for Felix client thread to join...")
-            # Run join in a separate thread to avoid blocking asyncio loop if join takes time
-            try:
-                 await asyncio.to_thread(client_thread.join, timeout=7.0) # Increased timeout slightly
-            except TimeoutError:
-                 logging.warning("Timeout waiting for Felix client thread to join.")
-            except Exception as e:
-                 logging.error(f"Error joining Felix client thread: {e}", exc_info=True)
-
-            if client_thread.is_alive():
-                 logging.warning("Felix client thread did not exit cleanly after shutdown signal and join timeout.")
-
-        # Add any other cleanup needed (e.g., closing global resources)
 
         logging.info("--- Application Shutdown Complete ---")
 

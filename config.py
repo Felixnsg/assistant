@@ -123,7 +123,7 @@ WHISPER_API_URL = os.getenv("WHISPER_API_URL", "http://localhost:5001/transcribe
 DEFAULT_STT_METHOD = os.getenv("DEFAULT_STT_METHOD", "whisper_api")  # Example
 
 # --- TTS Configuration ---
-DEFAULT_TTS_ENGINE = os.getenv("DEFAULT_TTS_ENGINE", "alltalk_tts")  # e.g., 'pyttsx3', 'google', 'elevenlab', 'edge', 'aws', 'alltalk_tts'
+DEFAULT_TTS_ENGINE = os.getenv("DEFAULT_TTS_ENGINE", "edge")  # e.g., 'pyttsx3', 'google', 'elevenlab', 'edge', 'aws', 'alltalk_tts'
 PYTTSX3_RATE = 150
 ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "pFZP5JQG7iQjIQuC4Bku")  # Example
 ELEVENLABS_MODEL_ID = "eleven_multilingual_v2"

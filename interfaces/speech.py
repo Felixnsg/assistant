@@ -242,40 +242,12 @@ def elevenlabs_tts_text_to_speech(ai_response: str) -> bool:
         print(f"An unexpected error occurred in elevenlabs_tts_text_to_speech: {e}")
         return False
 
-async def _edge_tts_save_to_mp3(text: str, filename: str = TTS_OUTPUT_MP3) -> Optional[str]:
-    """
-    Async helper to synthesize text using Edge TTS and save to an MP3 file.
-
-    Args:
-        text (str): The cleaned text to synthesize.
-        filename (str): Path to save the MP3 file.
-
-    Returns:
-        Optional[str]: The filename if successful, None otherwise.
-    """
-    try:
-        communicate = edge_tts.Communicate(text, config.EDGE_TTS_VOICE)
-        try:
-            if os.path.exists(filename):
-                os.remove(filename)
-            await communicate.save(filename)
-            return filename
-        except PermissionError:
-             print(f"Error: Permission denied saving Edge TTS file to '{filename}'.")
-             return None
-        except Exception as e: # Catch edge_tts specific save errors if any documented
-             print(f"Error saving Edge TTS output to '{filename}': {e}")
-             return None
-    except Exception as e:
-        print(f"Error during Edge TTS communication/synthesis: {e}")
-        return None
-
-# --- REFACTOR: Renamed, added type hinting, improved error handling ---
 def edge_tts_text_to_speech(ai_response: str, output_file: str = TTS_OUTPUT_MP3) -> bool:
     """
     Microsoft Edge TTS using the edge-tts library (requires internet).
-
-    Saves speech to an MP3 file and plays it.
+    
+    Uses a simple subprocess approach instead of async/await for consistency
+    with other TTS engines.
 
     Args:
         ai_response (str): The text to synthesize.
@@ -291,51 +263,72 @@ def edge_tts_text_to_speech(ai_response: str, output_file: str = TTS_OUTPUT_MP3)
     try:
         cleaned_text = clean_text_for_tts(ai_response)
         print(f"Edge TTS Synthesizing: {cleaned_text[:100]}...")
-
+        
+        # Create a temporary file for the text
+        import tempfile
+        text_file = tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", suffix=".txt")
+        text_file.write(cleaned_text)
+        text_file.close()
+        
+        # Create a unique output filename if not specified
+        if os.path.exists(output_file):
+            try:
+                os.remove(output_file)
+            except Exception as e:
+                print(f"Warning: Could not remove existing TTS file '{output_file}': {e}")
+                output_file = tempfile.mktemp(suffix='.mp3')  # Use a different file
+        
+        # Use subprocess to run edge-tts command-line tool
+        import subprocess
+        edge_tts_cmd = [
+            "edge-tts",
+            "--voice", config.EDGE_TTS_VOICE,
+            "--file", text_file.name,
+            "--write-media", output_file
+        ]
+        
+        print("Running Edge TTS subprocess...")
+        process = subprocess.run(
+            edge_tts_cmd, 
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        
+        # Clean up the temporary text file
         try:
-            # Get existing loop or create a new one if needed
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                filename = asyncio.run(_edge_tts_save_to_mp3(cleaned_text, output_file))
-            else:
-                filename = loop.run_until_complete(_edge_tts_save_to_mp3(cleaned_text, output_file))
-
-        except RuntimeError as e:
-            print(f"Asyncio loop error: {e}. Trying asyncio.run directly.")
+            os.unlink(text_file.name)
+        except Exception as e:
+            print(f"Warning: Could not remove temporary text file: {e}")
+        
+        # Check if output file was created
+        if os.path.exists(output_file):
+            print(f"Edge TTS Playing '{output_file}'...")
             try:
-                filename = asyncio.run(_edge_tts_save_to_mp3(cleaned_text, output_file))
-            except Exception as run_e:
-                print(f"Failed to run Edge TTS synthesis: {run_e}")
-                return False
-        except Exception as e: # Catch errors during async execution
-            print(f"Error running Edge TTS synthesis task: {e}")
-            return False
-
-
-        if filename and os.path.exists(filename):
-            print(f"Edge TTS Playing '{filename}'...")
-            try:
-                playsound(filename)
+                playsound(output_file)
                 print("Edge TTS Finished Playing.")
                 return True
             except Exception as e:
-                print(f"Error playing sound file '{filename}' with playsound: {e}")
+                print(f"Error playing sound file '{output_file}' with playsound: {e}")
                 return False
             finally:
-                # Clean up the temp file
+                # Clean up the output file
                 try:
-                    if os.path.exists(filename):
-                        os.remove(filename)
+                    if os.path.exists(output_file):
+                        os.remove(output_file)
                 except OSError as e:
-                    print(f"Warning: Could not remove temporary TTS file '{filename}': {e}")
+                    print(f"Warning: Could not remove TTS file '{output_file}': {e}")
         else:
             print("Edge TTS failed to generate audio file.")
             return False
 
+    except subprocess.CalledProcessError as e:
+        print(f"Edge TTS subprocess error: {e}")
+        print(f"Error details: {e.stderr}")
+        return False
     except Exception as e:
         print(f"An unexpected error occurred in edge_tts_text_to_speech: {e}")
         return False
-
 def aws_polly_text_to_speech(ai_response: str, output_file: str = TTS_OUTPUT_MP3) -> bool:
     """
     AWS Polly Text-to-Speech (requires AWS credentials and internet).

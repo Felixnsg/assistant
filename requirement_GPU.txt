@@ -1,0 +1,20 @@
+# Core dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+opencv-python>=4.8.0
+pillow>=10.0.0
+websockets>=11.0.3
+asyncio>=3.4.3
+
+# YOLOv8 for person detection
+ultralytics>=8.0.0
+
+# Face recognition
+facenet-pytorch>=2.5.3
+
+# Logging and utilities
+python-dotenv>=1.0.0
+
+# Optional - CUDA support (uncomment if needed)
+# torch-cuda  # specify version matching your CUDA installation
