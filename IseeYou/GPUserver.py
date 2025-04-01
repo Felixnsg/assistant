@@ -294,7 +294,7 @@ async def main():
 
         # Configure WebSocket server parameters
         host = "0.0.0.0"
-        port = 8000
+        port = 8080
         # --- REFACTOR: Use configuration for limits if needed ---
         max_size = 10 * 1024 * 1024  # 10MB message size limit
         ping_interval = 20
