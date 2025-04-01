@@ -199,7 +199,7 @@ async def main():
             ping_timeout=20,
             max_size=10*1024*1024  # 10MB message size limit
         ):
-            print("\n=== Server running on ws://0.0.0.0:8765 ===")
+            print("\n=== Server running on ws://0.0.0.0:8080 ===")
             print("=== Waiting for client connections ===\n")
             await asyncio.Future()  # Run forever
             

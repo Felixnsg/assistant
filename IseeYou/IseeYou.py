@@ -20,6 +20,9 @@ class FelixTrackingClient:
         self.current_frame = None
         self.frame_lock = asyncio.Lock()
         
+        # For fallback visualization when tracking doesn't work
+        self.raw_detections = []
+        
         # Skip ByteTrack - use our own simple tracking
         print("Using simple direct tracking (no ByteTrack dependency)")
         
@@ -27,12 +30,14 @@ class FelixTrackingClient:
         self.box_annotator = sv.BoxAnnotator(
             thickness=3
         )
-        byte_tracker = sv.ByteTrack(
-        track_activation_threshold=0.5,
-        lost_track_buffer=20,
-        minimum_matching_threshold=0.7,
-        frame_rate=30
-)
+        
+        # Reduce thresholds to make tracking more sensitive
+        self.byte_tracker = sv.ByteTrack(
+            track_activation_threshold=0.3,  # Lowered from 0.5
+            lost_track_buffer=20,
+            minimum_matching_threshold=0.5,  # Lowered from 0.7
+            frame_rate=30
+        )
         
         print("FelixTrackingClient initialized successfully")
     
@@ -93,6 +98,9 @@ class FelixTrackingClient:
                 # Parse the JSON message
                 detection_data = json.loads(message)
                 
+                # Store raw detections for fallback visualization
+                self.raw_detections = detection_data
+                
                 # Log what we received
                 felix_count = sum(1 for det in detection_data if det.get("is_felix", False))
                 print(f"[RECEIVER] Frame #{detection_counter}: Received {len(detection_data)} detections ({felix_count} Felix)")
@@ -106,12 +114,17 @@ class FelixTrackingClient:
     
     def update_tracking(self, detections):
         """Tracking with Supervision's ByteTrack wrapper"""
-        self.frame_count += 1  # Optional if you're still using this for logging
+        self.frame_count += 1
 
         if not detections:
             if self.frame_count % 30 == 0:
                 print(f"[TRACKING] Frame #{self.frame_count}: No detections received")
             return
+
+        # Debug: Print confidence values occasionally
+        if self.frame_count % 30 == 0:
+            confidences = [det["confidence"] for det in detections]
+            print(f"[TRACKING] Debug: Detection confidences: {confidences}")
 
         # Step 1: Convert to supervision.Detections object
         boxes = []
@@ -138,39 +151,30 @@ class FelixTrackingClient:
         tracked_detections = self.byte_tracker.update_with_detections(sv_detections)
 
         # Step 3: Store tracked detections for visualization
-        self.tracked_detections = tracked_detections  # You can use this in `visualize_frame`
+        self.tracked_detections = tracked_detections
 
         if self.frame_count % 30 == 0:
             felix_count = sum(1 for cid in tracked_detections.class_id if cid == 0)
             print(f"[TRACKING] Frame #{self.frame_count}: Tracking {len(tracked_detections)} objects ({felix_count} Felix)")
-
+            
+            # Debug message if tracking creates no tracks
+            if len(tracked_detections) == 0 and len(detections) > 0:
+                print(f"[TRACKING] Warning: ByteTrack created 0 tracks from {len(detections)} detections.")
     
     def visualize_frame(self, frame):
-        """Draw detection results on the frame using tracked_detections from ByteTrack"""
+        """Draw detection results on the frame, with fallback to raw detections if tracking fails"""
         if frame is None:
             return None
-                
-        # Check if tracked_detections exists and isn't empty
-        if not hasattr(self, 'tracked_detections') or len(self.tracked_detections) == 0:
-            if self.frame_count % 30 == 0:
-                print(f"[VISUALIZE] Frame #{self.frame_count}: No tracks to visualize")
-            return frame.copy()
+            
+        frame_copy = frame.copy()
         
-        try:
-            # Log visualization details occasionally
-            if self.frame_count % 30 == 0:
-                felix_count = sum(1 for cid in self.tracked_detections.class_id if cid == 0)
-                print(f"[VISUALIZE] Frame #{self.frame_count}: Drawing {len(self.tracked_detections)} boxes ({felix_count} Felix)")
-            
-            frame_copy = frame.copy()
-            
-            # Method 1: Try using Supervision's built-in annotators
+        # OPTION 1: Use tracked detections if available
+        if hasattr(self, 'tracked_detections') and len(self.tracked_detections) > 0:
             try:
-                # Create box annotator with custom colors
-                box_annotator = sv.BoxAnnotator(
-                    thickness=2,
-                    color_lookup=lambda class_id: (0, 255, 0) if class_id == 0 else (0, 0, 255)  # Green for Felix, Red for others
-                )
+                # Log visualization details occasionally
+                if self.frame_count % 30 == 0:
+                    felix_count = sum(1 for cid in self.tracked_detections.class_id if cid == 0)
+                    print(f"[VISUALIZE] Frame #{self.frame_count}: Drawing {len(self.tracked_detections)} tracked boxes ({felix_count} Felix)")
                 
                 # Create custom labels for each detection
                 labels = [
@@ -182,6 +186,12 @@ class FelixTrackingClient:
                     )
                 ]
                 
+                # Create box annotator with custom colors
+                box_annotator = sv.BoundingBoxAnnotator.annotate(
+                    thickness=2,
+                    color_lookup=lambda class_id: (0, 255, 0) if class_id == 0 else (0, 0, 255)  # Green for Felix, Red for others
+                )
+                
                 # Draw boxes and labels
                 frame_copy = box_annotator.annotate(
                     scene=frame_copy,
@@ -192,42 +202,52 @@ class FelixTrackingClient:
                 return frame_copy
                 
             except Exception as e:
-                print(f"[VISUALIZE] Error in Supervision annotation: {e}")
+                print(f"[VISUALIZE] Error with tracked visualization: {e}")
+                # Will fall through to fallback methods
+        
+        # OPTION 2: Fallback to raw detections if tracking doesn't work
+        elif hasattr(self, 'raw_detections') and self.raw_detections:
+            try:
+                if self.frame_count % 30 == 0:
+                    felix_count = sum(1 for det in self.raw_detections if det.get("is_felix", False))
+                    print(f"[VISUALIZE] Frame #{self.frame_count}: Fallback to {len(self.raw_detections)} raw detections ({felix_count} Felix)")
                 
-                # Fall back to custom drawing method if Supervision annotator fails
-                for i, (xyxy, tracker_id, conf, class_id) in enumerate(zip(
-                    self.tracked_detections.xyxy,
-                    self.tracked_detections.tracker_id,
-                    self.tracked_detections.confidence,
-                    self.tracked_detections.class_id
-                )):
-                    x1, y1, x2, y2 = map(int, xyxy)
+                # Draw raw detections
+                for det in self.raw_detections:
+                    x, y, w, h = det["box"]
+                    is_felix = det.get("is_felix", False)
+                    confidence = det.get("confidence", 0.0)
                     
-                    # Get label text
-                    person_type = "Felix" if class_id == 0 else "Not Felix"
-                    label_text = f"{person_type} #{tracker_id}: {conf:.2f}"
+                    # Determine color (green for Felix, red for Not Felix)
+                    color = (0, 255, 0) if is_felix else (0, 0, 255)  # BGR format
                     
-                    # Draw box with correct color
-                    color = (0, 255, 0) if class_id == 0 else (0, 0, 255)  # Green for Felix, Red for others
-                    cv2.rectangle(frame_copy, (x1, y1), (x2, y2), color, 2)
+                    # Draw box
+                    cv2.rectangle(frame_copy, (x, y), (x + w, y + h), color, 2)
                     
-                    # Draw label text
+                    # Draw label
+                    label = f"Felix: {confidence:.2f}" if is_felix else f"Not Felix: {confidence:.2f}"
                     cv2.putText(
-                        frame_copy, 
-                        label_text,
-                        (x1, max(0, y1 - 10)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 
-                        0.5, 
-                        color, 
+                        frame_copy,
+                        label,
+                        (x, max(0, y - 10)),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5,
+                        color,
                         2
                     )
                 
                 return frame_copy
                 
-        except Exception as e:
-            print(f"[VISUALIZE] General error: {e}")
-            traceback.print_exc()
-            return frame.copy()
+            except Exception as e:
+                print(f"[VISUALIZE] Error with fallback visualization: {e}")
+                # Will fall through to default
+        
+        # Option 3: No detections to visualize
+        else:
+            if self.frame_count % 30 == 0:
+                print(f"[VISUALIZE] Frame #{self.frame_count}: No tracks or detections to visualize")
+        
+        return frame_copy
         
     async def display_loop(self):
         """Display processed frames using the shared current_frame"""
