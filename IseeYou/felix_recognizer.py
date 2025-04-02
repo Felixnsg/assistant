@@ -4,6 +4,8 @@ from PIL import Image
 from torch import nn
 from facenet_pytorch import InceptionResnetV1
 import traceback
+import cv2
+from mtcnn import MTCNN
 
 
 class FelixClassifier(nn.Module):
@@ -87,6 +89,78 @@ class FelixRecognizer:
             self.fallback_mode = True
             traceback.print_exc()
     
+
+    def detect_and_crop(self, frame, box):
+        """
+        Detect and crop a face from a frame using the provided bounding box
+        
+        Args:
+            frame (numpy.ndarray): Frame containing the person
+            box (list): Bounding box [x, y, w, h] of the person
+            
+        Returns:
+            PIL.Image: Cropped face image or None if no face detected
+        """
+        try:
+            # Extract the person using the provided box
+            x, y, w, h = box
+            
+            # Add margin (optional)
+            margin = 20
+            x1 = max(0, x - margin)
+            y1 = max(0, y - margin)
+            x2 = min(frame.shape[1], x + w + margin)
+            y2 = min(frame.shape[0], y + h + margin)
+            
+            # Crop the person region
+            person_img = frame[y1:y2, x1:x2]
+            
+            # If using MTCNN for further face detection:
+            # Convert to RGB for MTCNN
+            person_rgb = cv2.cvtColor(person_img, cv2.COLOR_BGR2RGB)
+            
+            # Create MTCNN detector
+            detector = MTCNN()
+            
+            # Detect faces within the person crop
+            faces = detector.detect_faces(person_rgb)
+            
+            if len(faces) == 0:
+                print("No face found in person crop")
+                # Fall back to using the whole person crop
+                face_img = person_rgb
+            else:
+                # Use the largest face
+                largest_face = max(faces, key=lambda face: face['box'][2] * face['box'][3])
+                
+                # Extract face box (relative to person crop)
+                fx, fy, fw, fh = largest_face['box']
+                
+                # Extract face with margin
+                face_margin = 10
+                fx1 = max(0, fx - face_margin)
+                fy1 = max(0, fy - face_margin)
+                fx2 = min(person_rgb.shape[1], fx + fw + face_margin)
+                fy2 = min(person_rgb.shape[0], fy + fh + face_margin)
+                
+                face_img = person_rgb[fy1:fy2, fx1:fx2]
+            
+            # Convert to PIL Image
+            face_pil = Image.fromarray(face_img)
+            
+            # Resize to model input size
+            face_pil = face_pil.resize((224, 224), Image.LANCZOS)
+            
+            return face_pil
+            
+        except Exception as e:
+            print(f"Error in detect_and_crop: {e}")
+            return None
+
+
+
+
+
     def is_felix(self, frame, box):
         """
         Check if the person in the box is Felix with improved error handling
@@ -97,20 +171,15 @@ class FelixRecognizer:
             return False, 0.0
             
         try:
-            # Extract the person crop from the frame
-            x, y, w, h = box
-            person_img = frame[y:y+h, x:x+w]
-            
+            person_img = self.detect_and_crop(frame, box)
             # Handle empty or invalid crops
-            if person_img.size == 0 or person_img.shape[0] == 0 or person_img.shape[1] == 0:
-                print("Warning: Empty person crop")
+            if person_img is None:
+                print("Warning: Failed to crop person")
                 return False, 0.0
             
-            # Convert to PIL Image for transforms
-            person_pil = Image.fromarray(person_img)
             
             # Apply transforms and add batch dimension
-            tensor = self.transform(person_pil).unsqueeze(0)
+            tensor = self.transform(person_img).unsqueeze(0)
             
             # Ensure tensor is on the right device
             tensor = tensor.to(self.device)

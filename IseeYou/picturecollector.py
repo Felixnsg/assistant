@@ -30,7 +30,8 @@ async def main():
 class PictureInterface:
     """Save pictures that the recognizer missed."""
     def __init__(self):
-        self.counter = 0  # We will use this counter to unify, or make them names be original.
+        self.counter = 0# We will use this counter to unify, or make them names be original.
+        self.last_save = 0
         Path("Saved_Images").mkdir(exist_ok=True)  # Corrected folder name to match filename
 
     async def process_images(self, client):
@@ -43,11 +44,12 @@ class PictureInterface:
                             current_frame = client.current_frame.copy()
 
                     if current_frame is not None:
+                        
                         for detection in client.raw_detections:
                             confidence = detection.get('confidence', 0)
                             is_felix = detection.get('is_felix', False)
 
-                            if confidence > 0.5 or not is_felix:
+                            if confidence < 0.52 or not is_felix:
                                 await self.save_images(current_frame, detection)
                 
                 # Add sleep to prevent CPU overload
@@ -59,23 +61,24 @@ class PictureInterface:
 
     async def save_images(self, frame, detection):
         try:
-            # Correct unpacking of box coordinates
-            x, y, w, h = detection.get('box', [0, 0, 0, 0])
-
-            confidence = detection.get('confidence', 0)
-            is_felix = detection.get('is_felix', False)
 
             # Use the class counter variable
-            timestamp = int(time.time())
-            self.counter += 1
-            filename = f"Saved_Images/detection_{timestamp}_{self.counter}.jpg"
+            current_time = time.time()
+            if (current_time - self.last_save >= 3) and self.counter < 1000:
+                timestamp = int(time.time())
+                self.counter += 1
+                filename = f"Saved_Images/detection_{timestamp}_{self.counter}.jpg"
+                
+                # Create a copy of the frame
+                img = frame.copy()
+                
+                # Save the image
+                cv2.imwrite(filename, img)
+                print(f"Saved image: {filename}")
+
+                self.last_save = current_time
+                
             
-            # Create a copy of the frame
-            img = frame.copy()
-            
-            # Save the image
-            cv2.imwrite(filename, img)
-            print(f"Saved image: {filename}")
 
         except Exception as e:
             print(f"Error saving image: {e}")
