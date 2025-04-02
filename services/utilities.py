@@ -39,7 +39,7 @@ try:
     from core import nlp # Assumed LlpCall class is needed if follow-up calls remained (they are removed for now)
     # from interfaces import streamaudio # Assumed needed for .say() if used directly (removed for now)
     # --- REFACTOR: Import Felix client for control ---
-    from IseeYou.IseeYou import FelixTrackingClient # Import the class definition
+    from IseeYou.IseeYouClass import FelixTrackingClient # Import the class definition
 except ImportError as e:
     logging.error(f"Error importing core/interface modules in utilities.py: {e}", exc_info=True)
     # Decide if this is fatal - likely yes if ChatManager depends on it

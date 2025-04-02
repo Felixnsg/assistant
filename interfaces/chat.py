@@ -70,7 +70,7 @@ except ImportError as e:
 
 try:
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "IseeYou")))
-    from IseeYou import IseeYou
+    from IseeYou import IseeYouClass
 except ImportError:
     print("Warning: Cannot import FelixTrackingClient from IseeYou.py. Video features disabled.", file=sys.stderr)
 

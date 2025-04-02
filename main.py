@@ -113,7 +113,7 @@ try:
     from core.nlp import LlpCall
     from interfaces.chat import ChatManager # Assuming chat.py is in interfaces/
     from services.utilities import Utilities
-    from IseeYou.IseeYou import FelixTrackingClient # Assuming IseeYou.py is in IseeYou/
+    from IseeYou.IseeYouClass import FelixTrackingClient # Assuming IseeYou.py is in IseeYou/
     import config # Your configuration file (config.py)
 except ImportError as e:
      logging.critical(f"FATAL: Failed to import core modules: {e}", exc_info=True)

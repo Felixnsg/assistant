@@ -79,6 +79,8 @@ class FelixTrackingClient:
                 
                 # Small delay to control frame rate
                 await asyncio.sleep(0.03)  # ~30 FPS
+
+                return self.current_frame
                 
         except Exception as e:
             print(f"Error in capture_and_send_frames: {e}")
@@ -106,7 +108,7 @@ class FelixTrackingClient:
                 print(f"[RECEIVER] Frame #{detection_counter}: Received {len(detection_data)} detections ({felix_count} Felix)")
                 
                 # Update tracking with new detections
-                self.update_tracking(detection_data)
+                return self.update_tracking(detection_data), detection_data
                 
         except Exception as e:
             print(f"[RECEIVER] ERROR: {e}")
