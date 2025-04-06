@@ -157,10 +157,6 @@ class FelixRecognizer:
             print(f"Error in detect_and_crop: {e}")
             return None
 
-
-
-
-
     def is_felix(self, frame, box):
         """
         Check if the person in the box is Felix with improved error handling

@@ -6,12 +6,14 @@ import json
 import time
 import supervision as sv
 import traceback
+import logging
 
 class FelixTrackingClient:
     """Handles video capture, tracking and visualization"""
     
     def __init__(self, server_url="ws://localhost:8080"):
-        print("\n=== Initializing FelixTrackingClient ===")
+        self.logger = logging.getLogger("IseeYou.FelixTrackingClient")
+        self.logger.info("\n=== Initializing FelixTrackingClient ===")
         self.server_url = server_url
         
         self.frame_count = 0
@@ -24,7 +26,7 @@ class FelixTrackingClient:
         self.raw_detections = []
         
         # Skip ByteTrack - use our own simple tracking
-        print("Using simple direct tracking (no ByteTrack dependency)")
+        self.logger.info("Using simple direct tracking (no ByteTrack dependency)")
         
         # This will draw boxes, labels and tracking IDs on the frame
         self.box_annotator = sv.BoxAnnotator(
@@ -39,15 +41,15 @@ class FelixTrackingClient:
             frame_rate=30
         )
         
-        print("FelixTrackingClient initialized successfully")
+        self.logger.info("FelixTrackingClient initialized successfully")
     
     async def capture_and_send_frames(self, websocket, video_source):
         """Capture frames and send them to the server while making them available for display"""
-        print("\n=== Starting video capture ===")
+        self.logger.info("\n=== Starting video capture ===")
         cap = cv2.VideoCapture(video_source)
         
         if not cap.isOpened():
-            print("Error: Cannot access camera")
+            self.logger.error("Error: Cannot access camera")
             return
             
         try:
@@ -57,7 +59,7 @@ class FelixTrackingClient:
                 frame_counter += 1
                 
                 if not ret:
-                    print("Error: Cannot read from camera")
+                    self.logger.error("Error: Cannot read from camera")
                     await asyncio.sleep(0.1)
                     continue
                 
@@ -68,29 +70,29 @@ class FelixTrackingClient:
                 # Encode and send the frame to the server
                 result, encoded_frame = cv2.imencode(".jpg", frame)
                 if not result:
-                    print("Error: Couldn't encode frame")
+                    self.logger.error("Error: Couldn't encode frame")
                     continue
                     
                 frame_bytes = encoded_frame.tobytes()
                 await websocket.send(frame_bytes)
                 
                 if frame_counter % 100 == 0:
-                    print(f"[CAPTURE] Sent {frame_counter} frames to server")
+                    self.logger.debug(f"[CAPTURE] Sent {frame_counter} frames to server")
                 
                 # Small delay to control frame rate
-                await asyncio.sleep(0.03)  # ~30 FPS
+                await asyncio.sleep(0.1)  # ~10 FPS
 
                 
         except Exception as e:
-            print(f"Error in capture_and_send_frames: {e}")
+            self.logger.error(f"Error in capture_and_send_frames: {e}")
             traceback.print_exc()
         finally:
             cap.release()
-            print("Camera released")
+            self.logger.info("Camera released")
     
     async def receive_results(self, websocket):
         """Receive detection results from the server"""
-        print("\n=== Starting to receive detection results ===")
+        self.logger.info("\n=== Starting to receive detection results ===")
         detection_counter = 0
         try:
             async for message in websocket:
@@ -104,11 +106,13 @@ class FelixTrackingClient:
                 
                 # Log what we received
                 felix_count = sum(1 for det in detection_data if det.get("is_felix", False))
-                print(f"[RECEIVER] Frame #{detection_counter}: Received {len(detection_data)} detections ({felix_count} Felix)")
+                self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Received {len(detection_data)} detections ({felix_count} Felix)")
+
+
                 
                 # Update tracking with new detections                
         except Exception as e:
-            print(f"[RECEIVER] ERROR: {e}")
+            self.logger.error(f"[RECEIVER] ERROR: {e}")
             traceback.print_exc()
     
     def update_tracking(self, detections):
@@ -117,13 +121,13 @@ class FelixTrackingClient:
 
         if not detections:
             if self.frame_count % 30 == 0:
-                print(f"[TRACKING] Frame #{self.frame_count}: No detections received")
+                self.logger.debug(f"[TRACKING] Frame #{self.frame_count}: No detections received")
             return
 
         # Debug: Print confidence values occasionally
         if self.frame_count % 30 == 0:
             confidences = [det["confidence"] for det in detections]
-            print(f"[TRACKING] Debug: Detection confidences: {confidences}")
+            self.logger.debug(f"[TRACKING] Debug: Detection confidences: {confidences}")
 
         # Step 1: Convert to supervision.Detections object
         boxes = []
@@ -154,11 +158,11 @@ class FelixTrackingClient:
 
         if self.frame_count % 30 == 0:
             felix_count = sum(1 for cid in tracked_detections.class_id if cid == 0)
-            print(f"[TRACKING] Frame #{self.frame_count}: Tracking {len(tracked_detections)} objects ({felix_count} Felix)")
+            self.logger.debug(f"[TRACKING] Frame #{self.frame_count}: Tracking {len(tracked_detections)} objects ({felix_count} Felix)")
             
             # Debug message if tracking creates no tracks
             if len(tracked_detections) == 0 and len(detections) > 0:
-                print(f"[TRACKING] Warning: ByteTrack created 0 tracks from {len(detections)} detections.")
+                self.logger.warning(f"[TRACKING] Warning: ByteTrack created 0 tracks from {len(detections)} detections.")
     
     def visualize_frame(self, frame):
         """Draw detection results on the frame, with fallback to raw detections if tracking fails"""
@@ -173,8 +177,8 @@ class FelixTrackingClient:
                 # Log visualization details occasionally
                 if self.frame_count % 30 == 0:
                     felix_count = sum(1 for cid in self.tracked_detections.class_id if cid == 0)
-                    print(f"[VISUALIZE] Frame #{self.frame_count}: Drawing {len(self.tracked_detections)} tracked boxes ({felix_count} Felix)")
-                
+                    self.logger.debug(f"[VISUALIZE] Frame #{self.frame_count}: Fallback to {len(self.raw_detections)} raw detections ({felix_count} Felix)")
+
                 # Create custom labels for each detection
                 labels = [
                     f"{'Felix' if class_id == 0 else 'Not Felix'} #{tracker_id}: {conf:.2f}"
@@ -201,7 +205,7 @@ class FelixTrackingClient:
                 return frame_copy
                 
             except Exception as e:
-                print(f"[VISUALIZE] Error with tracked visualization: {e}")
+                self.logger.error(f"[VISUALIZE] Error with tracked visualization: {e}")
                 # Will fall through to fallback methods
         
         # OPTION 2: Fallback to raw detections if tracking doesn't work
@@ -209,7 +213,8 @@ class FelixTrackingClient:
             try:
                 if self.frame_count % 30 == 0:
                     felix_count = sum(1 for det in self.raw_detections if det.get("is_felix", False))
-                    print(f"[VISUALIZE] Frame #{self.frame_count}: Fallback to {len(self.raw_detections)} raw detections ({felix_count} Felix)")
+                    self.logger.debug(f"[VISUALIZE] Frame #{self.frame_count}: Fallback to {len(self.raw_detections)} raw detections ({felix_count} Felix)")
+
                 
                 # Draw raw detections
                 for det in self.raw_detections:
@@ -238,19 +243,19 @@ class FelixTrackingClient:
                 return frame_copy
                 
             except Exception as e:
-                print(f"[VISUALIZE] Error with fallback visualization: {e}")
+                self.logger.error(f"[VISUALIZE] Error with fallback visualization: {e}")
                 # Will fall through to default
         
         # Option 3: No detections to visualize
         else:
             if self.frame_count % 30 == 0:
-                print(f"[VISUALIZE] Frame #{self.frame_count}: No tracks or detections to visualize")
+                self.logger.debug(f"[VISUALIZE] Frame #{self.frame_count}: No tracks or detections to visualize")
         
         return frame_copy
         
     async def display_loop(self):
         """Display processed frames using the shared current_frame"""
-        print("\n=== Starting display loop ===")
+        self.logger.info("\n=== Starting display loop ===")
         window_name = 'Felix Tracking'
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
         
@@ -273,46 +278,46 @@ class FelixTrackingClient:
                 # Check for key press with a short timeout
                 key = cv2.waitKey(1)
                 if key == ord('q'):
-                    print("User pressed 'q'. Exiting...")
+                    self.logger.info("User pressed 'q'. Exiting...")
                     break
                 
                 # Small delay to not hog CPU
                 await asyncio.sleep(0.03)  # ~30 FPS
                 
         except Exception as e:
-            print(f"Error in display_loop: {e}")
+            self.logger.error(f"Error in display_loop: {e}")
             traceback.print_exc()
         finally:
             cv2.destroyAllWindows()
-            print("Display resources released")
+            self.logger.info("Display resources released")
     
     async def run(self, video_source=0):
         """Run the client"""
         # Test camera access first
-        print("\n=== Testing camera access ===")
+        self.logger.info("\n=== Testing camera access ===")
         cap_test = cv2.VideoCapture(video_source)
         if not cap_test.isOpened():
-            print("Error: Cannot access camera")
+            self.logger.error("Error: Cannot access camera")
             return
             
         ret, frame = cap_test.read()
         cap_test.release()
         
         if not ret:
-            print("Error: Cannot read from camera")
+            self.logger.error("Error: Cannot read from camera")
             return
             
-        print("Camera test successful")
+        self.logger.info("Camera test successful")
         
         # Now try the full system
         try:
-            print("\n=== Connecting to server ===")
+            self.logger.info("\n=== Connecting to server ===")
             async with websockets.connect(
                 self.server_url,
-                ping_interval=20,
+                ping_interval=15,
                 ping_timeout=20
             ) as websocket:
-                print("Connected to server!")
+                self.logger.info("Connected to server!")
                 
                 # Create tasks
                 capture_send_task = asyncio.create_task(
@@ -327,13 +332,13 @@ class FelixTrackingClient:
                 
                 # Add debugging callbacks
                 capture_send_task.add_done_callback(
-                    lambda t: print("Capture and send task finished")
+                    lambda t: self.logger.info("Capture and send task finished")
                 )
                 receive_task.add_done_callback(
-                    lambda t: print("Receive task finished")
+                    lambda t: self.logger.info("Receive task finished")
                 )
                 display_task.add_done_callback(
-                    lambda t: print("Display task finished")
+                    lambda t: self.logger.info("Display task finished")
                 )
                 
                 # Wait for all tasks
@@ -344,25 +349,35 @@ class FelixTrackingClient:
                         display_task
                     )
                 except asyncio.CancelledError:
-                    print("Tasks were cancelled")
+                    self.logger.info("Tasks were cancelled")
                     
         except ConnectionRefusedError:
-            print("Error: Could not connect to server. Is it running?")
+            self.logger.error("Error: Could not connect to server. Is it running?")
         except Exception as e:
-            print(f"Connection error: {e}")
+            self.logger.error(f"Connection error: {e}")
             traceback.print_exc()
 
 # Main entry point
 async def main():
-    print("Starting Felix Tracking Client...")
+    # Create a logger for the main function
+    logger = logging.getLogger("IseeYou.main")
+    logger.info("Starting Felix Tracking Client...")
     client = FelixTrackingClient(server_url="ws://localhost:8080")
     await client.run(video_source=0)  # Use webcam
 
 if __name__ == "__main__":
+    # Setup logging for the main script
+    logging.basicConfig(
+        filename='isee_you.log',
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    logger = logging.getLogger("IseeYou")
+    
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\nProgram interrupted by user")
+        logger.info("\nProgram interrupted by user")
     except Exception as e:
-        print(f"Unhandled exception: {e}")
+        logger.error(f"Unhandled exception: {e}")
         traceback.print_exc()

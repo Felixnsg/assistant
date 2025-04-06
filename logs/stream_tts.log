@@ -687,3 +687,228 @@ soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp
 2025-03-31 19:34:51,260 - INFO - Settings loaded: Voice=male_01.wav, Language=en
 2025-03-31 19:34:51,260 - INFO - Queue processor thread started
 2025-03-31 19:34:51,260 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:14:30,688 - INFO - ffplay found and available for audio playback
+2025-04-04 20:14:30,690 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:14:30,704 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:14:30,705 - INFO - Queue processor thread started
+2025-04-04 20:14:30,706 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:16:57,071 - INFO - ffplay found and available for audio playback
+2025-04-04 20:16:57,071 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:16:57,072 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:16:57,074 - INFO - Queue processor thread started
+2025-04-04 20:16:57,074 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:19:23,534 - INFO - ffplay found and available for audio playback
+2025-04-04 20:19:23,535 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:19:23,535 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:19:23,538 - INFO - Queue processor thread started
+2025-04-04 20:19:23,538 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:23:57,229 - INFO - ffplay found and available for audio playback
+2025-04-04 20:23:57,230 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:23:57,230 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:23:57,231 - INFO - Queue processor thread started
+2025-04-04 20:23:57,231 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:24:44,020 - INFO - ffplay found and available for audio playback
+2025-04-04 20:24:44,022 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:24:44,023 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:24:44,024 - INFO - Queue processor thread started
+2025-04-04 20:24:44,024 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:37:56,294 - INFO - ffplay found and available for audio playback
+2025-04-04 20:37:56,294 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:37:56,295 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:37:56,296 - INFO - Queue processor thread started
+2025-04-04 20:37:56,296 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:41:05,717 - INFO - ffplay found and available for audio playback
+2025-04-04 20:41:05,717 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:41:05,718 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:41:05,719 - INFO - Queue processor thread started
+2025-04-04 20:41:05,719 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:45:07,375 - INFO - ffplay found and available for audio playback
+2025-04-04 20:45:07,375 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:45:07,376 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:45:07,377 - INFO - Queue processor thread started
+2025-04-04 20:45:07,377 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 20:49:47,713 - INFO - ffplay found and available for audio playback
+2025-04-04 20:49:47,714 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 20:49:47,715 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 20:49:47,716 - INFO - Queue processor thread started
+2025-04-04 20:49:47,716 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 21:46:43,682 - INFO - ffplay found and available for audio playback
+2025-04-04 21:46:43,682 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 21:46:43,695 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 21:46:43,697 - INFO - Queue processor thread started
+2025-04-04 21:46:43,697 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 22:11:24,083 - INFO - ffplay found and available for audio playback
+2025-04-04 22:11:24,085 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 22:11:24,085 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 22:11:24,086 - INFO - Queue processor thread started
+2025-04-04 22:11:24,086 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 22:14:04,883 - INFO - ffplay found and available for audio playback
+2025-04-04 22:14:04,884 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 22:14:04,884 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 22:14:04,887 - INFO - Queue processor thread started
+2025-04-04 22:14:04,887 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-04 22:19:04,308 - INFO - ffplay found and available for audio playback
+2025-04-04 22:19:04,309 - INFO - Creating new StreamTTSPlayer instance
+2025-04-04 22:19:04,310 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-04 22:19:04,311 - INFO - Queue processor thread started
+2025-04-04 22:19:04,311 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 10:56:39,494 - INFO - ffplay found and available for audio playback
+2025-04-05 10:56:39,497 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 10:56:39,508 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 10:56:39,510 - INFO - Queue processor thread started
+2025-04-05 10:56:39,510 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 10:59:22,914 - INFO - ffplay found and available for audio playback
+2025-04-05 10:59:22,914 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 10:59:22,914 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 10:59:22,915 - INFO - Queue processor thread started
+2025-04-05 10:59:22,915 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 11:01:50,662 - INFO - ffplay found and available for audio playback
+2025-04-05 11:01:50,663 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 11:01:50,663 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 11:01:50,663 - INFO - Queue processor thread started
+2025-04-05 11:01:50,663 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 11:14:33,288 - INFO - ffplay found and available for audio playback
+2025-04-05 11:14:33,290 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 11:14:33,290 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 11:14:33,291 - INFO - Queue processor thread started
+2025-04-05 11:14:33,291 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 11:17:00,256 - INFO - ffplay found and available for audio playback
+2025-04-05 11:17:00,258 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 11:17:00,258 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 11:17:00,259 - INFO - Queue processor thread started
+2025-04-05 11:17:00,260 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 11:24:50,192 - INFO - ffplay found and available for audio playback
+2025-04-05 11:24:50,193 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 11:24:50,193 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 11:24:50,195 - INFO - Queue processor thread started
+2025-04-05 11:24:50,195 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 11:37:51,072 - INFO - ffplay found and available for audio playback
+2025-04-05 11:37:51,072 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 11:37:51,073 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 11:37:51,074 - INFO - Queue processor thread started
+2025-04-05 11:37:51,074 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 11:43:04,303 - INFO - ffplay found and available for audio playback
+2025-04-05 11:43:04,303 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 11:43:04,303 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 11:43:04,304 - INFO - Queue processor thread started
+2025-04-05 11:43:04,305 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 12:13:08,862 - INFO - ffplay found and available for audio playback
+2025-04-05 12:13:08,863 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 12:13:08,863 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 12:13:08,863 - INFO - Queue processor thread started
+2025-04-05 12:13:08,863 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 12:18:25,141 - INFO - ffplay found and available for audio playback
+2025-04-05 12:18:25,142 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 12:18:25,142 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 12:18:25,143 - INFO - Queue processor thread started
+2025-04-05 12:18:25,144 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 12:24:10,421 - INFO - ffplay found and available for audio playback
+2025-04-05 12:24:10,424 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 12:24:10,424 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 12:24:10,426 - INFO - Queue processor thread started
+2025-04-05 12:24:10,426 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 12:29:47,269 - INFO - ffplay found and available for audio playback
+2025-04-05 12:29:47,269 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 12:29:47,269 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 12:29:47,269 - INFO - Queue processor thread started
+2025-04-05 12:29:47,269 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 12:31:02,808 - INFO - ffplay found and available for audio playback
+2025-04-05 12:31:02,809 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 12:31:02,809 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 12:31:02,811 - INFO - Queue processor thread started
+2025-04-05 12:31:02,811 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 12:52:46,528 - INFO - ffplay found and available for audio playback
+2025-04-05 12:52:46,529 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 12:52:46,536 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 12:52:46,536 - INFO - Queue processor thread started
+2025-04-05 12:52:46,536 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 12:55:20,263 - INFO - ffplay found and available for audio playback
+2025-04-05 12:55:20,263 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 12:55:20,263 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 12:55:20,264 - INFO - Queue processor thread started
+2025-04-05 12:55:20,264 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 13:47:10,202 - INFO - ffplay found and available for audio playback
+2025-04-05 13:47:10,203 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 13:47:10,204 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 13:47:10,205 - INFO - Queue processor thread started
+2025-04-05 13:47:10,205 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 13:51:40,303 - INFO - ffplay found and available for audio playback
+2025-04-05 13:51:40,303 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 13:51:40,305 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 13:51:40,305 - INFO - Queue processor thread started
+2025-04-05 13:51:40,305 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 13:56:54,040 - INFO - ffplay found and available for audio playback
+2025-04-05 13:56:54,040 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 13:56:54,040 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 13:56:54,040 - INFO - Queue processor thread started
+2025-04-05 13:56:54,042 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 13:57:23,817 - INFO - ffplay found and available for audio playback
+2025-04-05 13:57:23,817 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 13:57:23,817 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 13:57:23,818 - INFO - Queue processor thread started
+2025-04-05 13:57:23,818 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 14:00:53,891 - INFO - ffplay found and available for audio playback
+2025-04-05 14:00:53,892 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 14:00:53,893 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 14:00:53,893 - INFO - Queue processor thread started
+2025-04-05 14:00:53,893 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 14:15:22,624 - INFO - ffplay found and available for audio playback
+2025-04-05 14:15:22,624 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 14:15:22,624 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 14:15:22,625 - INFO - Queue processor thread started
+2025-04-05 14:15:22,625 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 14:20:45,623 - INFO - ffplay found and available for audio playback
+2025-04-05 14:20:45,624 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 14:20:45,624 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 14:20:45,625 - INFO - Queue processor thread started
+2025-04-05 14:20:45,625 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 14:24:58,791 - INFO - ffplay found and available for audio playback
+2025-04-05 14:24:58,792 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 14:24:58,792 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 14:24:58,794 - INFO - Queue processor thread started
+2025-04-05 14:24:58,794 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 14:28:31,145 - INFO - ffplay found and available for audio playback
+2025-04-05 14:28:31,145 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 14:28:31,146 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 14:28:31,146 - INFO - Queue processor thread started
+2025-04-05 14:28:31,146 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 14:35:50,025 - INFO - ffplay found and available for audio playback
+2025-04-05 14:35:50,025 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 14:35:50,026 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 14:35:50,026 - INFO - Queue processor thread started
+2025-04-05 14:35:50,026 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 19:55:38,090 - INFO - ffplay found and available for audio playback
+2025-04-05 19:55:38,092 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 19:55:38,092 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 19:55:38,093 - INFO - Queue processor thread started
+2025-04-05 19:55:38,093 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 19:59:18,040 - INFO - ffplay found and available for audio playback
+2025-04-05 19:59:18,042 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 19:59:18,042 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 19:59:18,043 - INFO - Queue processor thread started
+2025-04-05 19:59:18,043 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 20:27:10,675 - INFO - ffplay found and available for audio playback
+2025-04-05 20:27:10,675 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 20:27:10,676 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 20:27:10,676 - INFO - Queue processor thread started
+2025-04-05 20:27:10,676 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 20:36:31,711 - INFO - ffplay found and available for audio playback
+2025-04-05 20:36:31,711 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 20:36:31,711 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 20:36:31,711 - INFO - Queue processor thread started
+2025-04-05 20:36:31,711 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 20:53:52,255 - INFO - ffplay found and available for audio playback
+2025-04-05 20:53:52,255 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 20:53:52,256 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 20:53:52,257 - INFO - Queue processor thread started
+2025-04-05 20:53:52,257 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 20:55:28,850 - INFO - ffplay found and available for audio playback
+2025-04-05 20:55:28,850 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 20:55:28,854 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 20:55:28,854 - INFO - Queue processor thread started
+2025-04-05 20:55:28,854 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-05 21:05:52,247 - INFO - ffplay found and available for audio playback
+2025-04-05 21:05:52,248 - INFO - Creating new StreamTTSPlayer instance
+2025-04-05 21:05:52,249 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-05 21:05:52,250 - INFO - Queue processor thread started
+2025-04-05 21:05:52,250 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)

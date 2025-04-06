@@ -6,6 +6,9 @@ telling time, controlling mood lighting (YouTube via Selenium), and
 managing the Felix video tracking client. Services are triggered based on
 specific function triggers parsed from the AI's response.
 """
+
+import asyncio
+import websockets
 import os
 import datetime
 import requests
@@ -36,14 +39,24 @@ except ImportError:
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 try:
     import config
+
     from core import nlp # Assumed LlpCall class is needed if follow-up calls remained (they are removed for now)
-    # from interfaces import streamaudio # Assumed needed for .say() if used directly (removed for now)
-    # --- REFACTOR: Import Felix client for control ---
-    from IseeYou.IseeYouClass import FelixTrackingClient # Import the class definition
 except ImportError as e:
     logging.error(f"Error importing core/interface modules in utilities.py: {e}", exc_info=True)
     # Decide if this is fatal - likely yes if ChatManager depends on it
     sys.exit(1)
+
+
+try:
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+# Now you can import directly from the parent module
+    from IseeYou.IseeYouClass import FelixTrackingClient
+
+except ImportError as e:
+    logging.error(f"There was an issue importing The video Service, it might be skipped" ,{e}, exc_info = True)
+
 
 # --- REFACTOR: Constants for triggers ---
 TRIGGER_PREFIX = "FUNCTION_TRIGGER:"
@@ -52,12 +65,15 @@ SERVICE_TELL_TIME = "TELL_TIME"
 SERVICE_SET_MOOD = "SET_MOOD"
 SERVICE_START_VIDEO = "START_VIDEO"
 SERVICE_STOP_VIDEO = "STOP_VIDEO"
+SERVICE_CHECK_VISUAL_CONTEXT = "CHECK_VISUAL_CONTEXT"
 # Add other services like SPOTIFY here if implemented
 
 # --- REFACTOR: Configure logging ---
 # Logging setup might be better in main.py, but adding basic config here for standalone usability
 if not logging.getLogger().hasHandlers():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(module)s] %(message)s')
+
+from core.cache import VisualContextCache # Ensure cache is imported
 
 
 class Utilities:
@@ -80,8 +96,15 @@ class Utilities:
         self.config = config_instance
         self.nlp = nlp_instance # Store if needed, but aim to remove direct use
         self.chat = chat_instance # Store if needed, but aim to remove direct use
+        self.running = False
+        self.websocket = None
+        self.tasks = []
 
-        # --- REFACTOR: Removed self.location and self.weather_info ---
+        self.visual_cache = VisualContextCache()
+        self.video_client_instance: Optional[FelixTrackingClient] = None
+        self.cache_update_task: Optional[asyncio.Task] = None
+
+
         # Location should be passed per request, weather info returned by function
 
         self._selenium_driver: Optional[webdriver.Chrome] = None # Store Selenium driver if mood setter is active
@@ -271,9 +294,166 @@ class Utilities:
              return True # Nothing to stop
 
 
+    async def entrance(self):
+        """
+        Starts the video client, websocket connection, and cache update loop.
+        """
+        if self.running:
+            logging.warning("Video service is already running.")
+            return True # Indicate it's already running
+
+        self.running = True
+        logging.info("Attempting to start video client and cache update...")
+
+        # --- CORRECTED: Create the client AND store it in self.video_client_instance ---
+        self.video_client_instance = FelixTrackingClient(
+            server_url="ws://localhost:8080"
+        )
+        # ------------------------------------------------------------------------------
+
+        try:
+            # Use self.video_client_instance here if needed for connection setup (doesn't seem necessary for websockets.connect)
+            self.websocket = await websockets.connect("ws://localhost:8080")
+            logging.info("WebSocket connection established.")
+        except Exception as e:
+            logging.error(f"Failed to connect WebSocket: {e}", exc_info=True)
+            self.running = False
+            self.video_client_instance = None # Reset on failure
+            return False # Indicate failure
+
+        # Start client tasks using the stored instance
+        # Ensure the client instance is valid before creating tasks
+        if not self.video_client_instance:
+             logging.error("Cannot start client tasks: video client instance is None.")
+             # Clean up websocket?
+             if self.websocket and not self.websocket.closed:
+                 await self.websocket.close()
+             self.running = False
+             return False
+
+        self.tasks = [
+            asyncio.create_task(self.video_client_instance.capture_and_send_frames(self.websocket, 0)),
+            asyncio.create_task(self.video_client_instance.receive_results(self.websocket)),
+            asyncio.create_task(self.video_client_instance.display_loop()),
+        ]
+        logging.info("Video client tasks created.")
+
+        # --- CORRECTED: Start the persistent cache's update loop using the correct method and instance ---
+        if self.video_client_instance: # Check the instance variable
+            self.cache_update_task = asyncio.create_task(
+                self.visual_cache._update_loop(self.video_client_instance, update_interval=0.5) # CALL _update_loop HERE
+            )
+            logging.info(f"Visual context cache update loop started (Task ID: {self.cache_update_task.get_name()}).")
+        else:
+            # This path shouldn't be reached if the above check is done, but good for safety
+            logging.error("Cannot start cache update loop: video client instance is None.")
+        # ------------------------------------------------------------------------------------------
+
+        logging.info("Video client tasks and cache update loop initiated.")
+        return True # Indicate success
+
+    async def start(self):
+        """This function will be tasked to call the main video launcher, instead of having, complex logic, we will just
+        have this trigger, that will call the video tracking, if trigger word returned by LLM.
+
+        Returns:
+            None
+        """
+        try:
+            success = await self.entrance()
+            return success
+        except KeyboardInterrupt as e:
+            logging.info("\nProgram Stopped by keyboard control")
+        except Exception as e:
+            logging.info(f"Some weird ass Error Just happened: {e}")
+            return False
 
 
-    # --- REFACTOR: Central service dispatcher ---
+    async def stop(self):
+        """This function will run the stop script
+        """
+        try:
+            await self.exit()
+        except KeyboardInterrupt as e:
+            logging.info("\nProgram Stopped by keyboard control")
+        except Exception as e:
+            logging.info(f"Some weird ass Error Just happened: {e}")
+        finally:
+            self.running = False
+            
+
+
+    # services/utilities.py
+
+    # Inside class Utilities:
+    async def exit(self):
+        """
+        Stops the video client tasks, websocket connection, and cache update loop gracefully.
+        """
+        if not self.running:
+            logging.info("Vision service not running, nothing to exit.")
+            return True # Nothing to do
+
+        logging.info("Shutting Down the Vision Service and Cache Update...")
+        self.running = False # Mark as not running early
+
+        # --- ADDED: Cancel the cache update task ---
+        if self.cache_update_task and not self.cache_update_task.done():
+            self.cache_update_task.cancel()
+            logging.info(f"Cache update task (ID: {self.cache_update_task.get_name()}) cancellation requested.")
+            try:
+                # Wait briefly for the task to acknowledge cancellation
+                await asyncio.wait_for(self.cache_update_task, timeout=1.0)
+                logging.info("Cache update task confirmed cancelled.")
+            except asyncio.CancelledError:
+                logging.info("Cache update task confirmed cancelled (via exception).")
+            except asyncio.TimeoutError:
+                logging.warning("Timeout waiting for cache update task to cancel.")
+            except Exception as e:
+                logging.error(f"Error during cache update task cancellation wait: {e}", exc_info=True)
+        self.cache_update_task = None # Clear the task reference
+        # ------------------------------------------
+
+        # Cancel client tasks
+        cancelled_tasks = []
+        for task in self.tasks:
+            if task and not task.done(): # Check if task exists before checking if done
+                task.cancel()
+                cancelled_tasks.append(task)
+
+        # Gather cancelled tasks (important for cleanup)
+        if cancelled_tasks:
+            logging.info(f"Waiting for {len(cancelled_tasks)} client tasks to cancel...")
+            await asyncio.gather(*cancelled_tasks, return_exceptions=True) # Wait for cancellations
+            logging.info("Video client tasks gathered after cancellation.")
+        else:
+            logging.info("No active client tasks needed cancellation.")
+
+        self.tasks = [] # Clear task list
+
+        # Close websocket
+        if self.websocket and not self.websocket.closed: # Check if websocket exists before checking closed status
+            try:
+                await self.websocket.close()
+                logging.info("WebSocket closed.")
+            except Exception as e:
+                logging.error(f"Error closing WebSocket: {e}", exc_info=True)
+        self.websocket = None # Clear websocket reference
+
+        # Clear the client instance reference
+        self.video_client_instance = None
+        logging.info("Vision service resources cleaned up.")
+        return True
+ 
+
+        
+
+
+        
+
+
+
+    #  Central service dispatcher 
     async def dispatch_service(self, ai_response: str) -> Optional[Dict[str, Any]]:
         """
         Parses the AI response for function triggers and executes the corresponding service.
@@ -320,17 +500,28 @@ class Utilities:
                 service_executed = True
                 # NOTE: Stopping the mood (closing browser) needs a separate trigger or logic
             elif service_name == SERVICE_START_VIDEO:
-                success = await self._execute_start_video()
+                success = await self.start()
                 result_payload["result"] = success
                 service_executed = True
             elif service_name == SERVICE_STOP_VIDEO:
-                success = await self._execute_stop_video()
+                success = await self.stop()
                 result_payload["result"] = success
                 service_executed = True
-            # --- Add other service handlers here ---
-            # elif service_name == SERVICE_PLAY_SPOTIFY:
-            #     # Call your spotify function with parameter
-            #     pass
+
+            elif service_name == SERVICE_CHECK_VISUAL_CONTEXT:
+                if self.visual_cache:
+                    # Calls share_info_AI which now returns a dictionary or None
+                    service_result_dict = await self.visual_cache.share_info_AI(chat_manager=self.chat)
+                    # Store the dictionary (or None) in result_payload['result']
+                    result_payload['result'] = service_result_dict
+                    # --- ADD THIS LINE ---
+                    service_executed = True
+                    # --------------------
+                else:
+                    # This case should ideally not happen if __init__ ran correctly
+                    logging.error("Visual cache (self.visual_cache) is not initialized in Utilities.")
+                    result_payload['result'] = None # Set result to None on error
+                    service_executed = True # Keep this one too
             else:
                 logging.warning(f"Unknown service trigger name: {service_name}")
                 return None # Unknown service
@@ -355,4 +546,3 @@ class Utilities:
         logging.info("Utilities cleanup finished.")
 
 
-# --- REFACTOR: Removed original monitor_sypher, choose_service, weather_service, switch_mode* ---

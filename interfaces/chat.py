@@ -287,15 +287,14 @@ class ChatManager:
             logging.error(f"Error during text-to-speech call: {e}", exc_info=True)
 
 
-    async def _handle_service_call(self, ai_response: str):
+    async def _handle_service_call(self, ai_response: str) -> Optional[Dict[str, Any]]:
         """(Internal) Checks for and executes utility service triggers."""
         if not self.utilities:
-            # logging.debug("Utilities not available, skipping service check.") # Debug
-            return # No utilities instance to dispatch to
+            return None  # No utilities instance to dispatch to
 
         if not hasattr(self.utilities, 'dispatch_service'):
             logging.error("Utilities instance is missing the 'dispatch_service' method. So services might be unavailable")
-            return
+            return None
 
         try:
             service_result_payload = await self.utilities.dispatch_service(ai_response)
@@ -305,13 +304,15 @@ class ChatManager:
                 result = service_result_payload.get("result")
                 logging.info(f"--- Service '{service_name}' executed ---")
                 logging.info(f"Result: {str(result)[:200]}") # Log partial result
+                
+                # Return the payload to the caller
+                return service_result_payload
 
-            # else: # Debug log
-                 # logging.debug("No service trigger executed.")
+            return None  # Return None if no service was executed
 
         except Exception as e:
-             logging.error(f"Error during utility service dispatch/handling: {e}", exc_info=True)
-
+            logging.error(f"Error during utility service dispatch/handling: {e}", exc_info=True)
+            return None  # Return None on error
 
     async def process_conversation_turn(self, user_input: str) -> Optional[str]:
         """
@@ -322,74 +323,103 @@ class ChatManager:
             logging.warning("Received empty user input.")
             return None
 
-        print(f"You: {self.current_prompt}")
+        print(f"You: {self.current_prompt}") # Print user input
 
         if self.current_prompt.lower() == "exit":
             return "exit"
 
-        # 1. Get AI response
+        # 1. Get INITIAL AI response
         await self._call_llm(self.current_prompt)
+        initial_response = self.current_ai_response # Store the first response
 
-        # Handle errors during LLM call
-        if "Sorry, I encountered an error" in self.current_ai_response or \
-           "Sorry, I'm having trouble connecting" in self.current_ai_response or \
-           "Sorry, I received an unexpected response format" in self.current_ai_response or \
-           "I cannot provide a response due to safety settings" in self.current_ai_response:
-            print(f"{self.config.MODEL_NAME}: {self.current_ai_response}")
-            if self.format == "audio":
-                self._speak_response() # Speak the error
-                # --- NEW: Add wait after speaking error ---
-                await self._wait_after_tts()
-            self._save_current_turn()
-            return self.current_ai_response
+        # --- Handle initial LLM call errors (as before) ---
+        if "Sorry, I encountered an error" in initial_response or \
+           "Sorry, I'm having trouble connecting" in initial_response or \
+           "Sorry, I received an unexpected response format" in initial_response or \
+           "I cannot provide a response due to safety settings" in initial_response:
+            print(f"{self.config.MODEL_NAME}: {initial_response}") # Print error message
+            # ... (handle audio if needed) ...
+            # Save the user prompt and the error response to history
+            self._save_current_turn() # Uses self.current_prompt and self.current_ai_response (which is initial_response here)
+            return initial_response
+        # -------------------------------------------------
 
-        # 2. Display valid AI response
-        print(f"{self.config.MODEL_NAME}: {self.current_ai_response}")
+        # --- Save the initial turn (user prompt + initial AI response containing trigger) ---
+        # Save this BEFORE the service call potentially changes the response for display/memory
+        self._save_current_turn() # Uses self.current_prompt and self.current_ai_response
+        # ----------------------------------------------------------------------------------
 
-        # 3. Save turn
-        self._save_current_turn()
+        # --- Handle service calls ---
+        service_result_payload = await self._handle_service_call(initial_response)
+        # ----------------------------
 
-        # 4. Speak the initial AI response
-        if self.format == "audio":
-            self._speak_response()
-            # --- NEW: Call the dedicated wait function ---
-            #await self._wait_after_tts()
+        # --- Determine the final response to display and potentially add to memory ---
+        final_response_to_print = initial_response # Default to the initial response
 
-        # 5. Handle service calls
-        await self._handle_service_call(self.current_ai_response)
+        if service_result_payload:
+            service_name = service_result_payload.get("service")
+            service_result = service_result_payload.get("result") # Expect dict for visual context
+            
+            from services.utilities import SERVICE_CHECK_VISUAL_CONTEXT
+            # --- UPDATED BLOCK: Handle the dictionary result cleanly ---
+            # Use constants like SERVICE_CHECK_VISUAL_CONTEXT if defined
+            if service_name == SERVICE_CHECK_VISUAL_CONTEXT and isinstance(service_result, dict):
+                context_prompt = service_result.get("context_prompt")
+                context_response = service_result.get("context_response")
+                logging.debug(f"--- Debug Check ---")
+                logging.debug(f"Received service_name: '{service_name}' (Type: {type(service_name)})")
 
-        # 6. Return response
-        return self.current_ai_response
+                logging.debug(f"Is service_name == 'SERVICE_CHECK_VISUAL_CONTEXT'? {service_name == 'SERVICE_CHECK_VISUAL_CONTEXT'}")
+        # If using an imported constant, check that too:
+        # from services.utilities import SERVICE_CHECK_VISUAL_CONTEXT # (Assuming import at top)
+        # logging.debug(f"Is service_name == imported constant? {service_name == SERVICE_CHECK_VISUAL_CONTEXT}")
+                logging.debug(f"Received service_result type: {type(service_result)}")
+                logging.debug(f"Is service_result a dict? {isinstance(service_result, dict)}")
+                if isinstance(service_result, dict):
+                    logging.debug(f"service_result keys: {service_result.keys()}")
+                    context_response_debug = service_result.get("context_response")
+                    logging.debug(f"context_response value from dict: '{str(context_response_debug)[:50]}...'")
+                    logging.debug(f"Is context_response truthy? {bool(context_response_debug)}")
+                logging.debug(f"--- End Debug Check ---")
+                # --- Check if we got a valid response from the context check ---
+                if context_response:
+                    final_response_to_print = context_response # Use this for display
+                    logging.info(f"Using AI response from visual context check: '{context_response[:100]}...'")
 
-    # --- NEW: Dedicated wait function ---
-
-    ##async def _wait_after_tts(self, timeout_sec: float = 60.0):
-        """Waits appropriately after TTS, especially for streaming engines."""
-        tts_engine = getattr(self.config, 'DEFAULT_TTS_ENGINE', 'pyttsx3')
-        logging.debug(f"Waiting after TTS engine: {tts_engine}")
-
-        if tts_engine == 'alltalk_tts' and STREAM_TTS_PLAYER_AVAILABLE and stream_tts_player_instance:
-            logging.info(f"Waiting for StreamTTSPlayer playback (timeout={timeout_sec}s)...")
-            try:
-                # Run the player's synchronous wait method in a thread
-                success = await asyncio.to_thread(
-                    stream_tts_player_instance.wait_until_safe_to_listen,
-                    timeout=timeout_sec
-                )
-                if success:
-                    logging.info("StreamTTSPlayer playback finished.")
+                    # --- Save the context interaction to memory ---
+                    if context_prompt:
+                         logging.info("Saving context prompt to memory (as system)")
+                         self.memory.save_convos("system", context_prompt) # Save context prompt
+                    logging.info(f"Saving visual context response to memory: '{context_response[:50]}...'")
+                    self.memory.save_convos("model", context_response) # Save context response
+                    # ---------------------------------------------
                 else:
-                    logging.warning("Timeout or error waiting for StreamTTSPlayer playback.")
-            except Exception as e:
-                logging.error(f"Error waiting for StreamTTSPlayer: {e}", exc_info=True)
-        else:
-            # Fallback for other engines (or if StreamTTSPlayer not available)
-            # Use a simple sleep, adjust duration as needed. 1.0s might be short for some offline engines.
-            wait_duration = 1.5 # Slightly longer default wait
-            logging.debug(f"Using generic wait of {wait_duration}s after TTS.")
-            await asyncio.sleep(wait_duration)
+                    # Log if service ran but didn't get a usable response back from LLM
+                    logging.warning("CHECK_VISUAL_CONTEXT service ran but LLM returned no valid context_response.")
+                    # Keep final_response_to_print as initial_response
 
+            # --- Add elif for other services if they modify the response ---
+            # elif service_name == "SERVICE_GET_WEATHER" and isinstance(service_result, dict):
+            #    # Format weather data and maybe set final_response_to_print
+            #    pass
+            # ----------------------------------------------------------
 
+        # --- Print ONLY the final determined response ---
+        print(f"{self.config.MODEL_NAME}: {final_response_to_print}") # Only print here
+        # ---------------------------------------------
+
+        # --- Handle audio output for the final response (if enabled) ---
+        if self.format == "audio":
+             self.current_ai_response = final_response_to_print # Update internal state for speaker
+             self._speak_response()
+             # await self._wait_after_tts() # If needed
+        # ----------------------------------------------------------
+
+        # --- Return the final determined response ---
+        return final_response_to_print
+        # ------------------------------------------
+    # --- NEW: Dedicated wait function ---
+    
     async def _get_audio_input(self) -> Optional[str]:
         """(Internal) Handles audio input using the configured STT method."""
 
