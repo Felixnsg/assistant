@@ -197,7 +197,7 @@ async def main():
             8080,
             ping_interval=25,
             ping_timeout=20,
-            max_size=10*1024*1024  # 10MB message size limit
+            max_size=100*1024*1024  # 100MB message size limit
         ):
             print("\n=== Server running on ws://0.0.0.0:8080 ===")
             print("=== Waiting for client connections ===\n")
