@@ -33065,3 +33065,332 @@
 2025-04-17 12:38:46,169 - IseeYou.FelixTrackingClient - INFO - User pressed 'q'. Exiting...
 2025-04-17 12:38:46,214 - IseeYou.FelixTrackingClient - INFO - Display resources released
 2025-04-17 12:38:46,214 - IseeYou.FelixTrackingClient - INFO - Display task finished
+2025-04-17 12:40:35,368 - asyncio - DEBUG - Using proactor: IocpProactor
+2025-04-17 12:40:35,369 - IseeYou.main - INFO - Starting Felix Tracking Client...
+2025-04-17 12:40:35,369 - IseeYou.FelixTrackingClient - INFO - 
+=== Initializing FelixTrackingClient ===
+2025-04-17 12:40:35,370 - IseeYou.FelixTrackingClient - INFO - Using simple direct tracking (no ByteTrack dependency)
+2025-04-17 12:40:35,370 - IseeYou.FelixTrackingClient - INFO - FelixTrackingClient initialized successfully
+2025-04-17 12:40:35,370 - IseeYou.FelixTrackingClient - INFO - 
+=== Testing camera access ===
+2025-04-17 12:40:42,669 - IseeYou.FelixTrackingClient - INFO - Camera test successful
+2025-04-17 12:40:42,669 - IseeYou.FelixTrackingClient - INFO - 
+=== Connecting to server ===
+2025-04-17 12:40:42,711 - websockets.client - DEBUG - = connection is CONNECTING
+2025-04-17 12:40:42,714 - websockets.client - DEBUG - > GET / HTTP/1.1
+2025-04-17 12:40:42,714 - websockets.client - DEBUG - > Host: localhost:8080
+2025-04-17 12:40:42,715 - websockets.client - DEBUG - > Upgrade: websocket
+2025-04-17 12:40:42,715 - websockets.client - DEBUG - > Connection: Upgrade
+2025-04-17 12:40:42,715 - websockets.client - DEBUG - > Sec-WebSocket-Key: GY4ogXXhid6rEKra+0O/kQ==
+2025-04-17 12:40:42,715 - websockets.client - DEBUG - > Sec-WebSocket-Version: 13
+2025-04-17 12:40:42,715 - websockets.client - DEBUG - > Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits
+2025-04-17 12:40:42,715 - websockets.client - DEBUG - > User-Agent: Python/3.12 websockets/15.0.1
+2025-04-17 12:40:43,034 - websockets.client - DEBUG - < HTTP/1.1 101 Switching Protocols
+2025-04-17 12:40:43,035 - websockets.client - DEBUG - < Date: Thu, 17 Apr 2025 19:40:42 GMT
+2025-04-17 12:40:43,035 - websockets.client - DEBUG - < Upgrade: websocket
+2025-04-17 12:40:43,035 - websockets.client - DEBUG - < Connection: Upgrade
+2025-04-17 12:40:43,035 - websockets.client - DEBUG - < Sec-WebSocket-Accept: PMLp4pSgwIZK0RAHyhSWCS6RrLA=
+2025-04-17 12:40:43,035 - websockets.client - DEBUG - < Sec-WebSocket-Extensions: permessage-deflate; server_max_window_bits=12; client_max_window_bits=12
+2025-04-17 12:40:43,035 - websockets.client - DEBUG - < Server: Python/3.10 websockets/15.0.1
+2025-04-17 12:40:43,035 - websockets.client - DEBUG - = connection is OPEN
+2025-04-17 12:40:43,036 - IseeYou.FelixTrackingClient - INFO - Connected to server!
+2025-04-17 12:40:43,036 - IseeYou.FelixTrackingClient - INFO - 
+=== Starting video capture ===
+2025-04-17 12:40:49,436 - websockets.client - DEBUG - > BINARY ff d8 ff e0 00 10 4a 46 49 46 00 01 01 00 00 01 ... 34 dd cd e2 fb 9f ff d9 [48280 bytes]
+2025-04-17 12:40:49,442 - IseeYou.FelixTrackingClient - INFO - 
+=== Starting to receive detection results ===
+2025-04-17 12:40:49,443 - IseeYou.FelixTrackingClient - INFO - 
+=== Starting display loop ===
+2025-04-17 12:40:49,500 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,513 - websockets.client - DEBUG - < PING 65 c9 9c fb [binary, 4 bytes]
+2025-04-17 12:40:49,513 - websockets.client - DEBUG - > PONG 65 c9 9c fb [binary, 4 bytes]
+2025-04-17 12:40:49,515 - websockets.client - DEBUG - > PING a7 73 fe 9b [binary, 4 bytes]
+2025-04-17 12:40:49,515 - websockets.client - DEBUG - % sent keepalive ping
+2025-04-17 12:40:49,515 - websockets.client - DEBUG - < CLOSE 1011 (internal error) keepalive ping timeout [24 bytes]
+2025-04-17 12:40:49,516 - websockets.client - DEBUG - > CLOSE 1011 (internal error) keepalive ping timeout [24 bytes]
+2025-04-17 12:40:49,516 - websockets.client - DEBUG - = connection is CLOSING
+2025-04-17 12:40:49,516 - websockets.client - DEBUG - < EOF
+2025-04-17 12:40:49,516 - websockets.client - DEBUG - > EOF
+2025-04-17 12:40:49,516 - websockets.client - DEBUG - = connection is CLOSED
+2025-04-17 12:40:49,516 - websockets.client - DEBUG - x half-closing TCP connection
+2025-04-17 12:40:49,517 - IseeYou.FelixTrackingClient - ERROR - [RECEIVER] ERROR: received 1011 (internal error) keepalive ping timeout; then sent 1011 (internal error) keepalive ping timeout
+2025-04-17 12:40:49,520 - IseeYou.FelixTrackingClient - INFO - Receive task finished
+2025-04-17 12:40:49,555 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,602 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,649 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,694 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,740 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,788 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,834 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,881 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,928 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:49,976 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,022 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,069 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,114 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,162 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,210 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,256 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,303 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,351 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,396 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,442 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,451 - IseeYou.FelixTrackingClient - ERROR - Error in capture_and_send_frames: received 1011 (internal error) keepalive ping timeout; then sent 1011 (internal error) keepalive ping timeout
+2025-04-17 12:40:50,763 - IseeYou.FelixTrackingClient - INFO - Camera released
+2025-04-17 12:40:50,763 - IseeYou.FelixTrackingClient - INFO - Capture and send task finished
+2025-04-17 12:40:50,764 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,802 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,863 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,912 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:50,957 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,000 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,043 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,090 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,122 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,170 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,218 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,259 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,306 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,353 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,408 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,442 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,488 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,536 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,575 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,638 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,675 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,723 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,771 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,809 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,859 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,903 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,951 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:51,999 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,046 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,095 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,142 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,190 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,237 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,286 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,333 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,365 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,412 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,460 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,508 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,542 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,588 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,635 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,668 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,700 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,747 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,796 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,843 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,891 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:52,942 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,002 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,048 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,095 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,139 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,185 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,233 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,279 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,324 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,371 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,417 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,464 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,510 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,557 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,592 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,636 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,682 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,729 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,776 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,822 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,869 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,917 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:53,965 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,013 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,061 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,106 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,153 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,201 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,246 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,295 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,357 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,403 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,450 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,498 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,543 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,590 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,638 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,683 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,730 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,776 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,822 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:54,869 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,031 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,079 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,127 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,175 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,223 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,272 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,323 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,369 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,401 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,449 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,498 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,547 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,593 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,642 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,690 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,738 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,786 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,835 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,884 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,932 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:55,980 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,029 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,077 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,124 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,172 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,221 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,254 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,286 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,334 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,383 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,432 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,480 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,528 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,576 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,623 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,672 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,720 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,769 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,801 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,834 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,882 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,929 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:56,977 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,024 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,087 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,135 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,181 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,228 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,277 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,322 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,369 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,417 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,464 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,510 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,559 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,604 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,651 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,698 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,745 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,792 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,840 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,885 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,932 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:57,979 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,024 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,072 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,120 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,166 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,213 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,260 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,306 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,353 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,400 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,448 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,494 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,542 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,590 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,637 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,684 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,730 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,779 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,841 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,886 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,932 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:58,983 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,032 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,065 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,113 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,161 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,209 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,256 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,305 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,337 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,369 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,417 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,464 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,514 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,559 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,607 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,654 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,686 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,718 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,751 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,813 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,861 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,894 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,940 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:40:59,972 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,004 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,051 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,083 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,117 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,147 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,179 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,227 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,274 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,307 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,354 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,386 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,418 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,467 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,514 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,563 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,595 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,643 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,675 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,722 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,771 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,803 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,850 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,898 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,946 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:00,993 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,038 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,087 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,134 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,179 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,226 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,273 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,319 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,366 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,412 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,458 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,506 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,553 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,599 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,646 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,693 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,739 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,786 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,834 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,880 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,928 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:01,976 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,021 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,068 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,117 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,162 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,210 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,257 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,303 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,349 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,397 - IseeYou.FelixTrackingClient - DEBUG - [VISUALIZE] Frame #0: No tracks or detections to visualize
+2025-04-17 12:41:02,398 - IseeYou.FelixTrackingClient - INFO - User pressed 'q'. Exiting...
+2025-04-17 12:41:02,424 - IseeYou.FelixTrackingClient - INFO - Display resources released
+2025-04-17 12:41:02,425 - IseeYou.FelixTrackingClient - INFO - Display task finished

@@ -314,8 +314,8 @@ class FelixTrackingClient:
             self.logger.info("\n=== Connecting to server ===")
             async with websockets.connect(
                 self.server_url,
-                ping_interval=3,
-                ping_timeout=3
+                ping_interval=10,
+                ping_timeout=10
             ) as websocket:
                 self.logger.info("Connected to server!")
                 
