@@ -80,7 +80,7 @@ class FelixTrackingClient:
                     self.logger.debug(f"[CAPTURE] Sent {frame_counter} frames to server")
                 
                 # Small delay to control frame rate
-                await asyncio.sleep(0.1)  # ~10 FPS
+                await asyncio.sleep(1)  # ~10 FPS
 
                 
         except Exception as e:
@@ -314,8 +314,8 @@ class FelixTrackingClient:
             self.logger.info("\n=== Connecting to server ===")
             async with websockets.connect(
                 self.server_url,
-                ping_interval=200,
-                ping_timeout=200
+                ping_interval=3,
+                ping_timeout=3
             ) as websocket:
                 self.logger.info("Connected to server!")
                 

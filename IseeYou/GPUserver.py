@@ -195,8 +195,8 @@ async def main():
             server.handle_client, 
             "0.0.0.0", 
             8080,
-            ping_interval=200,
-            ping_timeout=200,
+            ping_interval=3,
+            ping_timeout=3,
             max_size=100*1024*1024  # 100MB message size limit
         ):
             print("\n=== Server running on ws://0.0.0.0:8080 ===")
