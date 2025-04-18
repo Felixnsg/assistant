@@ -336,7 +336,7 @@ class FelixTrackingClient:
 # Main entry point
 async def main():
     print("Starting Felix Tracking Client...")
-    client = FelixTrackingClient(server_url="ws://localhost:8765")
+    client = FelixTrackingClient(server_url="ws://localhost:8080")
     await client.run(video_source=0)  # Use webcam
 
 if __name__ == "__main__":
