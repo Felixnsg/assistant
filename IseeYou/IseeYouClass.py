@@ -66,7 +66,6 @@ class FelixTrackingClient:
                 # Update the current frame for display task
                 async with self.frame_lock:
                     self.current_frame = frame.copy()
-
                 # --- Encode frame in thread ---
                 try:
                     encoded_result_tuple = await asyncio.to_thread(cv2.imencode, ".jpg", frame)
@@ -111,10 +110,6 @@ class FelixTrackingClient:
                 cap.release()
             self.logger.info("Camera released.")
                     
-        
-    
-    # Inside FelixTrackingClient class:
-
     async def receive_results(self, websocket):
         """Receive detection results and update tracking NON-BLOCKINGLY."""
         self.logger.info("\n=== Starting to receive detection results ===")
@@ -122,7 +117,6 @@ class FelixTrackingClient:
         try:
             async for message in websocket:
                 detection_counter += 1
-                update_task = None # Keep track of the update task
 
                 try:
                     # Offload potential blocking json.loads (optional but safe)
@@ -137,16 +131,13 @@ class FelixTrackingClient:
                     self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Received {len(detection_data)} detections ({felix_count} Felix)")
 
                     # --- Update tracking in a separate thread ---
-                    # Create task but don't await here if you want receiving to continue ASAP
-                    # However, awaiting ensures tracking is done before processing next message fully.
-                    # Let's await to ensure self.tracked_detections is updated.
-                    tracking_start_time = time.time()
-                    self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Submitting tracking update...")
-                    # Run the synchronous update_tracking function in a thread
-                    await asyncio.to_thread(self.update_tracking, detection_data)
-                    tracking_duration = time.time() - tracking_start_time
-                    self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Tracking update finished in {tracking_duration:.4f}s")
-                    # self.tracked_detections is now updated
+                    # COMMENTED OUT: No tracking updates
+                    # tracking_start_time = time.time()
+                    # self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Submitting tracking update...")
+                    # # Run the synchronous update_tracking function in a thread
+                    # await asyncio.to_thread(self.update_tracking, detection_data)
+                    # tracking_duration = time.time() - tracking_start_time
+                    # self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Tracking update finished in {tracking_duration:.4f}s")
 
                 except json.JSONDecodeError as json_err:
                     self.logger.error(f"[RECEIVER] Frame #{detection_counter}: Failed to decode JSON: {json_err}")
@@ -229,30 +220,48 @@ class FelixTrackingClient:
                 # Log visualization details occasionally
                 if self.frame_count % 30 == 0:
                     felix_count = sum(1 for cid in self.tracked_detections.class_id if cid == 0)
-                    self.logger.debug(f"[VISUALIZE] Frame #{self.frame_count}: Fallback to {len(self.raw_detections)} raw detections ({felix_count} Felix)")
+                    self.logger.debug(f"[VISUALIZE] Frame #{self.frame_count}: Using {len(self.tracked_detections)} tracked detections ({felix_count} Felix)")
 
-                # Create custom labels for each detection
-                labels = [
-                    f"{'Felix' if class_id == 0 else 'Not Felix'} #{tracker_id}: {conf:.2f}"
-                    for tracker_id, conf, class_id in zip(
-                        self.tracked_detections.tracker_id,
-                        self.tracked_detections.confidence,
-                        self.tracked_detections.class_id
-                    )
-                ]
-                
                 # Create box annotator with custom colors
                 box_annotator = sv.BoxAnnotator(
                     thickness=2,
                     color_lookup=lambda class_id: (0, 255, 0) if class_id == 0 else (0, 0, 255)  # Green for Felix, Red for others
                 )
                 
-                # Draw boxes and labels
+                # First draw boxes (without labels parameter)
                 frame_copy = box_annotator.annotate(
                     scene=frame_copy,
-                    detections=self.tracked_detections,
-                    labels=labels
+                    detections=self.tracked_detections
                 )
+                
+                # Then manually add labels after boxes are drawn
+                for i, (xyxy, tracker_id, confidence, class_id) in enumerate(zip(
+                        self.tracked_detections.xyxy,
+                        self.tracked_detections.tracker_id,
+                        self.tracked_detections.confidence,
+                        self.tracked_detections.class_id
+                    )):
+                    # Add safety check for None values
+                    if xyxy is None or None in xyxy:
+                        continue
+                        
+                    x1, y1, x2, y2 = map(int, xyxy)
+                    
+                    # Add safety check for None values
+                    if tracker_id is None or confidence is None or class_id is None:
+                        continue
+                        
+                    label = f"{'Felix' if class_id == 0 else 'Not Felix'} #{tracker_id}: {confidence:.2f}"
+                    color = (0, 255, 0) if class_id == 0 else (0, 0, 255)
+                    cv2.putText(
+                        frame_copy,
+                        label,
+                        (x1, y1 - 10 if y1 > 10 else y1 + 10),  # Avoid negative y-coordinates
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5,
+                        color,
+                        2
+                    )
                 
                 return frame_copy
                 
@@ -266,7 +275,6 @@ class FelixTrackingClient:
                 if self.frame_count % 30 == 0:
                     felix_count = sum(1 for det in self.raw_detections if det.get("is_felix", False))
                     self.logger.debug(f"[VISUALIZE] Frame #{self.frame_count}: Fallback to {len(self.raw_detections)} raw detections ({felix_count} Felix)")
-
                 
                 # Draw raw detections
                 for det in self.raw_detections:
@@ -304,8 +312,6 @@ class FelixTrackingClient:
                 self.logger.debug(f"[VISUALIZE] Frame #{self.frame_count}: No tracks or detections to visualize")
         
         return frame_copy
-        
-    # Inside FelixTrackingClient class:
 
     async def display_loop(self):
         """Display processed frames using the shared current_frame (Non-Blocking Visualization)."""
@@ -381,12 +387,15 @@ class FelixTrackingClient:
             except Exception as destroy_err:
                 self.logger.error(f"Error destroying cv2 windows: {destroy_err}")
         
-    async def run(self, video_source=0, max_retries=5, initial_retry_delay=5.0, max_retry_delay=60.0):
+    async def run(self, video_source=0, target_send_fps=10, # Added target FPS for example
+                 max_retries=5, initial_retry_delay=5.0, max_retry_delay=60.0):
         """
-        Run the client with automatic reconnection logic.
+        Run the client with automatic reconnection logic. Correctly handles task
+        completion to trigger retries or clean shutdowns.
 
         Args:
             video_source: The video source index or path.
+            target_send_fps: Approximate FPS for sending frames to the server.
             max_retries: Maximum number of consecutive connection attempts.
             initial_retry_delay: Initial delay (seconds) between retries.
             max_retry_delay: Maximum delay (seconds) between retries (for exponential backoff).
@@ -413,6 +422,7 @@ class FelixTrackingClient:
         current_retry_delay = initial_retry_delay
         connect_timeout = 20.0 # Timeout for the connection attempt itself
 
+        # --- Outer loop for retries ---
         while attempt < max_retries:
             attempt += 1
             self.logger.info(f"Connection attempt {attempt}/{max_retries} to {self.server_url}...")
@@ -420,124 +430,161 @@ class FelixTrackingClient:
             all_tasks = [] # Keep track of all tasks for this attempt
 
             try:
-                # --- Attempt WebSocket Connection ---
-                self.logger.debug(f"Attempting websocket.connect with {connect_timeout}s timeout...")
-                websocket = await asyncio.wait_for(
-                    websockets.connect(
-                        self.server_url,
-                        ping_interval=15,  # Interval for server to send pings
-                        ping_timeout=30,   # How long server waits for pong
-                        close_timeout=10,  # Timeout for close handshake
-                        # Set reasonable size limits
-                        max_size=10 * 1024 * 1024, # 10MB limit
-                    ),
-                    timeout=connect_timeout
-                )
-                self.logger.info(f"Connection successful! ({websocket.remote_address})")
-                # Reset retry counters on success
-                attempt = 0
-                current_retry_delay = initial_retry_delay
+                # --- Block for attempting connection and running tasks ---
+                try:
+                    # --- Attempt WebSocket Connection ---
+                    self.logger.debug(f"Attempting websocket.connect with {connect_timeout}s timeout...")
+                    websocket = await asyncio.wait_for(
+                        websockets.connect(
+                            self.server_url,
+                            ping_interval=15,  # Lower interval to check more often
+                            ping_timeout=45,   # INCREASE timeout significantly
+                            close_timeout=10,
+                            max_size=10 * 1024 * 1024,
+                        ),
+                        timeout=connect_timeout
+                    )
+                    self.logger.info(f"Connection successful! ({websocket.remote_address})")
+                    # Reset retry counters on success
+                    attempt = 0
+                    current_retry_delay = initial_retry_delay
 
-                # --- Launch Core Tasks ---
-                self.logger.info("Launching client tasks (capture/send, receive, display)...")
-                capture_send_task = asyncio.create_task(
-                    self.capture_and_send_frames(websocket, video_source), name="CaptureSendTask"
-                )
-                receive_task = asyncio.create_task(
-                    self.receive_results(websocket), name="ReceiveTask"
-                )
-                display_task = asyncio.create_task(
-                    self.display_loop(), name="DisplayTask"
-                )
-                all_tasks = [capture_send_task, receive_task, display_task]
+                    # --- Launch Core Tasks ---
+                    self.logger.info("Launching client tasks (capture/send, receive)...")
+                    capture_send_task = asyncio.create_task(
+                        self.capture_and_send_frames(websocket, video_source),
+                        name="CaptureSendTask"
+                    )
+                    receive_task = asyncio.create_task(
+                        self.receive_results(websocket), name="ReceiveTask"
+                    )
+                    # COMMENTED OUT: display_task = asyncio.create_task(
+                    #    self.display_loop(), name="DisplayTask"
+                    # )
+                    all_tasks = [capture_send_task, receive_task]  # No display task
 
-                # --- Monitor Tasks ---
-                # Wait until one task completes (normally or with error)
-                self.logger.info("Monitoring client tasks...")
-                done, pending = await asyncio.wait(all_tasks, return_when=asyncio.FIRST_COMPLETED)
-                self.logger.info("Monitor detected task completion or failure.")
+                    # --- Monitor Tasks ---
+                    self.logger.info("Monitoring client tasks...")
+                    done, pending = await asyncio.wait(all_tasks, return_when=asyncio.FIRST_COMPLETED)
+                    self.logger.info("Monitor detected task completion or failure.")
 
-                # --- Handle Task Completion/Failure ---
-                for task in done:
-                    task_name = task.get_name()
-                    try:
-                        exc = task.exception() # Check if task raised an exception
-                        if exc:
-                            # Log error and re-raise to trigger reconnect logic
-                            self.logger.error(f"Task '{task_name}' failed: {exc}", exc_info=exc)
-                            raise exc # Trigger the outer except block
-                        else:
-                            # Task finished without error (e.g., user pressed 'q' in display)
-                            self.logger.info(f"Task '{task_name}' completed normally. Initiating clean shutdown.")
-                            # If one task finishes cleanly, we might want to stop everything
-                            # Cancel pending tasks and exit the outer loop
-                            for p_task in pending:
-                                p_task.cancel()
-                            if pending:
-                                await asyncio.wait(pending) # Wait for cancellations
-                            return # Exit the run method cleanly
+                    # --- Handle Task Completion/Failure ---
+                    should_exit_cleanly = False
+                    should_trigger_reconnect = False
 
-                    except asyncio.CancelledError:
-                        self.logger.info(f"Task '{task_name}' was cancelled (likely during shutdown).")
-                        # If cancellation was initiated externally, we might want to exit cleanly
-                        # Re-cancel pending tasks just in case
+                    for task in done:
+                        task_name = task.get_name()
+                        try:
+                            exc = task.exception() # Check if task raised an exception
+                            if exc:
+                                # --- Task Failed with Exception ---
+                                self.logger.error(f"Task '{task_name}' failed: {exc}", exc_info=exc)
+                                # Assume most exceptions indicate a connection issue requiring reconnect
+                                should_trigger_reconnect = True
+                            else:
+                                # --- Task Finished without Exception ---
+                                self.logger.info(f"Task '{task_name}' completed normally.")
+                                if task_name == "DisplayTask":
+                                    # Display loop finishing normally means user likely quit
+                                    self.logger.info("DisplayTask finished normally (likely 'q' press). Initiating clean shutdown.")
+                                    should_exit_cleanly = True
+                                else:
+                                    # Capture or Receive finishing normally usually means connection closed
+                                    self.logger.warning(f"Task '{task_name}' finished normally, likely due to connection closure. Will attempt reconnect.")
+                                    should_trigger_reconnect = True
+
+                        except asyncio.CancelledError:
+                            # This usually happens when shutdown is initiated elsewhere
+                            self.logger.info(f"Task '{task_name}' was cancelled.")
+                            should_exit_cleanly = True # Assume cancellation means we want to stop
+
+                        # If we decided to exit or reconnect, no need to check other 'done' tasks
+                        if should_exit_cleanly or should_trigger_reconnect:
+                            break # Exit the 'for task in done' loop
+
+                    # --- Take Action Based on Flags ---
+                    if should_exit_cleanly:
+                        self.logger.info("Clean exit condition met. Shutting down remaining tasks.")
+                        # Cancel pending tasks FIRST
                         for p_task in pending:
-                                p_task.cancel()
+                            if p_task and not p_task.done(): p_task.cancel()
+                        # Wait for cancellations AFTER initiating all cancels
                         if pending:
-                                await asyncio.wait(pending)
-                        return # Exit run method
+                             await asyncio.wait(pending)
+                        return # <<< EXIT run method cleanly >>>
 
-            # --- Handle Connection Errors & Task Failures that Trigger Reconnect ---
-            except websockets.exceptions.ConnectionClosed as e:
-                self.logger.warning(f"Connection closed unexpectedly: {e}. Will retry.")
-            except ConnectionRefusedError:
-                self.logger.error(f"Connection refused by server at {self.server_url}.")
-                self.logger.info("Server might be down or restarting.")
-            except asyncio.TimeoutError:
-                    self.logger.error(f"Connection attempt to {self.server_url} timed out after {connect_timeout} seconds.")
-            except OSError as e:
-                    self.logger.error(f"Network OS error: {e}")
-            except Exception as e:
-                    # Catch other exceptions from connect or task failures re-raised above
-                    self.logger.error(f"Unexpected error during operation: {e}", exc_info=True)
+                    if should_trigger_reconnect:
+                        self.logger.info("Reconnect condition met. Proceeding to cleanup and retry.")
+                        # No need to raise an exception, just let the code flow
+                        # to the cleanup section by exiting this inner 'try' block
+                        pass # Continue to cleanup outside this block
 
-            # --- Cleanup Before Retrying ---
-            self.logger.info("Performing cleanup before next action...")
-            # 1. Cancel any remaining tasks from this attempt
-            for task in all_tasks: # Use the list from the current attempt scope
-                if task and not task.done():
-                    self.logger.debug(f"Cancelling task {task.get_name()}...")
+                    # If neither flag set (shouldn't happen with FIRST_COMPLETED?), log it
+                    elif not pending: # Only log if all tasks are somehow done without flags set
+                         self.logger.warning("All tasks finished, but no explicit exit or reconnect condition met.")
+
+                except Exception as e:
+                    print(e)
+                # --- End of Inner Try Block (Handles operational errors) ---
+
+            # --- Handle Connection Errors & Reconnect Trigger Conditions ---
+            except (websockets.exceptions.ConnectionClosed, ConnectionRefusedError,
+                    asyncio.TimeoutError, OSError, Exception) as e:
+                # Log the specific error that brought us here
+                # This block catches direct connection errors OR exceptions re-raised
+                # from the task monitoring block above.
+                if isinstance(e, websockets.exceptions.ConnectionClosed):
+                     self.logger.warning(f"Connection closed unexpectedly: {e}. Will retry.")
+                elif isinstance(e, ConnectionRefusedError):
+                     self.logger.error(f"Connection refused by server at {self.server_url}.")
+                     self.logger.info("Server might be down or restarting.")
+                elif isinstance(e, asyncio.TimeoutError):
+                     self.logger.error(f"Connection attempt to {self.server_url} timed out after {connect_timeout} seconds.")
+                elif isinstance(e, OSError):
+                     self.logger.error(f"Network OS error: {e}")
+                else: # General Exception (includes those re-raised from task failures)
+                     self.logger.error(f"An operation failed triggering reconnect: {e}", exc_info=True)
+
+            # --- Cleanup Before Retrying OR Exiting Loop ---
+            self.logger.info("Performing cleanup...")
+            # 1. Cancel any remaining tasks from this attempt's scope
+            tasks_to_cancel = pending if 'pending' in locals() and pending else all_tasks
+            active_tasks = [t for t in tasks_to_cancel if t and not t.done()]
+            if active_tasks:
+                self.logger.debug(f"Cancelling {len(active_tasks)} active tasks...")
+                for task in active_tasks:
                     task.cancel()
-            # Give cancelled tasks a moment to process cancellation
-            # Gather ensures we wait even if task handles cancellation quickly
-            cancelled_tasks = [t for t in all_tasks if t and t.cancelled()]
-            pending_tasks = [t for t in all_tasks if t and not t.done()]
-            if pending_tasks:
-                    self.logger.debug(f"Waiting for {len(pending_tasks)} pending tasks to cancel...")
-                    await asyncio.wait(pending_tasks, timeout=2.0) # Short wait
-                    # Log tasks that didn't cancel quickly
-                    for task in pending_tasks:
-                        if not task.done():
-                            self.logger.warning(f"Task {task.get_name()} did not finish cancelling quickly.")
+                # Wait for tasks to acknowledge cancellation
+                await asyncio.wait(active_tasks, timeout=2.0) # Short wait
+                for task in active_tasks:
+                    if not task.done():
+                        self.logger.warning(f"Task {task.get_name()} did not finish cancelling quickly.")
 
-
-            # 2. Ensure websocket is closed (if it was ever opened)
-            if websocket and not websocket.closed:
+            # 2. Ensure websocket is closed (if it was ever created and not closed)
+            if websocket and not websocket.close:
                 self.logger.debug("Closing potentially open websocket connection...")
                 try:
-                    await websocket.close()
+                    # Use a short timeout for closing handshake
+                    await asyncio.wait_for(websocket.close(), timeout=5.0)
+                except asyncio.TimeoutError:
+                     self.logger.warning("Timeout closing websocket during cleanup.")
                 except Exception as close_err:
                     self.logger.warning(f"Error closing websocket during cleanup: {close_err}")
 
             # --- Decide Whether to Retry ---
             if attempt < max_retries:
                 self.logger.info(f"Waiting {current_retry_delay:.1f} seconds before retry #{attempt + 1}...")
-                await asyncio.sleep(current_retry_delay)
+                try:
+                    await asyncio.sleep(current_retry_delay)
+                except asyncio.CancelledError:
+                     self.logger.info("Sleep before retry cancelled. Exiting.")
+                     break # Exit while loop if cancelled during sleep
                 # Exponential backoff
                 current_retry_delay = min(current_retry_delay * 1.5, max_retry_delay)
             else:
                 self.logger.error("Maximum connection retry attempts reached. Exiting client.")
                 break # Exit the while loop
+        # --- End of While Loop ---
 
         self.logger.info("FelixTrackingClient run method finished.")
 # Main entry point
