@@ -13,6 +13,10 @@ supervision>=0.18.0
 
 # Face recognition
 facenet-pytorch>=2.5.3
+mtcnn>=0.1.0  # For MTCNN face detection (PyPI version if using standalone)
+
+# TensorFlow (add version based on your setup)
+tensorflow>=2.11.0  # Adjust version to match your CUDA/cuDNN setup if needed
 
 # Logging and utilities
 python-dotenv>=1.0.0

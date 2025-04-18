@@ -182,7 +182,7 @@ async def main():
     
     try:
         # Create the server
-        print("Creating server...")
+        print("Creating ...")
         server = FelixDetectionServer(
             felix_model=model_path,
             yolo_model=None  # Use pretrained YOLOv8x model

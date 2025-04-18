@@ -68,17 +68,20 @@ class FelixTrackingClient:
                     self.current_frame = frame.copy()
                 
                 # Encode and send the frame to the server
-                result, encoded_frame = cv2.imencode(".jpg", frame)
-                if not result:
-                    self.logger.error("Error: Couldn't encode frame")
+                try:
+                    # Run blocking encode in thread, await the result
+                    encoded_result_tuple = await asyncio.to_thread(cv2.imencode, ".jpg", frame)
+                    success_flag, encoded_frame_buffer = encoded_result_tuple # Unpack AFTER await
+
+                    if not success_flag or encoded_frame_buffer is None: # Check result AFTER await
+                        self.logger.error("Error: Couldn't encode frame")
+                        continue
+
+                    frame_bytes = encoded_frame_buffer.tobytes() # Get bytes AFTER await & check
+
+                except Exception as encode_error:
+                    self.logger.error(f"Error during threaded cv2.imencode: {encode_error}", exc_info=True)
                     continue
-                    
-                frame_bytes = encoded_frame.tobytes()
-                await websocket.send(frame_bytes)
-                
-                if frame_counter % 100 == 0:
-                    self.logger.debug(f"[CAPTURE] Sent {frame_counter} frames to server")
-                
                 # Small delay to control frame rate
                 await asyncio.sleep(1)  # ~10 FPS
 
