@@ -100,7 +100,7 @@ class FelixTrackingClient:
 
                 # --- Control loop rate ---
                 # This sleep controls the capture rate primarily
-                await asyncio.sleep(0.03) # Target ~30 FPS capture/display rate
+                await asyncio.sleep(0.1) # Target ~30 FPS capture/display rate
 
         except asyncio.CancelledError:
             self.logger.info("Capture and send task cancelled.")
@@ -113,31 +113,60 @@ class FelixTrackingClient:
                     
         
     
+    # Inside FelixTrackingClient class:
+
     async def receive_results(self, websocket):
-        """Receive detection results from the server"""
+        """Receive detection results and update tracking NON-BLOCKINGLY."""
         self.logger.info("\n=== Starting to receive detection results ===")
         detection_counter = 0
         try:
             async for message in websocket:
                 detection_counter += 1
-                
-                # Parse the JSON message
-                detection_data = json.loads(message)
-                
-                # Store raw detections for fallback visualization
-                self.raw_detections = detection_data
-                
-                # Log what we received
-                felix_count = sum(1 for det in detection_data if det.get("is_felix", False))
-                self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Received {len(detection_data)} detections ({felix_count} Felix)")
+                update_task = None # Keep track of the update task
 
+                try:
+                    # Offload potential blocking json.loads (optional but safe)
+                    detection_data = await asyncio.to_thread(json.loads, message)
 
-                
-                # Update tracking with new detections                
+                    # Store raw detections for fallback visualization
+                    # This assignment is fast, no lock needed unless accessed elsewhere simultaneously
+                    self.raw_detections = detection_data
+
+                    # Log what we received
+                    felix_count = sum(1 for det in detection_data if det.get("is_felix", False))
+                    self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Received {len(detection_data)} detections ({felix_count} Felix)")
+
+                    # --- Update tracking in a separate thread ---
+                    # Create task but don't await here if you want receiving to continue ASAP
+                    # However, awaiting ensures tracking is done before processing next message fully.
+                    # Let's await to ensure self.tracked_detections is updated.
+                    tracking_start_time = time.time()
+                    self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Submitting tracking update...")
+                    # Run the synchronous update_tracking function in a thread
+                    await asyncio.to_thread(self.update_tracking, detection_data)
+                    tracking_duration = time.time() - tracking_start_time
+                    self.logger.debug(f"[RECEIVER] Frame #{detection_counter}: Tracking update finished in {tracking_duration:.4f}s")
+                    # self.tracked_detections is now updated
+
+                except json.JSONDecodeError as json_err:
+                    self.logger.error(f"[RECEIVER] Frame #{detection_counter}: Failed to decode JSON: {json_err}")
+                    # Continue to next message
+                except Exception as e:
+                    # Catch errors during the to_thread call or subsequent logging
+                    self.logger.error(f"[RECEIVER] Frame #{detection_counter}: Error processing message or tracking: {e}", exc_info=True)
+                    # Continue to next message
+
+        # Handle connection closed exceptions outside the inner try/except
+        except websockets.exceptions.ConnectionClosedOK:
+            self.logger.info("[RECEIVER] Connection closed normally.")
+        except websockets.exceptions.ConnectionClosedError as e:
+            self.logger.warning(f"[RECEIVER] Connection closed with error: {e}")
+        except asyncio.CancelledError:
+            self.logger.info("[RECEIVER] Receive task cancelled.")
         except Exception as e:
-            self.logger.error(f"[RECEIVER] ERROR: {e}")
-            traceback.print_exc()
-    
+            self.logger.error(f"[RECEIVER] Unhandled error in receive loop: {e}", exc_info=True)
+            traceback.print_exc() # Keep traceback for unexpected errors
+        
     def update_tracking(self, detections):
         """Tracking with Supervision's ByteTrack wrapper"""
         self.frame_count += 1
@@ -213,7 +242,7 @@ class FelixTrackingClient:
                 ]
                 
                 # Create box annotator with custom colors
-                box_annotator = sv.BoundingBoxAnnotator(
+                box_annotator = sv.BoxAnnotator(
                     thickness=2,
                     color_lookup=lambda class_id: (0, 255, 0) if class_id == 0 else (0, 0, 255)  # Green for Felix, Red for others
                 )
@@ -276,110 +305,241 @@ class FelixTrackingClient:
         
         return frame_copy
         
+    # Inside FelixTrackingClient class:
+
     async def display_loop(self):
-        """Display processed frames using the shared current_frame"""
+        """Display processed frames using the shared current_frame (Non-Blocking Visualization)."""
         self.logger.info("\n=== Starting display loop ===")
         window_name = 'Felix Tracking'
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-        
+
         try:
             while True:
+                frame_to_process = None
                 # Get the current frame safely
-                async with self.frame_lock:
-                    if self.current_frame is None:
-                        await asyncio.sleep(0.03)
-                        continue
-                    
-                    frame_to_process = self.current_frame.copy()
-                
-                # Process and display the frame
-                processed_frame = self.visualize_frame(frame_to_process)
-                
-                if processed_frame is not None:
-                    cv2.imshow(window_name, processed_frame)
-                
-                # Check for key press with a short timeout
-                key = cv2.waitKey(1)
+                async with self.frame_lock: # Lock is still needed for safe access
+                    if self.current_frame is not None:
+                        frame_to_process = self.current_frame.copy()
+                    else:
+                        # If no frame yet, sleep briefly and continue
+                        await asyncio.sleep(0.01)
+                        continue # Skip to next loop iteration
+
+                if frame_to_process is not None:
+                    processed_frame = None
+                    # --- Process visualization in a separate thread ---
+                    try:
+                        viz_start_time = time.time()
+                        # Run the synchronous visualize_frame function in a thread
+                        # Note: visualize_frame now needs access to self.tracked_detections
+                        # or self.raw_detections, which were updated by receive_results
+                        processed_frame = await asyncio.to_thread(self.visualize_frame, frame_to_process)
+                        # ^^^ Event loop is free during visualization ^^^
+                        viz_duration = time.time() - viz_start_time
+                        # Log if visualization takes significant time (optional)
+                        if viz_duration > 0.05:
+                            self.logger.debug(f"Visualization took {viz_duration:.4f}s")
+
+                    except Exception as viz_err:
+                        self.logger.error(f"Error during threaded visualization: {viz_err}", exc_info=True)
+                        # Fallback to showing the raw frame on visualization error
+                        processed_frame = frame_to_process
+
+                    # --- Display the result ---
+                    if processed_frame is not None:
+                        try:
+                            cv2.imshow(window_name, processed_frame)
+                        except Exception as display_err:
+                            # Catch potential errors from cv2.imshow if window closed unexpectedly etc.
+                            self.logger.error(f"Error during cv2.imshow: {display_err}")
+                            break # Exit loop if display fails badly
+
+
+                # --- Handle Quit Key (Still potentially slightly blocking) ---
+                # Consider moving this to a separate thread if it proves problematic
+                key = cv2.waitKey(1) & 0xFF # Use mask for compatibility
                 if key == ord('q'):
-                    self.logger.info("User pressed 'q'. Exiting...")
-                    break
-                
-                # Small delay to not hog CPU
-                await asyncio.sleep(0.03)  # ~30 FPS
-                
+                    self.logger.info("User pressed 'q'. Exiting display loop...")
+                    # Signal other tasks to stop cleanly if possible?
+                    break # Exit this loop
+
+                # --- Control display loop rate ---
+                # Adjust sleep target based on desired FPS, considering viz time is now offloaded
+                await asyncio.sleep(0.1) # Aim for ~30-60 FPS display updates
+
+        except asyncio.CancelledError:
+            self.logger.info("Display loop cancelled.")
         except Exception as e:
-            self.logger.error(f"Error in display_loop: {e}")
+            # Catch errors like window creation failure etc.
+            self.logger.error(f"Error in display_loop: {e}", exc_info=True)
             traceback.print_exc()
         finally:
-            cv2.destroyAllWindows()
-            self.logger.info("Display resources released")
-    
-    async def run(self, video_source=0):
-        """Run the client"""
-        # Test camera access first
+            # Ensure cleanup happens
+            try:
+                cv2.destroyAllWindows()
+                self.logger.info("Display window destroyed.")
+            except Exception as destroy_err:
+                self.logger.error(f"Error destroying cv2 windows: {destroy_err}")
+        
+    async def run(self, video_source=0, max_retries=5, initial_retry_delay=5.0, max_retry_delay=60.0):
+        """
+        Run the client with automatic reconnection logic.
+
+        Args:
+            video_source: The video source index or path.
+            max_retries: Maximum number of consecutive connection attempts.
+            initial_retry_delay: Initial delay (seconds) between retries.
+            max_retry_delay: Maximum delay (seconds) between retries (for exponential backoff).
+        """
+        # --- Initial Camera Test ---
         self.logger.info("\n=== Testing camera access ===")
-        cap_test = cv2.VideoCapture(video_source)
-        if not cap_test.isOpened():
-            self.logger.error("Error: Cannot access camera")
-            return
-            
-        ret, frame = cap_test.read()
-        cap_test.release()
-        
-        if not ret:
-            self.logger.error("Error: Cannot read from camera")
-            return
-            
-        self.logger.info("Camera test successful")
-        
-        # Now try the full system
         try:
-            self.logger.info("\n=== Connecting to server ===")
-            async with websockets.connect(
-                self.server_url,
-                ping_interval=20,
-                ping_timeout=20
-            ) as websocket:
-                self.logger.info("Connected to server!")
-                
-                # Create tasks
+            cap_test = cv2.VideoCapture(video_source)
+            if not cap_test.isOpened():
+                self.logger.error(f"FATAL: Cannot access camera source '{video_source}'. Exiting.")
+                return # Exit if camera cannot be opened initially
+            ret, _ = cap_test.read()
+            cap_test.release()
+            if not ret:
+                self.logger.error(f"FATAL: Cannot read initial frame from camera source '{video_source}'. Exiting.")
+                return # Exit if initial read fails
+            self.logger.info("Camera test successful")
+        except Exception as cam_err:
+            self.logger.error(f"FATAL: Error during initial camera test: {cam_err}", exc_info=True)
+            return
+
+        # --- Reconnection Loop ---
+        attempt = 0
+        current_retry_delay = initial_retry_delay
+        connect_timeout = 20.0 # Timeout for the connection attempt itself
+
+        while attempt < max_retries:
+            attempt += 1
+            self.logger.info(f"Connection attempt {attempt}/{max_retries} to {self.server_url}...")
+            websocket = None
+            all_tasks = [] # Keep track of all tasks for this attempt
+
+            try:
+                # --- Attempt WebSocket Connection ---
+                self.logger.debug(f"Attempting websocket.connect with {connect_timeout}s timeout...")
+                websocket = await asyncio.wait_for(
+                    websockets.connect(
+                        self.server_url,
+                        ping_interval=15,  # Interval for server to send pings
+                        ping_timeout=30,   # How long server waits for pong
+                        close_timeout=10,  # Timeout for close handshake
+                        # Set reasonable size limits
+                        max_size=10 * 1024 * 1024, # 10MB limit
+                    ),
+                    timeout=connect_timeout
+                )
+                self.logger.info(f"Connection successful! ({websocket.remote_address})")
+                # Reset retry counters on success
+                attempt = 0
+                current_retry_delay = initial_retry_delay
+
+                # --- Launch Core Tasks ---
+                self.logger.info("Launching client tasks (capture/send, receive, display)...")
                 capture_send_task = asyncio.create_task(
-                    self.capture_and_send_frames(websocket, video_source)
+                    self.capture_and_send_frames(websocket, video_source), name="CaptureSendTask"
                 )
                 receive_task = asyncio.create_task(
-                    self.receive_results(websocket)
+                    self.receive_results(websocket), name="ReceiveTask"
                 )
                 display_task = asyncio.create_task(
-                    self.display_loop()
+                    self.display_loop(), name="DisplayTask"
                 )
-                
-                # Add debugging callbacks
-                capture_send_task.add_done_callback(
-                    lambda t: self.logger.info("Capture and send task finished")
-                )
-                receive_task.add_done_callback(
-                    lambda t: self.logger.info("Receive task finished")
-                )
-                display_task.add_done_callback(
-                    lambda t: self.logger.info("Display task finished")
-                )
-                
-                # Wait for all tasks
-                try:
-                    await asyncio.gather(
-                        capture_send_task, 
-                        receive_task, 
-                        display_task
-                    )
-                except asyncio.CancelledError:
-                    self.logger.info("Tasks were cancelled")
-                    
-        except ConnectionRefusedError:
-            self.logger.error("Error: Could not connect to server. Is it running?")
-        except Exception as e:
-            self.logger.error(f"Connection error: {e}")
-            traceback.print_exc()
+                all_tasks = [capture_send_task, receive_task, display_task]
 
+                # --- Monitor Tasks ---
+                # Wait until one task completes (normally or with error)
+                self.logger.info("Monitoring client tasks...")
+                done, pending = await asyncio.wait(all_tasks, return_when=asyncio.FIRST_COMPLETED)
+                self.logger.info("Monitor detected task completion or failure.")
+
+                # --- Handle Task Completion/Failure ---
+                for task in done:
+                    task_name = task.get_name()
+                    try:
+                        exc = task.exception() # Check if task raised an exception
+                        if exc:
+                            # Log error and re-raise to trigger reconnect logic
+                            self.logger.error(f"Task '{task_name}' failed: {exc}", exc_info=exc)
+                            raise exc # Trigger the outer except block
+                        else:
+                            # Task finished without error (e.g., user pressed 'q' in display)
+                            self.logger.info(f"Task '{task_name}' completed normally. Initiating clean shutdown.")
+                            # If one task finishes cleanly, we might want to stop everything
+                            # Cancel pending tasks and exit the outer loop
+                            for p_task in pending:
+                                p_task.cancel()
+                            if pending:
+                                await asyncio.wait(pending) # Wait for cancellations
+                            return # Exit the run method cleanly
+
+                    except asyncio.CancelledError:
+                        self.logger.info(f"Task '{task_name}' was cancelled (likely during shutdown).")
+                        # If cancellation was initiated externally, we might want to exit cleanly
+                        # Re-cancel pending tasks just in case
+                        for p_task in pending:
+                                p_task.cancel()
+                        if pending:
+                                await asyncio.wait(pending)
+                        return # Exit run method
+
+            # --- Handle Connection Errors & Task Failures that Trigger Reconnect ---
+            except websockets.exceptions.ConnectionClosed as e:
+                self.logger.warning(f"Connection closed unexpectedly: {e}. Will retry.")
+            except ConnectionRefusedError:
+                self.logger.error(f"Connection refused by server at {self.server_url}.")
+                self.logger.info("Server might be down or restarting.")
+            except asyncio.TimeoutError:
+                    self.logger.error(f"Connection attempt to {self.server_url} timed out after {connect_timeout} seconds.")
+            except OSError as e:
+                    self.logger.error(f"Network OS error: {e}")
+            except Exception as e:
+                    # Catch other exceptions from connect or task failures re-raised above
+                    self.logger.error(f"Unexpected error during operation: {e}", exc_info=True)
+
+            # --- Cleanup Before Retrying ---
+            self.logger.info("Performing cleanup before next action...")
+            # 1. Cancel any remaining tasks from this attempt
+            for task in all_tasks: # Use the list from the current attempt scope
+                if task and not task.done():
+                    self.logger.debug(f"Cancelling task {task.get_name()}...")
+                    task.cancel()
+            # Give cancelled tasks a moment to process cancellation
+            # Gather ensures we wait even if task handles cancellation quickly
+            cancelled_tasks = [t for t in all_tasks if t and t.cancelled()]
+            pending_tasks = [t for t in all_tasks if t and not t.done()]
+            if pending_tasks:
+                    self.logger.debug(f"Waiting for {len(pending_tasks)} pending tasks to cancel...")
+                    await asyncio.wait(pending_tasks, timeout=2.0) # Short wait
+                    # Log tasks that didn't cancel quickly
+                    for task in pending_tasks:
+                        if not task.done():
+                            self.logger.warning(f"Task {task.get_name()} did not finish cancelling quickly.")
+
+
+            # 2. Ensure websocket is closed (if it was ever opened)
+            if websocket and not websocket.closed:
+                self.logger.debug("Closing potentially open websocket connection...")
+                try:
+                    await websocket.close()
+                except Exception as close_err:
+                    self.logger.warning(f"Error closing websocket during cleanup: {close_err}")
+
+            # --- Decide Whether to Retry ---
+            if attempt < max_retries:
+                self.logger.info(f"Waiting {current_retry_delay:.1f} seconds before retry #{attempt + 1}...")
+                await asyncio.sleep(current_retry_delay)
+                # Exponential backoff
+                current_retry_delay = min(current_retry_delay * 1.5, max_retry_delay)
+            else:
+                self.logger.error("Maximum connection retry attempts reached. Exiting client.")
+                break # Exit the while loop
+
+        self.logger.info("FelixTrackingClient run method finished.")
 # Main entry point
 async def main():
     # Create a logger for the main function

@@ -235,7 +235,6 @@ async def main():
         )
         logger.info("Server instance created successfully")
 
-        logger.info("Starting websocket server...")
         # Add ping/timeout settings matching client expectations
         async with websockets.serve(
             server.handle_client,
