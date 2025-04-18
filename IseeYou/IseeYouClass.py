@@ -44,54 +44,74 @@ class FelixTrackingClient:
         self.logger.info("FelixTrackingClient initialized successfully")
     
     async def capture_and_send_frames(self, websocket, video_source):
-        """Capture frames and send them to the server while making them available for display"""
+        """Capture frames, encode NON-BLOCKINGLY, and send to the server."""
         self.logger.info("\n=== Starting video capture ===")
         cap = cv2.VideoCapture(video_source)
-        
+
         if not cap.isOpened():
             self.logger.error("Error: Cannot access camera")
             return
-            
+
         try:
             frame_counter = 0
             while True:
                 ret, frame = cap.read()
-                frame_counter += 1
-                
                 if not ret:
                     self.logger.error("Error: Cannot read from camera")
                     await asyncio.sleep(0.1)
                     continue
-                
+
+                frame_counter += 1
+
                 # Update the current frame for display task
                 async with self.frame_lock:
                     self.current_frame = frame.copy()
-                
-                # Encode and send the frame to the server
+
+                # --- Encode frame in thread ---
                 try:
-                    # Run blocking encode in thread, await the result
                     encoded_result_tuple = await asyncio.to_thread(cv2.imencode, ".jpg", frame)
-                    success_flag, encoded_frame_buffer = encoded_result_tuple # Unpack AFTER await
-
-                    if not success_flag or encoded_frame_buffer is None: # Check result AFTER await
-                        self.logger.error("Error: Couldn't encode frame")
-                        continue
-
-                    frame_bytes = encoded_frame_buffer.tobytes() # Get bytes AFTER await & check
-
+                    success_flag, encoded_frame_buffer = encoded_result_tuple
                 except Exception as encode_error:
-                    self.logger.error(f"Error during threaded cv2.imencode: {encode_error}", exc_info=True)
-                    continue
-                # Small delay to control frame rate
-                await asyncio.sleep(1)  # ~10 FPS
+                    self.logger.error(f"Error during threaded cv2.imencode for frame {frame_counter}: {encode_error}", exc_info=True)
+                    await asyncio.sleep(0.01) # Small delay before next attempt
+                    continue # Skip this frame
 
-                
+                if not success_flag or encoded_frame_buffer is None:
+                    self.logger.error(f"Error: cv2.imencode failed for frame {frame_counter}")
+                    await asyncio.sleep(0.01) # Small delay
+                    continue # Skip this frame
+
+                frame_bytes = encoded_frame_buffer.tobytes()
+
+                # --- Send the encoded frame ---
+                try:
+                    await websocket.send(frame_bytes)
+                    if frame_counter % 100 == 0: # Log progress periodically
+                        self.logger.debug(f"[CAPTURE] Sent frame {frame_counter} ({len(frame_bytes)} bytes)")
+
+                except websockets.exceptions.ConnectionClosed:
+                    self.logger.warning("Connection closed during send. Exiting capture loop.")
+                    break # *** EXIT LOOP on closed connection ***
+                except Exception as send_error:
+                    self.logger.error(f"Error sending frame {frame_counter}: {send_error}", exc_info=True)
+                    # Optional: Add a delay or break depending on error severity
+                    await asyncio.sleep(0.5)
+                    # Consider if you should 'continue' or 'break' here
+
+                # --- Control loop rate ---
+                # This sleep controls the capture rate primarily
+                await asyncio.sleep(0.03) # Target ~30 FPS capture/display rate
+
+        except asyncio.CancelledError:
+            self.logger.info("Capture and send task cancelled.")
         except Exception as e:
-            self.logger.error(f"Error in capture_and_send_frames: {e}")
-            traceback.print_exc()
+            self.logger.error(f"Unhandled error in capture_and_send_frames loop: {e}", exc_info=True)
         finally:
-            cap.release()
-            self.logger.info("Camera released")
+            if cap.isOpened(): # Check if cap is still open before releasing
+                cap.release()
+            self.logger.info("Camera released.")
+                    
+        
     
     async def receive_results(self, websocket):
         """Receive detection results from the server"""
@@ -317,8 +337,8 @@ class FelixTrackingClient:
             self.logger.info("\n=== Connecting to server ===")
             async with websockets.connect(
                 self.server_url,
-                ping_interval=10,
-                ping_timeout=10
+                ping_interval=20,
+                ping_timeout=20
             ) as websocket:
                 self.logger.info("Connected to server!")
                 
