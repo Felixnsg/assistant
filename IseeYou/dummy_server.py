@@ -6,7 +6,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - Server - %(message)s')
 
-async def handler(websocket, path):
+async def handler(websocket):
     client_id = websocket.remote_address
     logging.info(f"Client connected: {client_id}")
     message_count = 0
