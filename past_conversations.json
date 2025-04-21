@@ -3,22 +3,6 @@
     "role": "user",
     "parts": [
       {
-        "text": "hey"
-      }
-    ]
-  },
-  {
-    "role": "model",
-    "parts": [
-      {
-        "text": "Hey there!  How can I help you today?"
-      }
-    ]
-  },
-  {
-    "role": "user",
-    "parts": [
-      {
         "text": "track felix"
       }
     ]
@@ -27,7 +11,7 @@
     "role": "model",
     "parts": [
       {
-        "text": "I can start the video tracking to locate Felix. Should I begin?"
+        "text": "Should I start the video feed to track Felix?"
       }
     ]
   },
@@ -51,7 +35,23 @@
     "role": "user",
     "parts": [
       {
-        "text": "what do u see?"
+        "text": "okay"
+      }
+    ]
+  },
+  {
+    "role": "model",
+    "parts": [
+      {
+        "text": "Is there anything else I can help you with?  Perhaps you'd like me to check if I can see him?"
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "parts": [
+      {
+        "text": "do u see anything?"
       }
     ]
   },
@@ -67,7 +67,7 @@
     "role": "system",
     "parts": [
       {
-        "text": "[Visual context: Felix has been detected with 51.8% confidence.]"
+        "text": "[Visual context: Vision system is not providing data]"
       }
     ]
   },
@@ -75,71 +75,7 @@
     "role": "model",
     "parts": [
       {
-        "text": "I see Felix, but the confidence level is only 51.8%, so it's not entirely certain.  Is there anything else I can help with?"
-      }
-    ]
-  },
-  {
-    "role": "user",
-    "parts": [
-      {
-        "text": "no lets discuss other things, while tracking still happens"
-      }
-    ]
-  },
-  {
-    "role": "model",
-    "parts": [
-      {
-        "text": "Okay, sounds good.  While I continue tracking Felix, what else would you like to discuss or do?  Perhaps check the weather, the time, or set a mood with some music?"
-      }
-    ]
-  },
-  {
-    "role": "user",
-    "parts": [
-      {
-        "text": "what is your name"
-      }
-    ]
-  },
-  {
-    "role": "model",
-    "parts": [
-      {
-        "text": "I'm Cypher."
-      }
-    ]
-  },
-  {
-    "role": "user",
-    "parts": [
-      {
-        "text": "can we check back on that tracking how does it look"
-      }
-    ]
-  },
-  {
-    "role": "model",
-    "parts": [
-      {
-        "text": "Let me check the visual data again. FUNCTION_TRIGGER:CHECK_VISUAL_CONTEXT"
-      }
-    ]
-  },
-  {
-    "role": "system",
-    "parts": [
-      {
-        "text": "[Visual context: Felix has been detected with 51.7% confidence.]"
-      }
-    ]
-  },
-  {
-    "role": "model",
-    "parts": [
-      {
-        "text": "Okay, the confidence level is still at 51.7% for Felix.  It's a bit low, so I'm not entirely sure if that's him.  Do you want me to keep tracking or stop?"
+        "text": "Okay, I'm not currently receiving any visual data from the camera.  Is the camera on and properly connected?  I can try again in a moment if you like."
       }
     ]
   }

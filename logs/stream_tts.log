@@ -917,3 +917,13 @@ soundfile.LibsndfileError: Error opening 'C:\\Users\\Felix\\AppData\\Local\\Temp
 2025-04-05 21:13:44,635 - INFO - Settings loaded: Voice=male_01.wav, Language=en
 2025-04-05 21:13:44,636 - INFO - Queue processor thread started
 2025-04-05 21:13:44,637 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-19 23:29:48,052 - INFO - ffplay found and available for audio playback
+2025-04-19 23:29:48,052 - INFO - Creating new StreamTTSPlayer instance
+2025-04-19 23:29:48,064 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-19 23:29:48,064 - INFO - Queue processor thread started
+2025-04-19 23:29:48,064 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)
+2025-04-19 23:32:39,710 - INFO - ffplay found and available for audio playback
+2025-04-19 23:32:39,710 - INFO - Creating new StreamTTSPlayer instance
+2025-04-19 23:32:39,711 - INFO - Settings loaded: Voice=male_01.wav, Language=en
+2025-04-19 23:32:39,711 - INFO - Queue processor thread started
+2025-04-19 23:32:39,711 - INFO - StreamTTSPlayer initialized (Voice: male_01.wav, Language: en)

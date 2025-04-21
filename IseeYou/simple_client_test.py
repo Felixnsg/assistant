@@ -323,6 +323,27 @@ class FelixTrackingClient:
 
         self.logger.info("FelixTrackingClient run method finished.")
 
-# --- Main Entry Point (No changes needed) ---
-# async def main(): ...
-# if __name__ == "__main__": ...
+# Main entry point
+async def main():
+    # Create a logger for the main function
+    logger = logging.getLogger("IseeYou.main")
+    logger.info("Starting Felix Tracking Client...")
+    client = FelixTrackingClient(server_url="ws://localhost:8080")
+    await client.run(video_source=0)  # Use webcam
+
+if __name__ == "__main__":
+    # Setup logging for the main script
+    logging.basicConfig(
+        filename='isee_you.log',
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    logger = logging.getLogger("IseeYou")
+    
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("\nProgram interrupted by user")
+    except Exception as e:
+        logger.error(f"Unhandled exception: {e}")
+        traceback.print_exc()
