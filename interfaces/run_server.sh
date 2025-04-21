@@ -9,8 +9,8 @@ sleep 2
 
 # Configure vLLM
 echo "Configuring vLLM with memory optimizations..."
-python configure_vllm.py --max-seq-len 60000 --gpu-utilization 0.95
+python3 configure_vllm.py --max-seq-len 60000 --gpu-utilization 0.95
 
 # Run the server
 echo "Starting the server..."
-python basic_main.py
+python3 basic_main.py
