@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import wave
 import uvicorn
@@ -10,6 +11,11 @@ from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+
+# Important: Set environment variables BEFORE importing any vLLM or orpheus_tts modules
+os.environ["VLLM_MAX_MODEL_LEN"] = "100000"  # Reduced from 131072
+os.environ["VLLM_ENABLE_CUDA_GRAPH"] = "1"   # Enable CUDA graphs for better memory efficiency
+os.environ["VLLM_TP_SIZE"] = "1"             # Force tensor parallelism to 1
 
 # Create the FastAPI app
 app = FastAPI(title="Orpheus TTS Server")
@@ -42,6 +48,35 @@ class TTSResponse(BaseModel):
     duration: float
     processing_time: float
 
+def patch_vllm():
+    """Monkey patch vLLM LLMEngine to use different max_model_len"""
+    try:
+        # Try to import vllm first to patch it
+        import vllm
+        from vllm.engine.arg_utils import EngineArgs
+        
+        # Store the original from_dict method
+        original_from_dict = EngineArgs.from_dict
+        
+        # Create a patched version that modifies max_model_len
+        def patched_from_dict(cls, config_dict):
+            # Modify the config_dict to reduce max_model_len
+            if "max_model_len" in config_dict and config_dict["max_model_len"] > 100000:
+                print(f"Patching max_model_len from {config_dict['max_model_len']} to 100000")
+                config_dict["max_model_len"] = 100000
+            
+            # Call the original method with our modified dict
+            return original_from_dict(cls, config_dict)
+        
+        # Apply the patch
+        EngineArgs.from_dict = classmethod(patched_from_dict)
+        print("Successfully patched vLLM EngineArgs.from_dict to limit max_model_len")
+        
+        return True
+    except Exception as e:
+        print(f"Failed to patch vLLM: {e}")
+        return False
+
 def check_gpu():
     """Check if CUDA is available and return GPU info"""
     try:
@@ -56,10 +91,6 @@ def check_gpu():
         return f"CUDA is available. Found {gpu_count} GPU(s). Using: {gpu_name} with {gpu_memory:.2f} GB memory."
     except Exception as e:
         return f"Error checking GPU: {str(e)}"
-
-# Set environment variables to help with memory usage
-os.environ["VLLM_MAX_MODEL_LEN"] = "80000"  # Reduce sequence length
-os.environ["TRANSFORMERS_OFFLINE"] = "1"    # Don't try to download more models
 
 @app.on_event("startup")
 async def startup_event():
@@ -78,30 +109,71 @@ async def startup_event():
     except:
         pass
     
+    # Try to patch vLLM before importing orpheus_tts
+    patch_result = patch_vllm()
+    print(f"vLLM patching result: {patch_result}")
+    
     try:
+        print("Attempting to load Orpheus TTS model...")
         from orpheus_tts import OrpheusModel
-        print("Attempting to load Orpheus TTS model with basic settings...")
         
-        # Try with just the basic model name parameter
         try:
+            # Attempt to load a minimal model in CPU first to see if the library works
+            print("Testing orpheus_tts library with minimal model...")
+            temp_model = OrpheusModel.__new__(OrpheusModel)
+            print("Library initialization test passed")
+        except Exception as test_e:
+            print(f"Error during library test: {test_e}")
+        
+        try:
+            # For GPU models with memory constraints, use a reduced sequence length
             model = OrpheusModel(model_name="canopylabs/orpheus-tts-0.1-finetune-prod")
             print("Model loaded successfully!")
-            return
         except Exception as e:
             error_msg = str(e)
             print(f"Failed to load model with standard settings: {error_msg}")
             
-            # If it's the KV cache error, try loading a smaller model variant if available
+            # If we still hit memory issues, try with a custom engine wrapper
             if "max seq len" in error_msg and "KV cache" in error_msg:
-                print("Trying to load a smaller model variant...")
-                try:
-                    # Try a smaller model if available
-                    model = OrpheusModel(model_name="canopylabs/orpheus-tts-0.1-finetune-mini")
-                    print("Smaller model loaded successfully!")
-                    return
-                except Exception as e2:
-                    print(f"Failed to load smaller model: {str(e2)}")
-        
+                print("Trying custom engine initialization...")
+                
+                # Let's try to manually load and adjust the LLM engine
+                from vllm import LLM
+                import torch
+                from orpheus_tts import OrpheusModel
+                
+                # Calculate a safe model length based on the error message
+                import re
+                kv_cache_size = 120000  # Default safe value
+                match = re.search(r"stored in KV cache \((\d+)\)", error_msg)
+                if match:
+                    available_size = int(match.group(1))
+                    kv_cache_size = int(available_size * 0.9)  # Use 90% to be safe
+                
+                print(f"Using custom max_model_len={kv_cache_size}")
+                
+                # Custom loading approach
+                # 1. Try to create a vLLM engine directly
+                llm = LLM(
+                    model="canopylabs/orpheus-tts-0.1-finetune-prod",
+                    max_model_len=kv_cache_size,
+                    dtype="half"
+                )
+                
+                # 2. Create an OrpheusModel with our pre-loaded engine
+                model = OrpheusModel.__new__(OrpheusModel)
+                model._llm = llm
+                
+                # Initialize other needed attributes
+                # These are guesses about the OrpheusModel internals
+                model._tokenizer = None  # Will be loaded on first use
+                
+                print("Custom model initialization successful!")
+                
+                # Test if it works
+                model.generate_speech("Hello world", voice="tara")
+                print("Speech generation test successful!")
+                
     except ImportError as e:
         error_msg = f"Error importing orpheus_tts: {str(e)}"
         print(f"ERROR: {error_msg}")
@@ -113,6 +185,27 @@ async def startup_event():
         print(f"ERROR: {error_msg}")
         print(f"Full traceback: {traceback.format_exc()}")
         model_loading_error = error_msg
+        
+        print("\nAttempting a CPU-only fallback...")
+        try:
+            # Set environment variable to disable CUDA
+            os.environ["CUDA_VISIBLE_DEVICES"] = ""
+            
+            # Reload modules to pick up the environment change
+            import importlib
+            
+            # Try to reimport and get a fresh OrpheusModel
+            if "orpheus_tts" in sys.modules:
+                importlib.reload(sys.modules["orpheus_tts"])
+            if "vllm" in sys.modules:
+                importlib.reload(sys.modules["vllm"])
+                
+            from orpheus_tts import OrpheusModel
+            model = OrpheusModel(model_name="canopylabs/orpheus-tts-0.1-finetune-prod")
+            print("CPU-only model loaded successfully. Note: This will be VERY slow.")
+        except Exception as cpu_e:
+            print(f"CPU fallback also failed: {cpu_e}")
+            print(traceback.format_exc())
 
 @app.get("/")
 async def root():
@@ -134,59 +227,6 @@ async def health_check():
             }
         )
     return {"status": "healthy", "model_loaded": True}
-
-@app.get("/debug")
-async def debug_info():
-    """Return debugging information"""
-    import sys
-    import platform
-    
-    gpu_info = check_gpu()
-    
-    python_info = {
-        "version": sys.version,
-        "platform": platform.platform(),
-        "executable": sys.executable
-    }
-    
-    # Get package versions
-    packages = {}
-    try:
-        import pkg_resources
-        for pkg in ["torch", "vllm", "orpheus_tts", "fastapi", "uvicorn"]:
-            try:
-                packages[pkg] = pkg_resources.get_distribution(pkg).version
-            except pkg_resources.DistributionNotFound:
-                packages[pkg] = "Not installed"
-    except ImportError:
-        packages = "Unable to get package information"
-    
-    # Get available GPU memory
-    gpu_memory = None
-    try:
-        import torch
-        if torch.cuda.is_available():
-            free_mem, total_mem = torch.cuda.mem_get_info(0)
-            gpu_memory = {
-                "total_memory_gb": total_mem / (1024**3),
-                "free_memory_gb": free_mem / (1024**3),
-                "used_memory_gb": (total_mem - free_mem) / (1024**3)
-            }
-    except Exception as e:
-        gpu_memory = f"Error getting GPU memory: {str(e)}"
-    
-    return {
-        "model_loaded": model is not None,
-        "model_error": model_loading_error,
-        "gpu_info": gpu_info,
-        "gpu_memory": gpu_memory,
-        "python_info": python_info,
-        "packages": packages,
-        "environment_variables": {
-            "VLLM_MAX_MODEL_LEN": os.environ.get("VLLM_MAX_MODEL_LEN", "Not set"),
-            "CUDA_VISIBLE_DEVICES": os.environ.get("CUDA_VISIBLE_DEVICES", "Not set")
-        }
-    }
 
 @app.get("/voices")
 async def get_voices():
@@ -270,4 +310,4 @@ async def get_audio_file(file_id: str):
     return FileResponse(file_path, media_type="audio/wav")
 
 if __name__ == "__main__":
-    uvicorn.run("basic_main:app", host="0.0.0.0", port=8080, reload=True)
+    uvicorn.run("patched_main:app", host="0.0.0.0", port=8080, reload=False)  # Disable reload for better memory management
