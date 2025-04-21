@@ -1,156 +1,188 @@
 import os
 import time
-import logging
-from contextlib import asynccontextmanager
-
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import StreamingResponse
+import wave
+import uvicorn
+import asyncio
+import tempfile
+from typing import List, Optional
+from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import torch
 
-# Assume Orpheus is installed in the venv
-from orpheus_tts import OrpheusModel
+# Create the FastAPI app
+app = FastAPI(title="Orpheus TTS Server")
 
-# --- Configuration ---
-MODEL_NAME = "canopylabs/orpheus-tts-0.1-finetune-prod"
-HOST = "0.0.0.0"  # Listen on all available network interfaces
-PORT = 8080
-LOG_LEVEL = logging.INFO
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # For production, replace with specific origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Expected audio properties based on Orpheus examples/docs (Verify if possible)
-SAMPLE_RATE = 24000
-NUM_CHANNELS = 1
-SAMPLE_WIDTH = 2  # Bytes per sample (16-bit)
+# Placeholder for the model
+model = None
 
-# --- Logging Setup ---
-logging.basicConfig(level=LOG_LEVEL, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
+# Create a directory for temporary audio files
+os.makedirs("temp_audio", exist_ok=True)
 
-# --- Global State ---
-# Dictionary to hold the model instance
-model_state = {}
-
-# --- FastAPI Lifespan Manager (Loads model on startup) ---
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Load the model during startup
-    logger.info(f"Loading Orpheus model: {MODEL_NAME}...")
-    start_time = time.time()
-    try:
-        # Check GPU availability
-        if not torch.cuda.is_available():
-             logger.error("CUDA (GPU) not available. Orpheus TTS requires a GPU.")
-             # Decide if you want to raise an error or try CPU (likely too slow)
-             # raise RuntimeError("CUDA not available")
-             # For now, we'll let it try loading, it might fail gracefully or use CPU
-        else:
-             logger.info(f"CUDA available. Device: {torch.cuda.get_device_name(0)}")
-
-        model_state["orpheus_model"] = OrpheusModel(model_name=MODEL_NAME)
-        load_time = time.time() - start_time
-        logger.info(f"Model loaded successfully in {load_time:.2f} seconds.")
-    except Exception as e:
-        logger.exception(f"Failed to load Orpheus model: {e}")
-        # Optionally exit or prevent server start if model load fails
-        # raise RuntimeError("Failed to load model") from e
-        model_state["orpheus_model"] = None # Indicate failure
-
-    yield  # Server runs here
-
-    # Clean up resources (optional, good practice)
-    logger.info("Shutting down. Clearing model state.")
-    model_state.clear()
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-
-# --- FastAPI App ---
-app = FastAPI(lifespan=lifespan)
-
-# --- Request Body Model ---
-class SynthesizeRequest(BaseModel):
+class TTSRequest(BaseModel):
     text: str
     voice: str = "tara"  # Default voice
-    temperature: float = 0.7 # Optional LLM params
-    top_p: float = 0.95    # Optional LLM params
-    repetition_penalty: float = 1.2 # Required >= 1.1
+    temperature: float = 1.0
+    top_p: float = 0.9
+    repetition_penalty: float = 1.1
 
-# --- Audio Streaming Generator ---
-# Note: Orpheus generate_speech already returns an iterator/generator
-# So we can often use it directly with StreamingResponse.
-# Creating a separate async generator can be useful for adding logs/logic per chunk.
+class TTSResponse(BaseModel):
+    audio_url: str
+    duration: float
+    processing_time: float
 
-async def audio_stream_generator(model: OrpheusModel, request: SynthesizeRequest):
-    """Async generator wrapper for Orpheus synthesis."""
-    logger.info(f"Generating speech for voice '{request.voice}' with text: '{request.text[:50]}...'")
-    synthesis_start_time = time.monotonic()
-    chunk_counter = 0
-    total_bytes = 0
-
+@app.on_event("startup")
+async def startup_event():
+    global model
     try:
-        # Orpheus generate_speech returns an iterator of byte chunks
-        # Pass generation parameters directly
-        token_iterator = model.generate_speech(
-            prompt=request.text, # Orpheus package handles formatting like "tara: text..."
-            voice=request.voice,
-            temperature=request.temperature,
-            top_p=request.top_p,
-            repetition_penalty=request.repetition_penalty,
-        )
-
-        # Yield chunks as they become available
-        for audio_chunk in token_iterator:
-            if audio_chunk: # Ensure chunk is not empty
-                chunk_counter += 1
-                total_bytes += len(audio_chunk)
-                # logger.debug(f"Yielding chunk {chunk_counter}, size: {len(audio_chunk)} bytes")
-                yield audio_chunk
-            # Optional: Add a small sleep if needed to prevent overwhelming client/network,
-            # but usually not necessary with proper client handling.
-            # await asyncio.sleep(0.001)
-
-        synthesis_duration = time.monotonic() - synthesis_start_time
-        audio_duration_sec = total_bytes / (SAMPLE_RATE * NUM_CHANNELS * SAMPLE_WIDTH)
-        logger.info(f"Finished streaming {chunk_counter} chunks, {total_bytes} bytes ({audio_duration_sec:.2f}s audio). Generation took {synthesis_duration:.2f}s.")
-
+        from orpheus_tts import OrpheusModel
+        print("Loading Orpheus TTS model...")
+        model = OrpheusModel(model_name="canopylabs/orpheus-tts-0.1-finetune-prod")
+        print("Model loaded successfully!")
+    except ImportError:
+        print("Error: orpheus_tts package not installed")
+        print("Please install it with: pip install orpheus-speech")
+        print("Then fix potential vllm issue with: pip install vllm==0.7.3")
     except Exception as e:
-        logger.exception(f"Error during speech generation: {e}")
-        # Optionally yield an error indicator or just stop
-        # yield b"ERROR" # Client would need to handle this
-
-# --- API Endpoint ---
-@app.post("/synthesize")
-async def synthesize_endpoint(request: SynthesizeRequest):
-    """
-    Accepts text and voice, streams back synthesized audio.
-    """
-    if "orpheus_model" not in model_state or model_state["orpheus_model"] is None:
-        raise HTTPException(status_code=503, detail="TTS Model is not available or failed to load.")
-
-    model = model_state["orpheus_model"]
-
-    # Use the specific media type indicating raw PCM data properties
-    # This helps the client interpret the stream correctly
-    media_type = f"audio/l16; rate={SAMPLE_RATE}; channels={NUM_CHANNELS}"
-    # Alternatively, use 'audio/octet-stream' if client handles format inference
-
-    return StreamingResponse(
-        audio_stream_generator(model, request),
-        media_type=media_type
-    )
+        print(f"Error loading model: {e}")
 
 @app.get("/")
 async def root():
-    return {"message": "Orpheus TTS Server is running."}
+    return {"message": "Orpheus TTS Server is running!", "model_loaded": model is not None}
 
-# --- Run the server (using uvicorn command line is often preferred) ---
-# You would typically run this script using:
-# uvicorn server:app --host 0.0.0.0 --port 8080 --reload (for development)
-# or just:
-# uvicorn server:app --host 0.0.0.0 --port 8080 (for production)
+@app.get("/health")
+async def health_check():
+    if model is None:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "unavailable", "message": "TTS model not loaded"}
+        )
+    return {"status": "healthy", "model_loaded": True}
+
+@app.get("/voices")
+async def get_voices():
+    """Return the list of available voices"""
+    voices = {
+        "english": ["tara", "leah", "jess", "leo", "dan", "mia", "zac", "zoe"],
+        # Add other languages as they become available
+    }
+    return voices
+
+@app.post("/tts")
+async def text_to_speech(request: TTSRequest, background_tasks: BackgroundTasks):
+    """Generate speech from text and return audio file URL"""
+    if not model:
+        raise HTTPException(status_code=503, detail="TTS model not loaded. Please check server logs.")
+    
+    try:
+        # Generate a unique file ID
+        file_id = f"{int(time.time())}_{hash(request.text) % 10000}"
+        output_path = f"temp_audio/{file_id}.wav"
+        
+        # Generate speech
+        start_time = time.monotonic()
+        syn_tokens = model.generate_speech(
+            prompt=request.text,
+            voice=request.voice,
+            temperature=request.temperature,
+            top_p=request.top_p,
+            repetition_penalty=request.repetition_penalty
+        )
+        
+        # Write audio to file
+        with wave.open(output_path, "wb") as wf:
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(24000)
+            
+            total_frames = 0
+            for audio_chunk in syn_tokens:
+                frame_count = len(audio_chunk) // (wf.getsampwidth() * wf.getnchannels())
+                total_frames += frame_count
+                wf.writeframes(audio_chunk)
+            
+            duration = total_frames / wf.getframerate()
+        
+        end_time = time.monotonic()
+        processing_time = end_time - start_time
+        
+        # Schedule cleanup of the file after some time
+        async def cleanup_file():
+            await asyncio.sleep(3600)  # 1 hour
+            if os.path.exists(output_path):
+                os.remove(output_path)
+                
+        background_tasks.add_task(cleanup_file)
+        
+        # Return the audio file URL
+        return TTSResponse(
+            audio_url=f"/audio/{file_id}.wav",
+            duration=duration,
+            processing_time=processing_time
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating speech: {str(e)}")
+
+@app.get("/audio/{file_id}.wav")
+async def get_audio_file(file_id: str):
+    """Serve the generated audio file"""
+    file_path = f"temp_audio/{file_id}.wav"
+    
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Audio file not found")
+    
+    return FileResponse(file_path, media_type="audio/wav")
+
+@app.post("/tts/inline")
+async def text_to_speech_inline(request: TTSRequest):
+    """Generate speech and return the audio file directly"""
+    if not model:
+        raise HTTPException(status_code=503, detail="TTS model not loaded. Please check server logs.")
+    
+    try:
+        # Create a temporary file
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
+            temp_path = temp_file.name
+        
+        # Generate speech
+        start_time = time.monotonic()
+        syn_tokens = model.generate_speech(
+            prompt=request.text,
+            voice=request.voice,
+            temperature=request.temperature,
+            top_p=request.top_p,
+            repetition_penalty=request.repetition_penalty
+        )
+        
+        # Write audio to file
+        with wave.open(temp_path, "wb") as wf:
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(24000)
+            
+            for audio_chunk in syn_tokens:
+                wf.writeframes(audio_chunk)
+        
+        # Return the file and then delete it
+        return FileResponse(
+            temp_path, 
+            media_type="audio/wav",
+            headers={"X-Processing-Time": str(time.monotonic() - start_time)},
+            background=lambda: os.remove(temp_path) if os.path.exists(temp_path) else None
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating speech: {str(e)}")
 
 if __name__ == "__main__":
-    # This block allows running `python server.py` directly for simple testing
-    # Production deployments should use a process manager with the uvicorn command above
-    import uvicorn
-    logger.info("Starting Uvicorn server directly...")
-    uvicorn.run(app, host=HOST, port=PORT, log_level=logging.getLevelName(LOG_LEVEL).lower())
+    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)
