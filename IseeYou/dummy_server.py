@@ -206,7 +206,7 @@ class FelixDetectionServer:
                     logger.debug(f"Client {client_id}, Msg #{message_count}: Decode finished in {decode_duration:.4f}s")
 
                     if original_frame is None:
-                        logger.error(f"Client {client_id}, Msg #{message_count}: Could not decode frame. Skipping.")
+                        logger.error(f"Cliient {client_id}, Msg #{message_count}: Could not decode frame. Skipping.")
                         continue # Skip processing if decode failed
 
                     # --- 2. Process frame for detections (non-blocking ML) ---
