@@ -153,4 +153,4 @@ if __name__ == "__main__":
     # Production deployments should use a process manager with the uvicorn command above
     import uvicorn
     logger.info("Starting Uvicorn server directly...")
-    uvicorn.run(app, host=HOST, port=PORT, log_level=LOG_LEVEL.lower())
+    uvicorn.run(app, host=HOST, port=PORT, log_level=logging.getLevelName(LOG_LEVEL).lower())
