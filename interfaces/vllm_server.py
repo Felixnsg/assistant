@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # Create the FastAPI app
-app = FastAPI(title="Orpheus TTS Server")
+app = FastAPI(title="Orpheus TTS vLLM Server")
 
 # Add CORS middleware
 app.add_middleware(
@@ -26,6 +26,7 @@ app.add_middleware(
 # Placeholder for the model
 model = None
 model_loading_error = None
+tokenizer = None
 
 # Create a directory for temporary audio files
 os.makedirs("temp_audio", exist_ok=True)
@@ -42,32 +43,9 @@ class TTSResponse(BaseModel):
     duration: float
     processing_time: float
 
-def check_gpu():
-    """Check if CUDA is available and return GPU info"""
-    try:
-        import torch
-        if not torch.cuda.is_available():
-            return "CUDA is not available. GPU acceleration will not be used."
-        
-        gpu_count = torch.cuda.device_count()
-        gpu_name = torch.cuda.get_device_name(0) if gpu_count > 0 else "Unknown"
-        gpu_memory = torch.cuda.get_device_properties(0).total_memory / (1024**3) if gpu_count > 0 else 0
-        
-        return f"CUDA is available. Found {gpu_count} GPU(s). Using: {gpu_name} with {gpu_memory:.2f} GB memory."
-    except Exception as e:
-        return f"Error checking GPU: {str(e)}"
-
-# Set environment variables to help with memory usage
-os.environ["VLLM_MAX_MODEL_LEN"] = "80000"  # Reduce sequence length
-os.environ["TRANSFORMERS_OFFLINE"] = "1"    # Don't try to download more models
-
 @app.on_event("startup")
 async def startup_event():
-    global model, model_loading_error
-    
-    print("Checking GPU status:")
-    gpu_status = check_gpu()
-    print(gpu_status)
+    global model, model_loading_error, tokenizer
     
     # Try to free up GPU memory before loading the model
     try:
@@ -79,34 +57,102 @@ async def startup_event():
         pass
     
     try:
-        from orpheus_tts import OrpheusModel
-        print("Attempting to load Orpheus TTS model with basic settings...")
-        
-        # Try with just the basic model name parameter
+        # First, try loading the standard orpheus_tts model
         try:
+            print("Attempting to load Orpheus TTS model...")
+            from orpheus_tts import OrpheusModel
+            
             model = OrpheusModel(model_name="canopylabs/orpheus-tts-0.1-finetune-prod")
             print("Model loaded successfully!")
             return
         except Exception as e:
             error_msg = str(e)
-            print(f"Failed to load model with standard settings: {error_msg}")
+            print(f"Failed to load using standard method: {error_msg}")
             
-            # If it's the KV cache error, try loading a smaller model variant if available
+            # If there's a KV cache issue, let's try a more direct approach using vLLM
             if "max seq len" in error_msg and "KV cache" in error_msg:
-                print("Trying to load a smaller model variant...")
+                print("Attempting to load using direct vLLM approach...")
+                
+                # Extract KV cache limit if possible
+                import re
+                kv_cache_limit = 80000  # Default conservative value
+                match = re.search(r"stored in KV cache \((\d+)\)", error_msg)
+                if match:
+                    kv_cache_limit = int(match.group(1)) - 5000  # Keep a small buffer
+                
                 try:
-                    # Try a smaller model if available
-                    model = OrpheusModel(model_name="canopylabs/orpheus-tts-0.1-finetune-mini")
-                    print("Smaller model loaded successfully!")
-                    return
-                except Exception as e2:
-                    print(f"Failed to load smaller model: {str(e2)}")
-        
+                    from vllm import LLM, SamplingParams
+                    from transformers import AutoTokenizer
+                    
+                    # Load tokenizer
+                    print("Loading tokenizer...")
+                    tokenizer = AutoTokenizer.from_pretrained("canopylabs/orpheus-tts-0.1-finetune-prod")
+                    
+                    # Load the model with custom parameters
+                    print(f"Loading LLM with max_model_len={kv_cache_limit}...")
+                    model = LLM(
+                        model="canopylabs/orpheus-tts-0.1-finetune-prod",
+                        max_model_len=kv_cache_limit,
+                        gpu_memory_utilization=0.95,
+                        dtype="half"
+                    )
+                    
+                    print("Model loaded successfully via direct vLLM approach!")
+                    
+                    # Simple test to verify it works
+                    test_input = f"tara: Hello, this is a test."
+                    test_output = model.generate(
+                        [test_input],
+                        SamplingParams(
+                            temperature=1.0,
+                            top_p=0.9,
+                            repetition_penalty=1.1,
+                            max_tokens=100
+                        )
+                    )
+                    
+                    print("Model test run successful!")
+                    
+                    # Define a custom generate_speech function to mimic OrpheusModel's interface
+                    def custom_generate_speech(prompt, voice="tara", temperature=1.0, top_p=0.9, repetition_penalty=1.1):
+                        # Format the prompt properly for the model
+                        formatted_prompt = f"{voice}: {prompt}"
+                        
+                        # Generate text tokens
+                        outputs = model.generate(
+                            [formatted_prompt],
+                            SamplingParams(
+                                temperature=temperature,
+                                top_p=top_p,
+                                repetition_penalty=repetition_penalty,
+                                max_tokens=2000  # Adjust based on prompt length
+                            )
+                        )
+                        
+                        output_text = outputs[0].outputs[0].text
+                        
+                        # Convert the output tokens to audio
+                        # Note: We'd need to implement the tokenizer → audio conversion
+                        # This is where we'd use the Orpheus speech synthesis part
+                        
+                        # For now, just return a placeholder
+                        print("ERROR: Custom speech generation not fully implemented!")
+                        raise NotImplementedError(
+                            "Custom speech generation via direct vLLM is not implemented. "
+                            "Please use the standard OrpheusModel method."
+                        )
+                    
+                    # Attach the method to our model object
+                    model.generate_speech = custom_generate_speech
+                    
+                except Exception as vllm_err:
+                    print(f"Failed to load using vLLM approach: {str(vllm_err)}")
+                    raise
+    
     except ImportError as e:
-        error_msg = f"Error importing orpheus_tts: {str(e)}"
+        error_msg = f"Error importing required libraries: {str(e)}"
         print(f"ERROR: {error_msg}")
-        print("Please install it with: pip install orpheus-speech")
-        print("Then fix potential vllm issue with: pip install vllm==0.7.3")
+        print("Please install required packages: pip install orpheus-speech vllm transformers")
         model_loading_error = error_msg
     except Exception as e:
         error_msg = f"Error loading model: {str(e)}"
@@ -134,59 +180,6 @@ async def health_check():
             }
         )
     return {"status": "healthy", "model_loaded": True}
-
-@app.get("/debug")
-async def debug_info():
-    """Return debugging information"""
-    import sys
-    import platform
-    
-    gpu_info = check_gpu()
-    
-    python_info = {
-        "version": sys.version,
-        "platform": platform.platform(),
-        "executable": sys.executable
-    }
-    
-    # Get package versions
-    packages = {}
-    try:
-        import pkg_resources
-        for pkg in ["torch", "vllm", "orpheus_tts", "fastapi", "uvicorn"]:
-            try:
-                packages[pkg] = pkg_resources.get_distribution(pkg).version
-            except pkg_resources.DistributionNotFound:
-                packages[pkg] = "Not installed"
-    except ImportError:
-        packages = "Unable to get package information"
-    
-    # Get available GPU memory
-    gpu_memory = None
-    try:
-        import torch
-        if torch.cuda.is_available():
-            free_mem, total_mem = torch.cuda.mem_get_info(0)
-            gpu_memory = {
-                "total_memory_gb": total_mem / (1024**3),
-                "free_memory_gb": free_mem / (1024**3),
-                "used_memory_gb": (total_mem - free_mem) / (1024**3)
-            }
-    except Exception as e:
-        gpu_memory = f"Error getting GPU memory: {str(e)}"
-    
-    return {
-        "model_loaded": model is not None,
-        "model_error": model_loading_error,
-        "gpu_info": gpu_info,
-        "gpu_memory": gpu_memory,
-        "python_info": python_info,
-        "packages": packages,
-        "environment_variables": {
-            "VLLM_MAX_MODEL_LEN": os.environ.get("VLLM_MAX_MODEL_LEN", "Not set"),
-            "CUDA_VISIBLE_DEVICES": os.environ.get("CUDA_VISIBLE_DEVICES", "Not set")
-        }
-    }
 
 @app.get("/voices")
 async def get_voices():
@@ -270,4 +263,4 @@ async def get_audio_file(file_id: str):
     return FileResponse(file_path, media_type="audio/wav")
 
 if __name__ == "__main__":
-    uvicorn.run("basic_main:app", host="0.0.0.0", port=8080, reload=True)
+    uvicorn.run("vllm_server:app", host="0.0.0.0", port=8080, reload=True)
