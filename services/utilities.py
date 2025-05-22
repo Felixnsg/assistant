@@ -307,7 +307,6 @@ class Utilities:
 
         # --- CORRECTED: Create the client AND store it in self.video_client_instance ---
         self.video_client_instance = FelixTrackingClient(
-            server_url="ws://localhost:8080"
         )
         # ------------------------------------------------------------------------------
 
@@ -330,13 +329,6 @@ class Utilities:
                  await self.websocket.close()
              self.running = False
              return False
-
-        self.tasks = [
-            asyncio.create_task(self.video_client_instance.capture_and_send_frames(self.websocket, 0)),
-            asyncio.create_task(self.video_client_instance.receive_results(self.websocket)),
-            asyncio.create_task(self.video_client_instance.display_loop()),
-        ]
-        logging.info("Video client tasks created.")
 
         # --- CORRECTED: Start the persistent cache's update loop using the correct method and instance ---
         if self.video_client_instance: # Check the instance variable
@@ -377,7 +369,7 @@ class Utilities:
         except KeyboardInterrupt as e:
             logging.info("\nProgram Stopped by keyboard control")
         except Exception as e:
-            logging.info(f"Some weird ass Error Just happened: {e}")
+            logging.info(f"An error happen in the utility class: {e}")
         finally:
             self.running = False
             

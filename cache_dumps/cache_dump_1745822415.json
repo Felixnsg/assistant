@@ -1,0 +1,192 @@
+{
+  "current_state": {
+    "is_felix": true,
+    "confidence": 0.5108256340026855,
+    "timestamp": 1745822415.0121171,
+    "data_available": true
+  },
+  "update_count": 38,
+  "detection_history": [
+    {
+      "update_number": 29,
+      "time": "23:40:12",
+      "is_felix": true,
+      "confidence": 0.51469486951828,
+      "raw_detections": [
+        {
+          "box": [
+            195,
+            243,
+            210,
+            236
+          ],
+          "is_felix": true,
+          "confidence": 0.51469486951828
+        }
+      ]
+    },
+    {
+      "update_number": 30,
+      "time": "23:40:13",
+      "is_felix": true,
+      "confidence": 0.5146997570991516,
+      "raw_detections": [
+        {
+          "box": [
+            198,
+            242,
+            209,
+            237
+          ],
+          "is_felix": true,
+          "confidence": 0.5146997570991516
+        }
+      ]
+    },
+    {
+      "update_number": 31,
+      "time": "23:40:13",
+      "is_felix": true,
+      "confidence": 0.5159422159194946,
+      "raw_detections": [
+        {
+          "box": [
+            196,
+            241,
+            210,
+            238
+          ],
+          "is_felix": true,
+          "confidence": 0.5159422159194946
+        }
+      ]
+    },
+    {
+      "update_number": 32,
+      "time": "23:40:13",
+      "is_felix": true,
+      "confidence": 0.5112332105636597,
+      "raw_detections": [
+        {
+          "box": [
+            201,
+            241,
+            204,
+            238
+          ],
+          "is_felix": true,
+          "confidence": 0.5112332105636597
+        }
+      ]
+    },
+    {
+      "update_number": 33,
+      "time": "23:40:13",
+      "is_felix": true,
+      "confidence": 0.5142938494682312,
+      "raw_detections": [
+        {
+          "box": [
+            201,
+            243,
+            205,
+            236
+          ],
+          "is_felix": true,
+          "confidence": 0.5142938494682312
+        }
+      ]
+    },
+    {
+      "update_number": 34,
+      "time": "23:40:13",
+      "is_felix": true,
+      "confidence": 0.5142938494682312,
+      "raw_detections": [
+        {
+          "box": [
+            201,
+            243,
+            205,
+            236
+          ],
+          "is_felix": true,
+          "confidence": 0.5142938494682312
+        }
+      ]
+    },
+    {
+      "update_number": 35,
+      "time": "23:40:14",
+      "is_felix": true,
+      "confidence": 0.5148137807846069,
+      "raw_detections": [
+        {
+          "box": [
+            199,
+            243,
+            207,
+            236
+          ],
+          "is_felix": true,
+          "confidence": 0.5148137807846069
+        }
+      ]
+    },
+    {
+      "update_number": 36,
+      "time": "23:40:14",
+      "is_felix": true,
+      "confidence": 0.5108358263969421,
+      "raw_detections": [
+        {
+          "box": [
+            198,
+            242,
+            207,
+            237
+          ],
+          "is_felix": true,
+          "confidence": 0.5108358263969421
+        }
+      ]
+    },
+    {
+      "update_number": 37,
+      "time": "23:40:14",
+      "is_felix": true,
+      "confidence": 0.5089566707611084,
+      "raw_detections": [
+        {
+          "box": [
+            198,
+            242,
+            206,
+            237
+          ],
+          "is_felix": true,
+          "confidence": 0.5089566707611084
+        }
+      ]
+    },
+    {
+      "update_number": 38,
+      "time": "23:40:15",
+      "is_felix": true,
+      "confidence": 0.5108256340026855,
+      "raw_detections": [
+        {
+          "box": [
+            197,
+            242,
+            208,
+            237
+          ],
+          "is_felix": true,
+          "confidence": 0.5108256340026855
+        }
+      ]
+    }
+  ],
+  "dump_time": "2025-04-27 23:40:15"
+}

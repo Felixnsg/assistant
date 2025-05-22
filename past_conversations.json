@@ -35,23 +35,7 @@
     "role": "user",
     "parts": [
       {
-        "text": "okay"
-      }
-    ]
-  },
-  {
-    "role": "model",
-    "parts": [
-      {
-        "text": "Is there anything else I can help you with?  Perhaps you'd like me to check if I can see him?"
-      }
-    ]
-  },
-  {
-    "role": "user",
-    "parts": [
-      {
-        "text": "do u see anything?"
+        "text": "do u see him"
       }
     ]
   },
@@ -67,7 +51,7 @@
     "role": "system",
     "parts": [
       {
-        "text": "[Visual context: Vision system is not providing data]"
+        "text": "[Visual context: Vision system data is stale or unavailable]"
       }
     ]
   },
@@ -75,7 +59,7 @@
     "role": "model",
     "parts": [
       {
-        "text": "Okay, I'm not currently receiving any visual data from the camera.  Is the camera on and properly connected?  I can try again in a moment if you like."
+        "text": "Hmm, it seems my visual data is either stale or unavailable at the moment.  I'll try refreshing the feed.  One moment."
       }
     ]
   }

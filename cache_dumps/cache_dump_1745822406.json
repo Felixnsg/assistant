@@ -1,0 +1,30 @@
+{
+  "current_state": {
+    "is_felix": true,
+    "confidence": 0.5112100839614868,
+    "timestamp": 1745822406.4225402,
+    "data_available": true
+  },
+  "update_count": 1,
+  "detection_history": [
+    {
+      "update_number": 1,
+      "time": "23:40:06",
+      "is_felix": true,
+      "confidence": 0.5112100839614868,
+      "raw_detections": [
+        {
+          "box": [
+            201,
+            242,
+            212,
+            237
+          ],
+          "is_felix": true,
+          "confidence": 0.5112100839614868
+        }
+      ]
+    }
+  ],
+  "dump_time": "2025-04-27 23:40:06"
+}

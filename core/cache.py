@@ -1,97 +1,99 @@
-####file = cache 
-import sys
-import os
-import logging
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-try:
-    from IseeYou.IseeYouClass import FelixTrackingClient
-except ImportError as e:
-    logging.info("There was an issue importing The vision service: ", e)
-except Exception as e:
-    logging.info("Some other weird error happened during the import: ", e)
-
-
 import asyncio
-import websockets
-import os
-from pathlib import Path
-import time
 import cv2
-import asyncio
-import time
+import websockets
 import logging
-from typing import Dict, Any, Optional
+import queue
+import threading
+import time
+import json
+from pathlib import Path
+import datetime
 
-try:
-    import config # Your configuration file (config.py)
-except ImportError as e:
-     logging.critical(f"FATAL: Failed to import core modules: {e}", exc_info=True)
-     logging.critical("Please ensure core/, interfaces/, services/, IseeYou/, and config.py are accessible.")
-     sys.exit(1)
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('simple_felix_client')
 
-async def main():
-    # Create the client instance with proper URL format
-    client = FelixTrackingClient(
-        server_url="ws://localhost:8080"
-    )
-
-
-
-
+class ThreadedCamera:
+    # This class remains unchanged
+    def __init__(self, camera_id=0):
+        self.cap = cv2.VideoCapture(camera_id)
+        self.queue = queue.Queue(maxsize=10)
+        self.running = True
+        
+        self.thread = threading.Thread(target=self._capture_loop)
+        self.thread.daemon = True
+        self.thread.start()
+        
+    def _capture_loop(self):
+        while self.running:
+            success, frame = self.cap.read()
+            if success:
+                if self.queue.full():
+                    try:
+                        self.queue.get_nowait()
+                    except queue.Empty:
+                        pass
+                self.queue.put(frame)
+            time.sleep(0.1)
+    
+    def get_frame(self):
+        return self.queue.get(block=True, timeout=1.0)
+    
+    def release(self):
+        self.running = False
+        self.thread.join(timeout=1.0)
+        self.cap.release()
 
 class VisualContextCache:
-    """
-    Stores and manages the most recent visual detection data.
-    Provides thread-safe access to Felix detection information.
-    """
+    """Simplified cache for visual detection data that's compatible with the chat system"""
     
     def __init__(self):
-        """
-        Initialize the visual context cache with default values and lock.
-        """
         # Thread safety lock
-        self.flag = None
-        self.confidence = 0.0
-        self.is_felix = False
         self.lock = asyncio.Lock()
         
-        # Detection data structure
+        # Detection data structure (matching the format expected by utilities.py)
         self.detection_data = {
             "is_felix": False,      # Whether Felix is currently detected
-            "confidence": 0.0,               # Confidence level (0.0 to 1.0)
-            "position": "unknown",           # Position in frame (e.g., "left", "center", "right")
-            "timestamp": time.time(),        # When this data was last updated
-            "data_available": False          # Whether vision system is providing data
+            "confidence": 0.0,      # Confidence level (0.0 to 1.0)
+            "timestamp": time.time(), # When this data was last updated
+            "data_available": False  # Whether vision system is providing data
         }
         
-        # Logging
-        self.logger = logging.getLogger("VisualContextCache")
-        self.logger.info("Visual Context Cache initialized")
+        # Create directory for cache dumps
+        self.cache_dir = Path("cache_dumps")
+        self.cache_dir.mkdir(exist_ok=True)
+        
+        # Track when we last wrote to file
+        self.last_file_write = 0
+        self.file_write_interval = 2.0  # Write to file every 2 seconds
+        
+        # Additional debug tracking
+        self.update_count = 0
+        self.detection_history = []  # Limited history of detections
+        
+        self.logger = logging.getLogger("SimpleVisualContextCache")
+        self.logger.info("Simple Visual Context Cache initialized")
     
-    async def update_from_client(self, client) -> bool:
+    async def update(self, detections):
         """Updates the cache with latest detection data"""
         try:
-            # Check if client has detections
-            if not hasattr(client, "raw_detections") or not client.raw_detections:
-                return False  # No detections available
+            if not detections:
+                return False
                 
-            # Now process detections
-            async with self.lock:  # Lock for all data access
-                # Process the detection data (use the most confident Felix detection if multiple)
+            async with self.lock:
+                # Find best Felix detection
                 best_confidence = 0.0
                 felix_detected = False
                 
-                for detection in client.raw_detections:
+                for detection in detections:
                     confidence = detection.get('confidence', 0.0)
                     is_felix = detection.get('is_felix', False)
                     
-                    # Save the detection with highest confidence
                     if is_felix and confidence > best_confidence:
                         best_confidence = confidence
                         felix_detected = True
                 
-                # Update the dictionary with the detection results
+                # Update detection data
                 self.detection_data.update({
                     "is_felix": felix_detected,
                     "confidence": best_confidence,
@@ -99,106 +101,101 @@ class VisualContextCache:
                     "data_available": True
                 })
                 
-            return True  # Successfully updated
+                # Add to detection history (keep last 10)
+                self.update_count += 1
+                self.detection_history.append({
+                    "update_number": self.update_count,
+                    "time": datetime.datetime.now().strftime("%H:%M:%S"),
+                    "is_felix": felix_detected,
+                    "confidence": best_confidence,
+                    "raw_detections": detections
+                })
+                if len(self.detection_history) > 10:
+                    self.detection_history.pop(0)
+                
+                # Check if it's time to write to file
+                current_time = time.time()
+                if current_time - self.last_file_write >= self.file_write_interval:
+                    await self._write_cache_to_file()
+                    self.last_file_write = current_time
+                
+            return True
             
         except Exception as e:
             self.logger.error(f"Error updating detection data: {e}")
-            return False  # Update failed
-        
+            return False
     
-    async def get_detection_info(self) -> Dict[str, Any]:
-        """
-        Returns the current detection information in a thread-safe manner.
-        
-        Returns:
-            Dict[str, Any]: Dictionary containing current detection data
-        """
-        # Implement: Return a copy of the detection data under lock
-        
+    async def _write_cache_to_file(self):
+        """Write current cache state to a JSON file"""
+        try:
+            # Create a comprehensive debug dump
+            debug_data = {
+                "current_state": self.detection_data,
+                "update_count": self.update_count,
+                "detection_history": self.detection_history,
+                "dump_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+            
+            # Create filename with timestamp
+            filename = self.cache_dir / f"cache_dump_{int(time.time())}.json"
+            
+            # Write to file
+            with open(filename, 'w') as f:
+                json.dump(debug_data, f, indent=2)
+            
+            # Also write to a "latest.json" file that's always overwritten
+            latest_file = self.cache_dir / "latest.json"
+            with open(latest_file, 'w') as f:
+                json.dump(debug_data, f, indent=2)
+                
+            self.logger.info(f"Cache data written to {filename}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Error writing cache to file: {e}")
+            return False
+    
+    async def get_detection_info(self):
+        """Get current detection info thread-safely"""
         async with self.lock:
-
             return self.detection_data.copy()
-        
-
-
-
     
-    async def is_data_stale(self, max_age_seconds: float = 5.0) -> bool:
-        """
-        Checks if the current detection data is considered stale.
-        
-        Args:
-            max_age_seconds: Maximum age in seconds before data is considered stale
-            
-        Returns:
-            bool: True if data is stale, False otherwise
-        """
-        # Implement: Compare current time with timestamp to determine staleness
+    async def is_data_stale(self, max_age_seconds=5.0):
+        """Check if data is stale"""
         async with self.lock:
-            
-            current_time = time.time()
-
-            last_timestamp = self.detection_data['timestamp']
-
-            
-            return (current_time -last_timestamp) > max_age_seconds
-        
+            return (time.time() - self.detection_data['timestamp']) > max_age_seconds
     
-    async def start_update_loop(self, client, update_interval: float = 0.5) -> None:
-        """
-        Starts a background task that periodically updates the cache.
-        
-        Args:
-            client: The FelixTrackingClient instance
-            update_interval: How often to update the cache (in seconds)
-        """
-        # Store the task so we can access it later if needed
-        self.update_task = asyncio.create_task(
-            self._update_loop(client, update_interval)
-        )
-        self.logger.info(f"Started visual context update loop (interval: {update_interval}s)")
-
-
-    async def _update_loop(self, client, update_interval: float):
-        """The actual loop that runs in the background"""
+    # Compatibility method for utilities.py
+    async def _update_loop(self, client, update_interval=0.5):
+        """Compatibility method that updates from client periodically"""
+        self.logger.info(f"Visual context update loop started (interval: {update_interval}s)")
         while True:
             try:
-                # Update the cache with latest detection data
-                await self.update_from_client(client)
-                
-                # Wait for the next update interval
+                # Check if client has raw_detections attribute and data
+                if hasattr(client, "raw_detections") and client.raw_detections:
+                    await self.update(client.raw_detections)
                 await asyncio.sleep(update_interval)
-                
             except asyncio.CancelledError:
-                # Handle case when the task is cancelled
                 self.logger.info("Update loop cancelled")
                 break
-                
             except Exception as e:
-                # Log any errors but don't stop the loop
                 self.logger.error(f"Error in visual context update loop: {e}")
-                # Wait a bit longer on error to avoid rapid failure loops
                 await asyncio.sleep(update_interval * 2)
-        
-    async def share_info_AI(self, chat_manager: 'ChatManager')-> Optional[Dict[str, str]]:
-        """
-        Share vision detection information with the AI assistant.
-        
-        Args:
-            chat_manager: An instance of ChatManager to use for LLM communication
-        """
-        logging.info("Sharing vision context with AI assistant")
+    
+    async def share_info_AI(self, chat_manager):
+        """Share vision detection information with the AI assistant (compatible with existing system)"""
+        self.logger.info("Sharing vision context with AI assistant")
         prompt = "[]"
         try:
-            # Get the latest detection info with await
+            # Get the latest detection info
             detection_info = await self.get_detection_info()
             
             # Check if data is stale
             if await self.is_data_stale():
                 prompt = "[Visual context: Vision system data is stale or unavailable]"
-                logging.warning("Using stale detection data for AI communication")
+                self.logger.warning("Using stale detection data for AI communication")
             
-            if detection_info and detection_info.get("data_available", False):
+            elif detection_info and detection_info.get("data_available", False):
                 if detection_info.get("is_felix", False):
                     prompt = (
                         f"[Visual context: Felix has been detected with "
@@ -209,21 +206,98 @@ class VisualContextCache:
             else:
                 prompt = "[Visual context: Vision system is not providing data]"
                         
-            # Now send the properly formatted prompt to the LLM
-            logging.info(f"Sending vision context to LLM: {prompt}")
+            # Send the prompt to the LLM
+            self.logger.info(f"Sending vision context to LLM: {prompt}")
             if not chat_manager:
-                 logging.error("Cannot share info with AI: chat_manager object is None.")
-                 return None
+                self.logger.error("Cannot share info with AI: chat_manager object is None.")
+                return None
             
             context_response = await chat_manager._call_llm(prompt)
             if context_response and not context_response.startswith("Blocked:"):
-                 # Return the dictionary containing both prompt and response
-                 return {"context_prompt": prompt, "context_response": context_response}
+                return {"context_prompt": prompt, "context_response": context_response}
             else:
-                 logging.error(f"LLM call for visual context failed or was blocked: {context_response}")
-                 return None
-            
+                self.logger.error(f"LLM call for visual context failed or was blocked: {context_response}")
+                return None
             
         except Exception as e:
-            logging.error(f"Error sharing vision context with AI: {e}")
+            self.logger.error(f"Error sharing vision context with AI: {e}")
             return None
+
+# Rest of the file remains unchanged
+async def main():
+    """Main function that integrates camera with cache"""
+    # Configuration
+    server_uri = "ws://localhost:8080"
+    camera = ThreadedCamera(0)
+    target_fps = 30
+    visual_cache = VisualContextCache()
+    
+    # Track latest frame and detections
+    current_frame = None
+    raw_detections = []
+    
+    try:
+        async with websockets.connect(server_uri) as websocket:
+            logger.info("Connected to server")
+            
+            while True:
+                # PART 1: Send frames
+                try:
+                    # Get and prepare frame
+                    frame = await asyncio.to_thread(camera.get_frame)
+                    current_frame = frame.copy()
+                    
+                    # Compress and send
+                    _, jpeg_data = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 30])
+                    await websocket.send(jpeg_data.tobytes())
+                    
+                    # Wait for next frame time
+                    await asyncio.sleep(1.0/target_fps)
+                except Exception as e:
+                    logger.error(f"Error sending frame: {e}")
+                
+                # PART 2: Check for incoming detection results
+                try:
+                    # Non-blocking check for messages
+                    for _ in range(5):  # Try a few times to get any available messages
+                        try:
+                            message = await asyncio.wait_for(websocket.recv(), 0.01)
+                            # Process message (assumed to be detections)
+                            latest_detections = process_message(message)
+                            
+                            # Store the detections for reference and update cache
+                            if latest_detections:
+                                raw_detections = latest_detections
+                                # Update the cache with new detections
+                                await visual_cache.update(latest_detections)
+                                
+                        except asyncio.TimeoutError:
+                            break
+                        except Exception as e:
+                            logger.error(f"Error receiving message: {e}")
+                
+                except Exception as e:
+                    logger.error(f"Error processing detections: {e}")
+                    await asyncio.sleep(0.1)
+                
+    except Exception as e:
+        logger.error(f"Connection error: {e}")
+    finally:
+        camera.release()
+        logger.info("Disconnected from server")
+
+def process_message(message):
+    """Convert websocket message to detection data"""
+    try:
+        return json.loads(message)
+    except:
+        logger.warning("Could not parse message as detection data")
+        return []
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nProgram interrupted by user")
+    except Exception as e:
+        print(f"Unhandled exception: {e}")

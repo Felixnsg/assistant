@@ -1,4 +1,0 @@
-Configuration loaded.
-Audio system initialized using ffplay
-LLM Caller initialized for model endpoint: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent
-Choose interaction format (text/audio): Options: [Enter] to start, 'delete' memory, 'exit': 
