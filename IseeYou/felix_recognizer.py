@@ -5,6 +5,7 @@ from torch import nn
 from facenet_pytorch import InceptionResnetV1
 import traceback
 import cv2
+import numpy as np
 from mtcnn import MTCNN
 
 
@@ -20,34 +21,37 @@ class FelixClassifier(nn.Module):
         return output
 
 
-
 class FelixRecognizer:
-    """Recognizes if a detected person is Felix with improved reliability"""
+    """Optimized FelixRecognizer for high-performance inference"""
     
-    def __init__(self, model_path):
-        print("\n=== Initializing FelixRecognizer ===")
+    def __init__(self, model_path, use_mtcnn=False):
+        print("\n=== Initializing Optimized FelixRecognizer ===")
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print(f"• Using device: {self.device}")
         
         try:
+            # Initialize MTCNN once if needed (but we'll avoid using it)
+            self.use_mtcnn = use_mtcnn
+            if self.use_mtcnn:
+                print("• Initializing MTCNN (this will slow things down!)...")
+                self.mtcnn = MTCNN(device=self.device)
+            else:
+                print("• Skipping MTCNN for speed (recommended)")
+                self.mtcnn = None
+            
             print(f"• Loading base model...")
-            # Create a fresh base model and move it to the device immediately
             base_model = InceptionResnetV1(pretrained='vggface2')
             base_model = base_model.to(self.device)
             print("• Base model loaded successfully")
             
             print(f"• Creating classifier...")
-            # Create the classifier and move it to the device
             self.model = FelixClassifier(base_model)
             self.model = self.model.to(self.device)
             
             print(f"• Loading weights from {model_path}...")
-            # Load the state dictionary
             try:
-                # Try loading full model first
                 model_data = torch.load(model_path, map_location=self.device)
                 
-                # Check if it's a state dict or full model
                 if isinstance(model_data, FelixClassifier):
                     print("• Found complete model")
                     self.model = model_data
@@ -60,80 +64,81 @@ class FelixRecognizer:
                 print(f"• Warning: Error loading model weights: {e}")
                 print("• Using base model only")
             
-            # Final move to device to ensure everything is on the right device
             self.model = self.model.to(self.device)
-            
-            # Set to evaluation mode
             self.model.eval()
             print("• Model in evaluation mode")
             
-            # Verify model device
-            param_device = next(self.model.parameters()).device
-            print(f"• Model parameters on device: {param_device}")
-            
-            # Define the transforms
+            # Optimized transform pipeline - do normalization on GPU
             self.transform = transforms.Compose([
                 transforms.Resize((224, 224)),
                 transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
             ])
-            print("• Transform pipeline created")
             
-            # Set fallback mode to False initially
+            # Store normalization parameters as tensors on GPU
+            self.norm_mean = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1).to(self.device)
+            self.norm_std = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1).to(self.device)
+            
             self.fallback_mode = False
             print("=== FelixRecognizer initialization complete ===\n")
             
         except Exception as e:
             print(f"!!! Error initializing FelixRecognizer: {e}")
-            print("!!! Entering fallback mode - will return default values")
+            print("!!! Entering fallback mode")
             self.fallback_mode = True
             traceback.print_exc()
     
-
-    def detect_and_crop(self, frame, box):
-        """
-        Detect and crop a face from a frame using the provided bounding box
-        
-        Args:
-            frame (numpy.ndarray): Frame containing the person
-            box (list): Bounding box [x, y, w, h] of the person
-            
-        Returns:
-            PIL.Image: Cropped face image or None if no face detected
-        """
+    def preprocess_fast(self, frame, box):
+        """Fast preprocessing without MTCNN"""
         try:
-            # Extract the person using the provided box
-            x, y, w, h = box
+            x, y, w, h = [int(v) for v in box]
             
-            # Add margin (optional)
+            # Add small margin to include more context
+            margin = int(min(w, h) * 0.1)  # 10% margin
+            x1 = max(0, x - margin)
+            y1 = max(0, y - margin)
+            x2 = min(frame.shape[1], x + w + margin)
+            y2 = min(frame.shape[0], y + h + margin)
+            
+            # Crop the person/face region
+            crop = frame[y1:y2, x1:x2]
+            
+            # Convert BGR to RGB (opencv uses BGR)
+            crop_rgb = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
+            
+            # Convert to PIL for torchvision transforms
+            pil_img = Image.fromarray(crop_rgb)
+            
+            return pil_img
+            
+        except Exception as e:
+            print(f"Error in preprocess_fast: {e}")
+            return None
+    
+    def preprocess_with_mtcnn(self, frame, box):
+        """Slower preprocessing with MTCNN face detection"""
+        try:
+            x, y, w, h = [int(v) for v in box]
+            
+            # Add margin
             margin = 20
             x1 = max(0, x - margin)
             y1 = max(0, y - margin)
             x2 = min(frame.shape[1], x + w + margin)
             y2 = min(frame.shape[0], y + h + margin)
             
-            # Crop the person region
+            # Crop person region
             person_img = frame[y1:y2, x1:x2]
-            
-            # If using MTCNN for further face detection:
-            # Convert to RGB for MTCNN
             person_rgb = cv2.cvtColor(person_img, cv2.COLOR_BGR2RGB)
             
-            # Create MTCNN detector
-            detector = MTCNN()
-            
-            # Detect faces within the person crop
-            faces = detector.detect_faces(person_rgb)
+            # Detect faces with pre-initialized MTCNN
+            faces = self.mtcnn.detect_faces(person_rgb)
             
             if len(faces) == 0:
-                print("No face found in person crop")
-                # Fall back to using the whole person crop
+                # Fall back to whole person crop
                 face_img = person_rgb
             else:
-                # Use the largest face
-                largest_face = max(faces, key=lambda face: face['box'][2] * face['box'][3])
-                
-                # Extract face box (relative to person crop)
+                # Use largest face
+                largest_face = max(faces, key=lambda f: f['box'][2] * f['box'][3])
                 fx, fy, fw, fh = largest_face['box']
                 
                 # Extract face with margin
@@ -145,56 +150,91 @@ class FelixRecognizer:
                 
                 face_img = person_rgb[fy1:fy2, fx1:fx2]
             
-            # Convert to PIL Image
-            face_pil = Image.fromarray(face_img)
-            
-            # Resize to model input size
-            face_pil = face_pil.resize((224, 224), Image.LANCZOS)
-            
-            return face_pil
+            return Image.fromarray(face_img)
             
         except Exception as e:
-            print(f"Error in detect_and_crop: {e}")
+            print(f"Error in preprocess_with_mtcnn: {e}")
             return None
-
+    
+    @torch.no_grad()
     def is_felix(self, frame, box):
-        """
-        Check if the person in the box is Felix with improved error handling
-        Returns: (is_felix, confidence)
-        """
-        # If in fallback mode, return default values
+        """Optimized inference with minimal overhead"""
         if self.fallback_mode:
             return False, 0.0
-            
+        
         try:
-            person_img = self.detect_and_crop(frame, box)
-            # Handle empty or invalid crops
+            # Choose preprocessing method
+            if self.use_mtcnn and self.mtcnn is not None:
+                person_img = self.preprocess_with_mtcnn(frame, box)
+            else:
+                person_img = self.preprocess_fast(frame, box)
+            
             if person_img is None:
-                print("Warning: Failed to crop person")
                 return False, 0.0
             
+            # Apply transforms
+            tensor = self.transform(person_img).unsqueeze(0).to(self.device)
             
-            # Apply transforms and add batch dimension
-            tensor = self.transform(person_img).unsqueeze(0)
-            
-            # Ensure tensor is on the right device
-            tensor = tensor.to(self.device)
+            # Normalize on GPU (faster than CPU)
+            tensor = (tensor - self.norm_mean) / self.norm_std
             
             # Get prediction
-            with torch.no_grad():
-                output = self.model(tensor)
-                probabilities = torch.softmax(output, dim=1)
-                felix_prob = probabilities[0][0].item()  # Assuming class 1 is Felix
+            output = self.model(tensor)
+            probabilities = torch.softmax(output, dim=1)
+            felix_prob = probabilities[0][0].item()
             
-            # Determine if it's Felix based on threshold
-            is_felix = felix_prob > 0.5  # You can adjust this threshold
+            is_felix = felix_prob > 0.5
             
             return is_felix, felix_prob
             
         except Exception as e:
             print(f"Error in is_felix: {e}")
-            # Enter fallback mode if we hit a critical error
-            if "Expected all tensors to be on the same device" in str(e):
-                print("Device mismatch error - entering fallback mode")
-                self.fallback_mode = True
             return False, 0.0
+    
+    @torch.no_grad()
+    def is_felix_batch(self, frame, boxes):
+        """Process multiple people in a single batch (even faster!)"""
+        if self.fallback_mode or len(boxes) == 0:
+            return [(False, 0.0) for _ in boxes]
+        
+        try:
+            # Preprocess all images
+            images = []
+            valid_indices = []
+            
+            for i, box in enumerate(boxes):
+                if self.use_mtcnn and self.mtcnn is not None:
+                    img = self.preprocess_with_mtcnn(frame, box)
+                else:
+                    img = self.preprocess_fast(frame, box)
+                
+                if img is not None:
+                    tensor = self.transform(img)
+                    images.append(tensor)
+                    valid_indices.append(i)
+            
+            if not images:
+                return [(False, 0.0) for _ in boxes]
+            
+            # Stack into batch and move to GPU
+            batch = torch.stack(images).to(self.device)
+            
+            # Normalize on GPU
+            batch = (batch - self.norm_mean) / self.norm_std
+            
+            # Get predictions for entire batch
+            outputs = self.model(batch)
+            probabilities = torch.softmax(outputs, dim=1)
+            
+            # Prepare results
+            results = [(False, 0.0) for _ in boxes]
+            for idx, valid_idx in enumerate(valid_indices):
+                felix_prob = probabilities[idx][0].item()
+                is_felix = felix_prob > 0.5
+                results[valid_idx] = (is_felix, felix_prob)
+            
+            return results
+            
+        except Exception as e:
+            print(f"Error in is_felix_batch: {e}")
+            return [(False, 0.0) for _ in boxes]

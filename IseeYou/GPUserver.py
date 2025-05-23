@@ -45,7 +45,7 @@ class OptimizedGPUServer:
         from felix_recognizer import FelixRecognizer
         
         self.detector = PersonDetector(yolo_model_path)
-        self.recognizer = FelixRecognizer(felix_model_path)
+        self.recognizer = FelixRecognizer(felix_model_path, use_mtcnn=False)
         
         # Check if models are on GPU
         check_gpu_models(self.detector, self.recognizer)
