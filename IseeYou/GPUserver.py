@@ -1,259 +1,258 @@
-# GPUserver.py
-
 import asyncio
 import websockets
 import torch
 import cv2
 import numpy as np
 import json
-from PIL import Image
-import io
-from person_detector import PersonDetector  # Assuming these are in the same directory or PYTHONPATH
-from felix_recognizer import FelixRecognizer # Assuming these are in the same directory or PYTHONPATH
-import traceback
+import logging
 import time
-import sys
-import os
-import logging # Use logging instead of just print for better practice
+from concurrent.futures import ThreadPoolExecutor
+import queue
+from typing import Dict, Any, Optional
 
-# --- Basic Logging Setup ---
-# (Ideally, use a more robust setup like in your main.py)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(name)s] - %(message)s')
-logger = logging.getLogger("FelixDetectionServer")
-# ---------------------------
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('gpu_server_v2')
 
-
-class FelixDetectionServer:
-    """Handles GPU-accelerated detection and recognition (Non-Blocking)"""
-
-    def __init__(self, felix_model, yolo_model=None):
-        logger.info("Initializing FelixDetectionServer...")
-        # Device selection should happen here if needed by models immediately
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        logger.info(f"Using device: {self.device}")
-
+class OptimizedGPUServer:
+    def __init__(self, felix_model_path: str, yolo_model_path: Optional[str] = None):
+        logger.info("Initializing GPU Server...")
+        
+        # Initialize models
+        from person_detector import PersonDetector
+        from felix_recognizer import FelixRecognizer
+        
+        self.detector = PersonDetector(yolo_model_path)
+        self.recognizer = FelixRecognizer(felix_model_path)
+        
+        # Thread pool for CPU-bound tasks
+        self.executor = ThreadPoolExecutor(max_workers=4)
+        
+        # Processing queue with limited size
+        self.process_queue = asyncio.Queue(maxsize=10)
+        
+        # Client tracking
+        self.clients: Dict[str, Dict[str, Any]] = {}
+        
+        # Performance metrics
+        self.total_processed = 0
+        self.processing_times = []
+        
+        logger.info("GPU Server initialized successfully")
+    
+    async def handle_client(self, websocket, path):
+        """Handle individual client connection"""
+        client_id = f"{websocket.remote_address[0]}:{websocket.remote_address[1]}"
+        logger.info(f"Client connected: {client_id}")
+        
+        # Initialize client state
+        self.clients[client_id] = {
+            'websocket': websocket,
+            'last_seen': time.time(),
+            'frames_received': 0,
+            'frames_processed': 0
+        }
+        
         try:
-            logger.info("Creating person detector...")
-            # Pass device if detector/recognizer need it during init
-            self.detector = PersonDetector(model_path=yolo_model)
-            logger.info("Person detector created")
-
-            logger.info("Creating Felix recognizer...")
-            self.recognizer = FelixRecognizer(felix_model) # Recognizer likely handles device internally
-            logger.info("Felix recognizer created")
-
-            self.frame_count = 0 # Instance variable for frame count
-            self.total_detections = 0
-            self.felix_detections = 0
-
-            if torch.cuda.is_available():
-                 logger.info(f"GPU Found: {torch.cuda.get_device_name(0)}")
-                 logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB")
-            else:
-                 logger.info("CUDA not available. Using CPU.")
-
-            logger.info("FelixDetectionServer initialized successfully")
-        except Exception as e:
-            logger.critical(f"ERROR initializing server components: {e}", exc_info=True)
-            raise # Reraise after logging
-
-
-    # --- Make process_frame async and use to_thread ---
-    async def process_frame(self, frame):
-        """Process a frame using non-blocking calls and return detection results"""
-        processing_start_time = time.time()
-        self.frame_count += 1 # Assuming this should still be instance level
-        current_frame_num = self.frame_count # Capture for logging this frame
-        logger.info(f"----- Processing Frame #{current_frame_num} -----")
-
-        results = []
-        try:
-            # --- Run person detection in thread ---
-            detect_start_time = time.time()
-            logger.debug(f"Frame #{current_frame_num}: Submitting detection task...")
-            try:
-                # Offload the blocking detector.detect call
-                person_boxes = await asyncio.to_thread(self.detector.detect, frame)
-            except Exception as detect_err:
-                 logger.error(f"Frame #{current_frame_num}: Error during detection: {detect_err}", exc_info=True)
-                 person_boxes = [] # Continue with empty detections on error
-
-            detect_duration = time.time() - detect_start_time
-            logger.info(f"Frame #{current_frame_num}: Detection completed in {detect_duration:.4f}s - Found {len(person_boxes)} people")
-
-            if not person_boxes:
-                 processing_duration = time.time() - processing_start_time
-                 logger.info(f"----- Finished Frame #{current_frame_num} in {processing_duration:.4f}s (No Detections) -----")
-                 return [] # Return early if no people detected
-
-            self.total_detections += len(person_boxes)
-
-            # --- Run recognition for each person in thread ---
-            recognition_tasks = []
-            for i, box_data in enumerate(person_boxes):
-                 # Ensure box_data structure is compatible with recognizer
-                 # Assuming box_data is [x, y, w, h, confidence] from detector
-                 person_box_coords = box_data[:4] # Extract [x, y, w, h]
-
-                 logger.debug(f"Frame #{current_frame_num}: Submitting recognition task for person #{i+1}...")
-                 # Create a task to run recognition in a thread for this person
-                 task = asyncio.create_task(
-                     asyncio.to_thread(self.recognizer.is_felix, frame, person_box_coords),
-                     name=f"Recognize_Frame{current_frame_num}_Person{i+1}"
-                 )
-                 recognition_tasks.append((task, person_box_coords)) # Store task and box coords
-
-
-            # --- Gather recognition results concurrently ---
-            recog_start_time = time.time()
-            recognition_results_raw = await asyncio.gather(*(task for task, _ in recognition_tasks), return_exceptions=True)
-            recog_duration = time.time() - recog_start_time
-            logger.debug(f"Frame #{current_frame_num}: Recognition tasks gathered in {recog_duration:.4f}s")
-
-
-            # --- Process recognition results ---
-            for i, (recog_result, person_box) in enumerate(zip(recognition_results_raw, (box for _, box in recognition_tasks))):
-
-                if isinstance(recog_result, Exception):
-                    logger.error(f"Frame #{current_frame_num}: Recognition failed for person #{i+1}: {recog_result}", exc_info=recog_result)
-                    # Optionally add a placeholder or skip this detection
-                    continue # Skip this person if recognition failed
-
-                # Unpack result from is_felix (assuming it returns (is_felix_bool, confidence_float))
-                is_felix, confidence = recog_result
-                result_type = "FELIX" if is_felix else "NOT FELIX"
-                logger.info(f"Frame #{current_frame_num}: Person #{i+1} is {result_type} (confidence: {confidence:.3f})")
-
-                if is_felix:
-                    self.felix_detections += 1
-
-                results.append({
-                    "box": [int(c) for c in person_box], # Ensure box coords are int
-                    "is_felix": bool(is_felix),
-                    "confidence": float(confidence)
-                })
-
-            processing_duration = time.time() - processing_start_time
-            logger.info(f"----- Finished Frame #{current_frame_num} in {processing_duration:.4f}s ({len(results)} valid results) -----")
-            return results
-
-        except Exception as e:
-            logger.error(f"Frame #{current_frame_num}: Unexpected error in process_frame: {e}", exc_info=True)
-            return [] # Return empty list on unexpected error
-
-    # --- Modify handle_client to use to_thread for decode ---
-    async def handle_client(self, websocket):
-        """Handle a client connection (Non-Blocking)"""
-        client_id = websocket.remote_address # Get unique ID for client
-        logger.info(f"+++ Client connected: {client_id} +++")
-        message_count = 0
-        try:
+            # Start processing task for this client
+            process_task = asyncio.create_task(self._process_client_frames(client_id))
+            
+            # Handle incoming messages
             async for message in websocket:
-                message_count += 1
-                message_start_time = time.time()
-                logger.debug(f"Client {client_id}: Received message #{message_count} (size: {len(message)} bytes)")
                 try:
-                    # --- Decode the frame in thread ---
-                    decode_start_time = time.time()
-                    logger.debug(f"Client {client_id}, Msg #{message_count}: Submitting decode task...")
-                    try:
-                         # Offload the blocking imdecode
-                         frame_bytes = np.frombuffer(message, dtype=np.uint8) # frombuffer is fast
-                         frame = await asyncio.to_thread(cv2.imdecode, frame_bytes, cv2.IMREAD_COLOR)
-                         # ^^^ Allows event loop to run during decode ^^^
-                    except Exception as decode_err:
-                         logger.error(f"Client {client_id}, Msg #{message_count}: Error during decode: {decode_err}", exc_info=True)
-                         frame = None
-
-                    decode_duration = time.time() - decode_start_time
-                    logger.debug(f"Client {client_id}, Msg #{message_count}: Decode finished in {decode_duration:.4f}s")
-
-                    if frame is None:
-                        logger.error(f"Client {client_id}, Msg #{message_count}: Could not decode frame")
-                        # Maybe send specific error back? For now, send empty list.
-                        await websocket.send(json.dumps([]))
-                        continue
-
-                    # --- Process the frame (now uses async process_frame) ---
-                    results = await self.process_frame(frame)
-
-                    # --- Send back the results ---
-                    send_start_time = time.time()
-                    try:
-                         response_json = json.dumps(results)
-                    except TypeError as json_err:
-                         logger.error(f"Client {client_id}, Msg #{message_count}: Failed to serialize results to JSON: {json_err}", exc_info=True)
-                         response_json = json.dumps([]) # Send empty list on serialization error
-
-                    await websocket.send(response_json)
-                    send_duration = time.time() - send_start_time
-                    message_duration = time.time() - message_start_time
-                    logger.debug(f"Client {client_id}, Msg #{message_count}: Sent results (send took {send_duration:.4f}s, total msg time {message_duration:.4f}s)")
-
-                except websockets.exceptions.ConnectionClosed:
-                     logger.warning(f"Client {client_id}: Connection closed during message processing.")
-                     break # Exit loop if connection closed
+                    data = json.loads(message)
+                    
+                    if data.get('type') == 'frame':
+                        # Add to processing queue if not full
+                        if not self.process_queue.full():
+                            await self.process_queue.put({
+                                'client_id': client_id,
+                                'data': data,
+                                'received_at': time.time()
+                            })
+                            self.clients[client_id]['frames_received'] += 1
+                        else:
+                            # Send back pressure signal
+                            await websocket.send(json.dumps({
+                                'type': 'backpressure',
+                                'message': 'Server busy, please slow down'
+                            }))
+                    
+                    elif data.get('type') == 'pong':
+                        self.clients[client_id]['last_seen'] = time.time()
+                        
+                except json.JSONDecodeError:
+                    logger.error(f"Invalid JSON from {client_id}")
                 except Exception as e:
-                    logger.error(f"Client {client_id}, Msg #{message_count}: Error processing message: {e}", exc_info=True)
-                    try:
-                        # Attempt to send empty list even on error
-                        await websocket.send(json.dumps([]))
-                    except websockets.exceptions.ConnectionClosed:
-                         logger.warning(f"Client {client_id}: Connection closed while trying to send error response.")
-                         break
-                    except Exception as send_err:
-                         logger.error(f"Client {client_id}: Failed to send error response: {send_err}")
-
-
-        except websockets.exceptions.ConnectionClosedOK:
-            logger.info(f"Client {client_id}: Disconnected normally.")
-        except websockets.exceptions.ConnectionClosedError as e:
-             logger.warning(f"Client {client_id}: Connection closed with error: {e}")
-        except Exception as e:
-            logger.error(f"Error handling client {client_id}: {e}", exc_info=True)
+                    logger.error(f"Error handling message from {client_id}: {e}")
+            
+        except websockets.exceptions.ConnectionClosed:
+            logger.info(f"Client {client_id} disconnected")
         finally:
-            logger.info(f"--- Client disconnected: {client_id} ---")
-            # Perform any other cleanup for this client if necessary
+            # Cleanup
+            process_task.cancel()
+            if client_id in self.clients:
+                del self.clients[client_id]
+    
+    async def _process_client_frames(self, client_id: str):
+        """Process frames for a specific client"""
+        while client_id in self.clients:
+            try:
+                # Get frame from queue (with timeout to check if client still connected)
+                try:
+                    item = await asyncio.wait_for(self.process_queue.get(), timeout=1.0)
+                except asyncio.TimeoutError:
+                    continue
+                
+                # Skip if not for this client
+                if item['client_id'] != client_id:
+                    # Put it back for the right client
+                    await self.process_queue.put(item)
+                    await asyncio.sleep(0.01)
+                    continue
+                
+                # Process the frame
+                start_time = time.time()
+                result = await self._process_single_frame(item['data'])
+                process_time = time.time() - start_time
+                
+                # Update metrics
+                self.total_processed += 1
+                self.processing_times.append(process_time)
+                if len(self.processing_times) > 100:
+                    self.processing_times.pop(0)
+                
+                self.clients[client_id]['frames_processed'] += 1
+                
+                # Send result back
+                response = {
+                    'type': 'result',
+                    'frame_id': item['data'].get('id'),
+                    'detections': result,
+                    'process_time': process_time,
+                    'queue_time': start_time - item['received_at']
+                }
+                
+                client_ws = self.clients[client_id]['websocket']
+                await client_ws.send(json.dumps(response))
+                
+            except Exception as e:
+                logger.error(f"Error processing frame for {client_id}: {e}")
+    
+    async def _process_single_frame(self, frame_data: Dict[str, Any]) -> list:
+        """Process a single frame and return detections"""
+        try:
+            # Decode frame from hex
+            frame_bytes = bytes.fromhex(frame_data['data'])
+            nparr = np.frombuffer(frame_bytes, np.uint8)
+            
+            # Decode image in thread pool
+            frame = await asyncio.get_event_loop().run_in_executor(
+                self.executor, cv2.imdecode, nparr, cv2.IMREAD_COLOR
+            )
+            
+            if frame is None:
+                return []
+            
+            # Run detection in thread pool
+            person_boxes = await asyncio.get_event_loop().run_in_executor(
+                self.executor, self.detector.detect, frame
+            )
+            
+            if not person_boxes:
+                return []
+            
+            # Run recognition for each person (limited to first 5 to prevent overload)
+            results = []
+            recognition_tasks = []
+            
+            for box in person_boxes[:5]:  # Limit to 5 people max
+                task = asyncio.get_event_loop().run_in_executor(
+                    self.executor, self.recognizer.is_felix, frame, box[:4]
+                )
+                recognition_tasks.append((task, box))
+            
+            # Wait for all recognitions
+            for task, box in recognition_tasks:
+                try:
+                    is_felix, confidence = await task
+                    results.append({
+                        'box': [int(x) for x in box[:4]],
+                        'is_felix': bool(is_felix),
+                        'confidence': float(confidence),
+                        'detection_confidence': float(box[4]) if len(box) > 4 else 1.0
+                    })
+                except Exception as e:
+                    logger.error(f"Recognition error: {e}")
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Frame processing error: {e}")
+            return []
+    
+    async def _monitor_clients(self):
+        """Monitor and ping clients periodically"""
+        while True:
+            await asyncio.sleep(10)
+            
+            current_time = time.time()
+            for client_id, client_info in list(self.clients.items()):
+                try:
+                    # Send custom ping
+                    await client_info['websocket'].send(json.dumps({'type': 'ping'}))
+                    
+                    # Check if client is responsive
+                    if current_time - client_info['last_seen'] > 30:
+                        logger.warning(f"Client {client_id} unresponsive, closing connection")
+                        await client_info['websocket'].close()
+                except:
+                    pass
+    
+    async def _print_stats(self):
+        """Print server statistics"""
+        while True:
+            await asyncio.sleep(30)
+            
+            if self.processing_times:
+                avg_time = sum(self.processing_times) / len(self.processing_times)
+                logger.info(f"Server Stats - Clients: {len(self.clients)}, "
+                           f"Total Processed: {self.total_processed}, "
+                           f"Avg Process Time: {avg_time:.3f}s, "
+                           f"Queue Size: {self.process_queue.qsize()}")
+            
+            # Print client stats
+            for client_id, info in self.clients.items():
+                logger.info(f"  Client {client_id}: Received: {info['frames_received']}, "
+                           f"Processed: {info['frames_processed']}")
 
 async def main():
-    logger.info("Starting main function...")
-
-    model_path = "/root/models/felix_classifier.pth" # Make this configurable
-    yolo_path = None # Make this configurable
-
-    # Basic check for model file (improve this with proper config loading)
-    if not os.path.exists(model_path):
-        logger.critical(f"FATAL: Felix model file not found at {model_path}")
-        # Add logic to search alternative paths if needed
-        return
-
-    try:
-        logger.info("Creating server instance...")
-        server = FelixDetectionServer(
-            felix_model=model_path,
-            yolo_model=yolo_path
-        )
-        logger.info("Server instance created successfully")
-
-        # Add ping/timeout settings matching client expectations
-        async with websockets.serve(
-            server.handle_client,
-            "0.0.0.0",
-            8080, # Make port configurable
-            ping_interval=15, # Example: Check every 15s
-            ping_timeout=30,  # Example: Allow 30s for response
-            max_size=10*1024*1024 # Keep reasonable size limit
-        ):
-            logger.info("=== Server running on ws://0.0.0.0:8080 ===")
-            await asyncio.Future() # Run forever
-
-    except Exception as e:
-        logger.critical(f"ERROR in main server setup or run: {e}", exc_info=True)
+    # Configuration
+    felix_model_path = "/root/models/felix_classifier.pth"
+    yolo_model_path = None  # Use default
+    host = "0.0.0.0"
+    port = 8080
+    
+    # Initialize server
+    server = OptimizedGPUServer(felix_model_path, yolo_model_path)
+    
+    # Start background tasks
+    monitor_task = asyncio.create_task(server._monitor_clients())
+    stats_task = asyncio.create_task(server._print_stats())
+    
+    # Start WebSocket server
+    logger.info(f"Starting server on ws://{host}:{port}")
+    async with websockets.serve(
+        server.handle_client,
+        host,
+        port,
+        max_size=10 * 1024 * 1024,
+        ping_interval=None,  # We handle pings manually
+        ping_timeout=None
+    ):
+        await asyncio.Future()  # Run forever
 
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.info("Server stopped by user (KeyboardInterrupt)")
-    except Exception as e:
-        logger.critical(f"Unhandled exception in top-level: {e}", exc_info=True)
+        logger.info("Server stopped by user")
