@@ -205,7 +205,7 @@ class FlowControlledClient:
 async def main():
     client = FlowControlledClient(
         server_uri = "ws://localhost:8080",
-        target_fps=10
+        target_fps=60
     )
     
     try:

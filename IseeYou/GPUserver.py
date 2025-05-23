@@ -13,6 +13,29 @@ from typing import Dict, Any, Optional
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('gpu_server_v2')
 
+def check_gpu_models(detector, recognizer):
+    """Quick check if models are on GPU"""
+    print("\n=== GPU Model Check ===")
+    
+    # Check PyTorch
+    print(f"PyTorch CUDA available: {torch.cuda.is_available()}")
+    print(f"PyTorch CUDA device count: {torch.cuda.device_count()}")
+    if torch.cuda.is_available():
+        print(f"Current GPU: {torch.cuda.get_device_name(0)}")
+        print(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f}GB")
+    
+    # Check detector
+    if hasattr(detector, 'model'):
+        device = next(detector.model.parameters()).device
+        print(f"Detector model device: {device}")
+        
+    # Check recognizer  
+    if hasattr(recognizer, 'model'):
+        device = next(recognizer.model.parameters()).device
+        print(f"Recognizer model device: {device}")
+    
+    print("=====================\n")
+
 class OptimizedGPUServer:
     def __init__(self, felix_model_path: str, yolo_model_path: Optional[str] = None):
         logger.info("Initializing GPU Server...")
@@ -23,6 +46,9 @@ class OptimizedGPUServer:
         
         self.detector = PersonDetector(yolo_model_path)
         self.recognizer = FelixRecognizer(felix_model_path)
+        
+        # Check if models are on GPU
+        check_gpu_models(self.detector, self.recognizer)
         
         # Thread pool for CPU-bound tasks
         self.executor = ThreadPoolExecutor(max_workers=4)
@@ -36,6 +62,7 @@ class OptimizedGPUServer:
         # Performance metrics
         self.total_processed = 0
         self.processing_times = []
+        self.timing_history = []  # For detailed timing analysis
         
         logger.info("GPU Server initialized successfully")
     
@@ -139,56 +166,117 @@ class OptimizedGPUServer:
                 logger.error(f"Error processing frame for {client_id}: {e}")
     
     async def _process_single_frame(self, frame_data: Dict[str, Any]) -> list:
-        """Process a single frame and return detections"""
+        """Process a single frame with detailed timing"""
+        frame_timing = {}
+        total_start = time.time()
+        
         try:
-            # Decode frame from hex
+            # 1. Decode frame timing
+            t0 = time.time()
             frame_bytes = bytes.fromhex(frame_data['data'])
             nparr = np.frombuffer(frame_bytes, np.uint8)
-            
-            # Decode image in thread pool
             frame = await asyncio.get_event_loop().run_in_executor(
                 self.executor, cv2.imdecode, nparr, cv2.IMREAD_COLOR
             )
+            frame_timing['decode_ms'] = (time.time() - t0) * 1000
             
             if frame is None:
                 return []
             
-            # Run detection in thread pool
+            # 2. Check if detector is on GPU (only on first frame and every 50 frames)
+            if self.total_processed % 50 == 0:
+                if hasattr(self.detector, 'model'):
+                    device = next(self.detector.model.parameters()).device
+                    logger.info(f"Detector on device: {device}")
+            
+            # 3. Detection timing
+            t1 = time.time()
             person_boxes = await asyncio.get_event_loop().run_in_executor(
                 self.executor, self.detector.detect, frame
             )
+            frame_timing['detection_ms'] = (time.time() - t1) * 1000
+            frame_timing['num_people'] = len(person_boxes)
             
             if not person_boxes:
                 return []
             
-            # Run recognition for each person (limited to first 5 to prevent overload)
+            # 4. Recognition timing (batch vs sequential)
             results = []
-            recognition_tasks = []
+            t2 = time.time()
             
-            for box in person_boxes[:5]:  # Limit to 5 people max
-                task = asyncio.get_event_loop().run_in_executor(
+            # Check if recognizer is on GPU (only on first frame and every 50 frames)
+            if self.total_processed % 50 == 0:
+                if hasattr(self.recognizer, 'model'):
+                    device = next(self.recognizer.model.parameters()).device
+                    logger.info(f"Recognizer on device: {device}")
+            
+            # Track individual recognition times
+            recognition_times = []
+            
+            for i, box in enumerate(person_boxes[:5]):
+                t_person = time.time()
+                is_felix, confidence = await asyncio.get_event_loop().run_in_executor(
                     self.executor, self.recognizer.is_felix, frame, box[:4]
                 )
-                recognition_tasks.append((task, box))
+                person_time = (time.time() - t_person) * 1000
+                recognition_times.append(person_time)
+                
+                results.append({
+                    'box': [int(x) for x in box[:4]],
+                    'is_felix': bool(is_felix),
+                    'confidence': float(confidence),
+                    'detection_confidence': float(box[4]) if len(box) > 4 else 1.0
+                })
             
-            # Wait for all recognitions
-            for task, box in recognition_tasks:
-                try:
-                    is_felix, confidence = await task
-                    results.append({
-                        'box': [int(x) for x in box[:4]],
-                        'is_felix': bool(is_felix),
-                        'confidence': float(confidence),
-                        'detection_confidence': float(box[4]) if len(box) > 4 else 1.0
-                    })
-                except Exception as e:
-                    logger.error(f"Recognition error: {e}")
+            frame_timing['recognition_ms'] = (time.time() - t2) * 1000
+            frame_timing['per_person_ms'] = recognition_times
+            frame_timing['total_ms'] = (time.time() - total_start) * 1000
+            
+            # Store timing
+            self.timing_history.append(frame_timing)
+            if len(self.timing_history) > 20:
+                self.timing_history.pop(0)
+            
+            # Log detailed timing every 10 frames
+            if self.total_processed % 10 == 0:
+                avg_timings = self._calculate_average_timings()
+                logger.info("=== Performance Breakdown ===")
+                logger.info(f"Decode: {avg_timings['decode']:.1f}ms")
+                logger.info(f"Detection: {avg_timings['detection']:.1f}ms")
+                logger.info(f"Recognition: {avg_timings['recognition']:.1f}ms")
+                logger.info(f"  - Per person: {avg_timings['per_person']:.1f}ms")
+                logger.info(f"  - Avg people: {avg_timings['avg_people']:.1f}")
+                logger.info(f"Total: {avg_timings['total']:.1f}ms ({1000/avg_timings['total']:.1f} FPS)")
+                logger.info(f"GPU Memory: {torch.cuda.memory_allocated()/1024**3:.2f}GB")
+                logger.info("============================")
             
             return results
             
         except Exception as e:
             logger.error(f"Frame processing error: {e}")
             return []
+    
+    def _calculate_average_timings(self):
+        """Calculate average timings from history"""
+        if not self.timing_history:
+            return {'decode': 0, 'detection': 0, 'recognition': 0, 'total': 0, 
+                    'avg_people': 0, 'per_person': 0}
+        
+        avg = {
+            'decode': sum(t['decode_ms'] for t in self.timing_history) / len(self.timing_history),
+            'detection': sum(t['detection_ms'] for t in self.timing_history) / len(self.timing_history),
+            'recognition': sum(t['recognition_ms'] for t in self.timing_history) / len(self.timing_history),
+            'total': sum(t['total_ms'] for t in self.timing_history) / len(self.timing_history),
+            'avg_people': sum(t['num_people'] for t in self.timing_history) / len(self.timing_history)
+        }
+        
+        # Average per-person recognition time
+        all_person_times = []
+        for t in self.timing_history:
+            all_person_times.extend(t.get('per_person_ms', []))
+        avg['per_person'] = sum(all_person_times) / len(all_person_times) if all_person_times else 0
+        
+        return avg
     
     async def _monitor_clients(self):
         """Monitor and ping clients periodically"""
