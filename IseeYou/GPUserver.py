@@ -39,7 +39,7 @@ class OptimizedGPUServer:
         
         logger.info("GPU Server initialized successfully")
     
-    async def handle_client(self, websocket, path):
+    async def handle_client(self, websocket):
         """Handle individual client connection"""
         client_id = f"{websocket.remote_address[0]}:{websocket.remote_address[1]}"
         logger.info(f"Client connected: {client_id}")
