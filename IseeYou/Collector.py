@@ -1,19 +1,29 @@
+import sys, os
+# insert your project root (the folder that contains `core/`) into path
+sys.path.insert(
+    0,
+    os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+)
+
 import asyncio
 import logging
 from pathlib import Path
-from IseeYou.IseeYouClass import FlowControlledClient
+from IseeYouClass import FlowControlledClient
 from core.cache import VisualContextCache
 from enhanced_picture_collector import EdgeCaseCollector, create_collector_callback
 
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('collector_integration')
+
+
 
 class CollectorVideoClient(FlowControlledClient):
     """
     Extended video client that includes frame data in callbacks.
     """
     
-    def __init__(self, server_uri: str, target_fps: int = 30, 
+    def __init__(self, server_uri: str, target_fps: int = 60, 
                  cache_callback=None, collector_callback=None):
         super().__init__(server_uri, target_fps, cache_callback)
         self.collector_callback = collector_callback
@@ -220,7 +230,7 @@ async def main():
         await run_continuous_collection()
     else:
         # Run single session (default 10 minutes)
-        duration = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+        duration = int(sys.argv[1]) if len(sys.argv) > 1 else 5
         await run_collection_session(duration_minutes=duration)
 
 

@@ -3,3 +3,28 @@
 2025-05-23 21:18:22,495 - INFO - Settings saved: Voice=female_01.wav, Language=en
 2025-05-23 21:18:22,495 - INFO - Queue processor thread started
 2025-05-23 21:18:22,495 - INFO - StreamTTSPlayer initialized (Voice: female_01.wav, Language: en)
+2025-05-23 22:52:03,737 - INFO - ffplay found and available for audio playback
+2025-05-23 22:52:03,737 - INFO - Creating new StreamTTSPlayer instance
+2025-05-23 22:52:03,737 - INFO - Settings loaded: Voice=female_01.wav, Language=en
+2025-05-23 22:52:03,737 - INFO - Queue processor thread started
+2025-05-23 22:52:03,737 - INFO - StreamTTSPlayer initialized (Voice: female_01.wav, Language: en)
+2025-05-23 23:04:21,627 - INFO - ffplay found and available for audio playback
+2025-05-23 23:04:21,628 - INFO - Creating new StreamTTSPlayer instance
+2025-05-23 23:04:21,628 - INFO - Settings loaded: Voice=female_01.wav, Language=en
+2025-05-23 23:04:21,629 - INFO - Queue processor thread started
+2025-05-23 23:04:21,629 - INFO - StreamTTSPlayer initialized (Voice: female_01.wav, Language: en)
+2025-05-23 23:07:05,283 - INFO - ffplay found and available for audio playback
+2025-05-23 23:07:05,285 - INFO - Creating new StreamTTSPlayer instance
+2025-05-23 23:07:05,285 - INFO - Settings loaded: Voice=female_01.wav, Language=en
+2025-05-23 23:07:05,285 - INFO - Queue processor thread started
+2025-05-23 23:07:05,285 - INFO - StreamTTSPlayer initialized (Voice: female_01.wav, Language: en)
+2025-05-23 23:10:04,849 - INFO - ffplay found and available for audio playback
+2025-05-23 23:10:04,849 - INFO - Creating new StreamTTSPlayer instance
+2025-05-23 23:10:04,849 - INFO - Settings loaded: Voice=female_01.wav, Language=en
+2025-05-23 23:10:04,849 - INFO - Queue processor thread started
+2025-05-23 23:10:04,849 - INFO - StreamTTSPlayer initialized (Voice: female_01.wav, Language: en)
+2025-05-23 23:12:29,559 - INFO - ffplay found and available for audio playback
+2025-05-23 23:12:29,560 - INFO - Creating new StreamTTSPlayer instance
+2025-05-23 23:12:29,560 - INFO - Settings loaded: Voice=female_01.wav, Language=en
+2025-05-23 23:12:29,561 - INFO - Queue processor thread started
+2025-05-23 23:12:29,561 - INFO - StreamTTSPlayer initialized (Voice: female_01.wav, Language: en)

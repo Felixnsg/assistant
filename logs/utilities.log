@@ -17,3 +17,42 @@
 2025-05-23 21:23:07,984 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
 2025-05-23 21:24:47,346 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
 2025-05-23 21:24:47,347 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-23 22:52:11,091 - INFO - [services.utilities] - Initializing Utilities...
+2025-05-23 22:52:11,091 - INFO - [services.utilities] - Utilities initialized.
+2025-05-23 23:04:27,292 - INFO - [services.utilities] - Initializing Utilities...
+2025-05-23 23:04:27,292 - INFO - [services.utilities] - Utilities initialized.
+2025-05-23 23:05:49,795 - INFO - [services.utilities] - Cleaning up Utilities resources...
+2025-05-23 23:05:49,795 - INFO - [services.utilities] - Utilities cleanup finished.
+2025-05-23 23:07:10,526 - INFO - [services.utilities] - Initializing Utilities...
+2025-05-23 23:07:10,526 - INFO - [services.utilities] - Utilities initialized.
+2025-05-23 23:07:54,001 - INFO - [services.utilities] - Cleaning up Utilities resources...
+2025-05-23 23:07:54,003 - INFO - [services.utilities] - Utilities cleanup finished.
+2025-05-23 23:10:10,015 - INFO - [services.utilities] - Initializing Utilities...
+2025-05-23 23:10:10,015 - INFO - [services.utilities] - Utilities initialized.
+2025-05-23 23:11:33,459 - INFO - [services.utilities] - Detected trigger: Service='START_VIDEO', Parameter='None'
+2025-05-23 23:11:47,828 - INFO - [services.utilities] - Video service started successfully.
+2025-05-23 23:11:47,828 - INFO - [services.utilities] - Service 'START_VIDEO' executed successfully.
+2025-05-23 23:12:06,818 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-23 23:12:06,818 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-23 23:12:34,715 - INFO - [services.utilities] - Initializing Utilities...
+2025-05-23 23:12:34,715 - INFO - [services.utilities] - Utilities initialized.
+2025-05-23 23:13:27,961 - INFO - [services.utilities] - Detected trigger: Service='START_VIDEO', Parameter='None'
+2025-05-23 23:13:42,272 - INFO - [services.utilities] - Video service started successfully.
+2025-05-23 23:13:42,272 - INFO - [services.utilities] - Service 'START_VIDEO' executed successfully.
+2025-05-23 23:14:08,780 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-23 23:14:08,780 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-23 23:14:37,458 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-23 23:14:37,458 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-23 23:15:27,804 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-23 23:15:27,804 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-23 23:16:55,252 - INFO - [services.utilities] - Detected trigger: Service='STOP_VIDEO', Parameter='None'
+2025-05-23 23:16:55,253 - INFO - [services.utilities] - Stopping video service...
+2025-05-23 23:16:55,254 - ERROR - [services.utilities] - Error stopping video service: 'ClientConnection' object has no attribute 'closed'
+Traceback (most recent call last):
+  File "c:\Users\Felix\Music\Cypher1\CypherV001\services\utilities.py", line 290, in stop_video_service
+    await self.video_client.stop()
+  File "c:\Users\Felix\Music\Cypher1\CypherV001\IseeYou\IseeYouClass.py", line 157, in stop
+    if self.websocket and not self.websocket.closed:
+                              ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ClientConnection' object has no attribute 'closed'. Did you mean: 'close'?
+2025-05-23 23:16:55,257 - INFO - [services.utilities] - Service 'STOP_VIDEO' executed successfully.

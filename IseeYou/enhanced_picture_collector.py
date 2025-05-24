@@ -60,7 +60,7 @@ class EdgeCaseCollector:
         }
         
         # Collection settings
-        self.min_interval_same_person = 5.0   # Seconds between collecting same tracker_id
+        self.min_interval_same_person = 15.0   # Seconds between collecting same tracker_id
         self.max_images_per_session = 1000
         self.balance_ratio = 0.5  # Try to maintain 50/50 felix/notfelix
         
