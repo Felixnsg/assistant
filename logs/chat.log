@@ -1,0 +1,90 @@
+2025-05-23 21:18:34,512 - INFO - [interfaces.chat] - Initializing ChatManager...
+2025-05-23 21:18:46,943 - INFO - [interfaces.chat] - Interaction format set to: text
+2025-05-23 21:18:46,944 - INFO - [interfaces.chat] - ChatManager initialized with format: text
+2025-05-23 21:18:51,978 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'hey cypher...'
+2025-05-23 21:18:51,979 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:18:52,612 - INFO - [interfaces.chat] - LLM response received in 0.64 seconds.
+2025-05-23 21:19:05,731 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'How are u...'
+2025-05-23 21:19:05,732 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:19:06,341 - INFO - [interfaces.chat] - LLM response received in 0.61 seconds.
+2025-05-23 21:19:16,474 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'Can u track felix...'
+2025-05-23 21:19:16,475 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:19:17,184 - INFO - [interfaces.chat] - LLM response received in 0.70 seconds.
+2025-05-23 21:19:19,445 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'yes...'
+2025-05-23 21:19:19,446 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:19:20,058 - INFO - [interfaces.chat] - LLM response received in 0.61 seconds.
+2025-05-23 21:19:37,748 - INFO - [interfaces.chat] - Service 'START_VIDEO' executed
+2025-05-23 21:19:37,750 - INFO - [interfaces.chat] - Result: True
+2025-05-23 21:19:52,399 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'can u see him...'
+2025-05-23 21:19:52,400 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:19:52,902 - INFO - [interfaces.chat] - LLM response received in 0.50 seconds.
+2025-05-23 21:19:52,925 - INFO - [interfaces.chat] - Service 'CHECK_VISUAL_CONTEXT' executed
+2025-05-23 21:19:52,925 - INFO - [interfaces.chat] - Result: {'context_string': '[Visual context: No Felix detected in camera view]'}
+2025-05-23 21:19:52,925 - INFO - [interfaces.chat] - Visual context stored for next prompt: [Visual context: No Felix detected in camera view]
+2025-05-23 21:20:08,927 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'okay can u see him...'
+2025-05-23 21:20:08,927 - INFO - [interfaces.chat] - Injected visual context: [Visual context: No Felix detected in camera view]
+2025-05-23 21:20:08,928 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:20:09,546 - INFO - [interfaces.chat] - LLM response received in 0.61 seconds.
+2025-05-23 21:20:09,549 - INFO - [interfaces.chat] - Service 'CHECK_VISUAL_CONTEXT' executed
+2025-05-23 21:20:09,549 - INFO - [interfaces.chat] - Result: {'context_string': '[Visual context: No Felix detected in camera view]'}
+2025-05-23 21:20:09,550 - INFO - [interfaces.chat] - Visual context stored for next prompt: [Visual context: No Felix detected in camera view]
+2025-05-23 21:20:25,993 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'what about now...'
+2025-05-23 21:20:25,993 - INFO - [interfaces.chat] - Injected visual context: [Visual context: No Felix detected in camera view]
+2025-05-23 21:20:25,994 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:20:26,504 - INFO - [interfaces.chat] - LLM response received in 0.52 seconds.
+2025-05-23 21:20:26,507 - INFO - [interfaces.chat] - Service 'CHECK_VISUAL_CONTEXT' executed
+2025-05-23 21:20:26,507 - INFO - [interfaces.chat] - Result: {'context_string': '[Visual context: No Felix detected in camera view]'}
+2025-05-23 21:20:26,507 - INFO - [interfaces.chat] - Visual context stored for next prompt: [Visual context: No Felix detected in camera view]
+2025-05-23 21:20:56,545 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'dod i...'
+2025-05-23 21:20:56,545 - INFO - [interfaces.chat] - Injected visual context: [Visual context: No Felix detected in camera view]
+2025-05-23 21:20:56,545 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:20:57,170 - INFO - [interfaces.chat] - LLM response received in 0.62 seconds.
+2025-05-23 21:21:36,756 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'okay thanks...'
+2025-05-23 21:21:36,757 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:21:37,260 - INFO - [interfaces.chat] - LLM response received in 0.50 seconds.
+2025-05-23 21:21:41,944 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'can u check now...'
+2025-05-23 21:21:41,945 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:21:42,484 - INFO - [interfaces.chat] - LLM response received in 0.53 seconds.
+2025-05-23 21:21:42,487 - INFO - [interfaces.chat] - Service 'CHECK_VISUAL_CONTEXT' executed
+2025-05-23 21:21:42,487 - INFO - [interfaces.chat] - Result: {'context_string': '[Visual context: Felix detected with 51.9% confidence]'}
+2025-05-23 21:21:42,487 - INFO - [interfaces.chat] - Visual context stored for next prompt: [Visual context: Felix detected with 51.9% confidence]
+2025-05-23 21:21:49,583 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'okay...'
+2025-05-23 21:21:49,584 - INFO - [interfaces.chat] - Injected visual context: [Visual context: Felix detected with 51.9% confidence]
+2025-05-23 21:21:49,584 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:21:50,592 - INFO - [interfaces.chat] - LLM response received in 1.00 seconds.
+2025-05-23 21:22:43,831 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'any updtae on the human being...'
+2025-05-23 21:22:43,832 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:22:44,349 - INFO - [interfaces.chat] - LLM response received in 0.52 seconds.
+2025-05-23 21:22:44,354 - INFO - [interfaces.chat] - Service 'CHECK_VISUAL_CONTEXT' executed
+2025-05-23 21:22:44,354 - INFO - [interfaces.chat] - Result: {'context_string': '[Visual context: Felix detected with 51.7% confidence]'}
+2025-05-23 21:22:44,354 - INFO - [interfaces.chat] - Visual context stored for next prompt: [Visual context: Felix detected with 51.7% confidence]
+2025-05-23 21:22:48,901 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'okay...'
+2025-05-23 21:22:48,901 - INFO - [interfaces.chat] - Injected visual context: [Visual context: Felix detected with 51.7% confidence]
+2025-05-23 21:22:48,902 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:22:49,776 - INFO - [interfaces.chat] - LLM response received in 0.88 seconds.
+2025-05-23 21:23:07,328 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'okay great what about now...'
+2025-05-23 21:23:07,329 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:23:07,980 - INFO - [interfaces.chat] - LLM response received in 0.66 seconds.
+2025-05-23 21:23:07,985 - INFO - [interfaces.chat] - Service 'CHECK_VISUAL_CONTEXT' executed
+2025-05-23 21:23:07,985 - INFO - [interfaces.chat] - Result: {'context_string': '[Visual context: Felix detected with 51.4% confidence]'}
+2025-05-23 21:23:07,985 - INFO - [interfaces.chat] - Visual context stored for next prompt: [Visual context: Felix detected with 51.4% confidence]
+2025-05-23 21:23:16,800 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'okay...'
+2025-05-23 21:23:16,800 - INFO - [interfaces.chat] - Injected visual context: [Visual context: Felix detected with 51.4% confidence]
+2025-05-23 21:23:16,800 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:23:17,667 - INFO - [interfaces.chat] - LLM response received in 0.86 seconds.
+2025-05-23 21:23:45,776 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'dont worry u doing fine...'
+2025-05-23 21:23:45,777 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:23:46,353 - INFO - [interfaces.chat] - LLM response received in 0.58 seconds.
+2025-05-23 21:24:46,765 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'just check for him one last lime darling...'
+2025-05-23 21:24:46,766 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:24:47,340 - INFO - [interfaces.chat] - LLM response received in 0.58 seconds.
+2025-05-23 21:24:47,347 - INFO - [interfaces.chat] - Service 'CHECK_VISUAL_CONTEXT' executed
+2025-05-23 21:24:47,347 - INFO - [interfaces.chat] - Result: {'context_string': '[Visual context: Felix detected with 51.3% confidence]'}
+2025-05-23 21:24:47,347 - INFO - [interfaces.chat] - Visual context stored for next prompt: [Visual context: Felix detected with 51.3% confidence]
+2025-05-23 21:24:59,535 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'what is the result...'
+2025-05-23 21:24:59,535 - INFO - [interfaces.chat] - Injected visual context: [Visual context: Felix detected with 51.3% confidence]
+2025-05-23 21:24:59,536 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:25:00,554 - INFO - [interfaces.chat] - LLM response received in 1.02 seconds.
+2025-05-23 21:25:23,973 - INFO - [interfaces.chat] - Preparing LLM request for prompt: 'great thanks darling what is your name again?...'
+2025-05-23 21:25:23,974 - INFO - [interfaces.chat] - Sending request to LLM...
+2025-05-23 21:25:24,516 - INFO - [interfaces.chat] - LLM response received in 0.53 seconds.

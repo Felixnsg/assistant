@@ -5,7 +5,7 @@ import logging
 import json
 import time
 import numpy as np
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Callable, List
 import queue
 import threading
 import supervision as sv
@@ -48,10 +48,21 @@ class FrameCapture:
         self.cap.release()
 
 class FlowControlledClient:
-    def __init__(self, server_uri: str, target_fps: int = 30):
+    def __init__(self, server_uri: str, target_fps: int = 30, cache_callback: Optional[Callable] = None):
+        """
+        Initialize the client with optional cache callback.
+        
+        Args:
+            server_uri: WebSocket server URI
+            target_fps: Target frames per second
+            cache_callback: Optional async callback function that receives detection updates
+        """
         self.server_uri = server_uri
         self.target_fps = target_fps
         self.camera = FrameCapture()
+        
+        # Cache callback for external updates
+        self.cache_callback = cache_callback
         
         # Flow control
         self.pending_frames = 0
@@ -74,6 +85,11 @@ class FlowControlledClient:
         self.min_quality = 20
         self.max_quality = 80
         
+        # Control flags
+        self.running = False
+        self.websocket = None
+        self.tasks = []
+        
         # Initialize Supervision components
         self._init_supervision()
     
@@ -85,7 +101,6 @@ class FlowControlledClient:
             minimum_matching_threshold=0.8,
             frame_rate=30
         )
-
 
         # box-only annotator (no text args here)
         self.box_annotator = sv.BoundingBoxAnnotator(thickness=2)
@@ -102,11 +117,54 @@ class FlowControlledClient:
             trace_length=30,
             position=sv.Position.CENTER
         )
-        self.fps_monitor   = sv.FPSMonitor()
+        self.fps_monitor = sv.FPSMonitor()
         self.color_palette = sv.ColorPalette.DEFAULT
         logger.info("Supervision components initialized")
-
-
+    
+    async def start(self):
+        """Start the client - can be called from external code"""
+        if self.running:
+            logger.warning("Client already running")
+            return True
+        
+        self.running = True
+        try:
+            await self.run()
+            return True
+        except Exception as e:
+            logger.error(f"Error starting client: {e}")
+            self.running = False
+            return False
+    
+    async def stop(self):
+        """Stop the client gracefully"""
+        if not self.running:
+            logger.info("Client not running")
+            return True
+        
+        logger.info("Stopping client...")
+        self.running = False
+        
+        # Cancel all tasks
+        for task in self.tasks:
+            if not task.done():
+                task.cancel()
+        
+        if self.tasks:
+            await asyncio.gather(*self.tasks, return_exceptions=True)
+        
+        # Close WebSocket
+        if self.websocket and not self.websocket.closed:
+            await self.websocket.close()
+        
+        # Release camera
+        self.camera.release()
+        
+        # Destroy OpenCV windows
+        cv2.destroyAllWindows()
+        
+        logger.info("Client stopped")
+        return True
     
     def _detections_from_results(self, detections_data, frame_shape):
         """Convert server results to Supervision Detections format"""
@@ -179,6 +237,18 @@ class FlowControlledClient:
         
         return labels
     
+    async def _update_cache_with_detections(self, detections: List[Dict[str, Any]]):
+        """Send detection updates to the cache callback if provided"""
+        if self.cache_callback:
+            try:
+                # Ensure the callback is awaited if it's async
+                if asyncio.iscoroutinefunction(self.cache_callback):
+                    await self.cache_callback(detections)
+                else:
+                    self.cache_callback(detections)
+            except Exception as e:
+                logger.error(f"Error calling cache callback: {e}")
+    
     async def run(self):
         """Main client loop with automatic reconnection"""
         reconnect_delay = 1
@@ -186,8 +256,9 @@ class FlowControlledClient:
         # Start visualization in background if enabled
         if self.display_enabled:
             display_task = asyncio.create_task(self._display_loop())
+            self.tasks.append(display_task)
         
-        while True:
+        while self.running:
             try:
                 logger.info(f"Connecting to {self.server_uri}...")
                 
@@ -198,6 +269,7 @@ class FlowControlledClient:
                     ping_timeout=20,
                     close_timeout=10
                 ) as websocket:
+                    self.websocket = websocket
                     logger.info("Connected successfully")
                     reconnect_delay = 1
                     
@@ -205,6 +277,8 @@ class FlowControlledClient:
                     send_task = asyncio.create_task(self._send_frames(websocket))
                     recv_task = asyncio.create_task(self._receive_results(websocket))
                     stats_task = asyncio.create_task(self._print_stats())
+                    
+                    self.tasks.extend([send_task, recv_task, stats_task])
                     
                     done, pending = await asyncio.wait(
                         [send_task, recv_task, stats_task],
@@ -227,6 +301,9 @@ class FlowControlledClient:
             except Exception as e:
                 logger.error(f"Connection failed: {e}")
             
+            if not self.running:
+                break
+            
             # Exponential backoff for reconnection
             logger.info(f"Reconnecting in {reconnect_delay} seconds...")
             await asyncio.sleep(reconnect_delay)
@@ -237,7 +314,7 @@ class FlowControlledClient:
         frame_interval = 1.0 / self.target_fps
         last_send_time = time.time()
         
-        while True:
+        while self.running:
             try:
                 # Flow control
                 if self.pending_frames >= self.max_pending:
@@ -291,12 +368,13 @@ class FlowControlledClient:
                 last_send_time = current_time
                 
             except Exception as e:
-                logger.error(f"Error sending frame: {e}")
-                raise
+                if self.running:  # Only log if we're supposed to be running
+                    logger.error(f"Error sending frame: {e}")
+                break
     
     async def _receive_results(self, websocket):
         """Receive and process results"""
-        while True:
+        while self.running:
             try:
                 message = await websocket.recv()
                 data = json.loads(message)
@@ -313,10 +391,16 @@ class FlowControlledClient:
                         self.pending_frames = max(0, self.pending_frames - 1)
                         self.frames_processed += 1
                         
-                        # Store results
+                        # Get detections
+                        detections = data.get('detections', [])
+                        
+                        # Update cache via callback
+                        await self._update_cache_with_detections(detections)
+                        
+                        # Store results for display
                         self.latest_results = {
                             'frame': self.results_cache[frame_id]['frame'],
-                            'detections': data.get('detections', []),
+                            'detections': detections,
                             'process_time': data.get('process_time', 0),
                             'rtt': rtt
                         }
@@ -336,12 +420,13 @@ class FlowControlledClient:
             except json.JSONDecodeError:
                 logger.error("Failed to decode message")
             except Exception as e:
-                logger.error(f"Error receiving results: {e}")
-                raise
+                if self.running:  # Only log if we're supposed to be running
+                    logger.error(f"Error receiving results: {e}")
+                break
     
     async def _display_loop(self):
         """Display frames with Supervision annotations"""
-        while True:
+        while self.running:
             try:
                 if self.latest_results and 'frame' in self.latest_results:
                     # Copy the latest frame
@@ -399,6 +484,7 @@ class FlowControlledClient:
                     # Show the annotated frame
                     cv2.imshow('Felix Detector - Supervision', frame)
                     if cv2.waitKey(1) & 0xFF == ord('q'):
+                        logger.info("User pressed 'q' to quit display")
                         break
 
                 await asyncio.sleep(0.016)  # ~60 FPS display
@@ -406,11 +492,10 @@ class FlowControlledClient:
             except Exception as e:
                 logger.error(f"Display error: {e}")
                 await asyncio.sleep(1)
-
     
     async def _print_stats(self):
         """Print performance statistics"""
-        while True:
+        while self.running:
             await asyncio.sleep(5)
             
             current_time = time.time()
@@ -436,20 +521,27 @@ class FlowControlledClient:
                 self.frames_sent = 0
                 self.frames_processed = 0
 
+# Example usage function (optional)
 async def main():
+    # Example of how to use the client with a cache
+    from core.cache import VisualContextCache
+    
+    # Create cache
+    cache = VisualContextCache()
+    
+    # Create client with cache callback
     client = FlowControlledClient(
-        server_uri = "ws://localhost:8080"
-,  # Update with your server IP
-        target_fps=30
+        server_uri="ws://localhost:8080",
+        target_fps=30,
+        cache_callback=cache.update_from_client  # Pass the cache update method
     )
     
     try:
-        await client.run()
+        await client.start()
     except KeyboardInterrupt:
         logger.info("Shutting down...")
     finally:
-        client.camera.release()
-        cv2.destroyAllWindows()
+        await client.stop()
 
 if __name__ == "__main__":
     asyncio.run(main())

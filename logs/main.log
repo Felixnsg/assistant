@@ -1,0 +1,11 @@
+2025-05-23 21:18:34,512 - INFO - [__main__] - --- Starting Smart Assistant Application ---
+2025-05-23 21:18:34,512 - INFO - [__main__] - Initializing NLP and Memory...
+2025-05-23 21:18:34,512 - INFO - [__main__] - NLP and Memory initialized.
+2025-05-23 21:18:34,512 - INFO - [__main__] - Initializing Utilities and Chat Manager...
+2025-05-23 21:18:46,944 - INFO - [__main__] - ChatManager instance injected into Utilities instance.
+2025-05-23 21:18:46,944 - INFO - [__main__] - Utilities and Chat Manager initialized successfully.
+2025-05-23 21:18:46,944 - INFO - [__main__] - 
+--- Initialization Complete. Ready for interaction. ---
+2025-05-23 21:18:46,944 - INFO - [__main__] - Assistant Name: Cypher
+2025-05-23 21:18:46,944 - INFO - [__main__] - Enter 'exit' to quit.
+2025-05-23 21:18:49,416 - INFO - [__main__] - Memory Deleted Successfully.

@@ -1,5 +1,4 @@
-# File: utilities.py
-# --- REFACTOR: Added file description ---
+# File: utilities.py 
 """
 Provides utility services for the assistant, such as fetching weather,
 telling time, controlling mood lighting (YouTube via Selenium), and
@@ -8,57 +7,49 @@ specific function triggers parsed from the AI's response.
 """
 
 import asyncio
-import websockets
 import os
 import datetime
 import requests
 import sys
 import json
-import re # --- REFACTOR: Added re for trigger parsing ---
+import re
 import time
-import logging # --- REFACTOR: Added logging ---
-from typing import Optional, Dict, Any, Tuple, Union # --- REFACTOR: Added typing ---
+import logging
+from typing import Optional, Dict, Any, Tuple, Union
 
-# --- REFACTOR: Selenium imports with error handling ---
+# Selenium imports with error handling
 try:
     from selenium import webdriver
     from selenium.webdriver.common.by import By
-    from selenium.webdriver.chrome.service import Service as ChromeService # Optional: For specific driver path
+    from selenium.webdriver.chrome.service import Service as ChromeService
     from selenium.common.exceptions import WebDriverException, NoSuchElementException
-    # from webdriver_manager.chrome import ChromeDriverManager # Optional: For auto driver download
     SELENIUM_AVAILABLE = True
 except ImportError:
     logging.warning("Selenium library not found. Mood setter (YouTube) functionality will be disabled.")
     SELENIUM_AVAILABLE = False
-    # Define dummy classes/variables if needed to prevent NameErrors later
     WebDriverException = Exception
     NoSuchElementException = Exception
-    By = None # type: ignore
+    By = None
 
-# --- REFACTOR: Simplified path appending and imports ---
+# Path setup and imports
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 try:
     import config
-
-    from core import nlp # Assumed LlpCall class is needed if follow-up calls remained (they are removed for now)
+    from core import nlp
 except ImportError as e:
     logging.error(f"Error importing core/interface modules in utilities.py: {e}", exc_info=True)
-    # Decide if this is fatal - likely yes if ChatManager depends on it
     sys.exit(1)
 
-
+# Import the video client and cache
 try:
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
-# Now you can import directly from the parent module
-    from IseeYou.IseeYouClass import FelixTrackingClient
-
+    from IseeYou.IseeYouClass import FlowControlledClient
+    from core.cache import VisualContextCache
 except ImportError as e:
-    logging.error(f"There was an issue importing The video Service, it might be skipped" ,{e}, exc_info = True)
+    logging.error(f"Error importing video client or cache: {e}", exc_info=True)
+    FlowControlledClient = None
+    VisualContextCache = None
 
-
-# --- REFACTOR: Constants for triggers ---
+# Constants for triggers
 TRIGGER_PREFIX = "FUNCTION_TRIGGER:"
 SERVICE_GET_WEATHER = "GET_WEATHER"
 SERVICE_TELL_TIME = "TELL_TIME"
@@ -66,15 +57,12 @@ SERVICE_SET_MOOD = "SET_MOOD"
 SERVICE_START_VIDEO = "START_VIDEO"
 SERVICE_STOP_VIDEO = "STOP_VIDEO"
 SERVICE_CHECK_VISUAL_CONTEXT = "CHECK_VISUAL_CONTEXT"
-# Add other services like SPOTIFY here if implemented
 
-# --- REFACTOR: Configure logging ---
-# Logging setup might be better in main.py, but adding basic config here for standalone usability
+# Configure logging
 if not logging.getLogger().hasHandlers():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(module)s] %(message)s')
 
-from core.cache import VisualContextCache # Ensure cache is imported
-
+logger = logging.getLogger(__name__)
 
 class Utilities:
     """
@@ -82,87 +70,74 @@ class Utilities:
     """
     def __init__(self,
                  config_instance: Any,
-                 nlp_instance: Optional[nlp.LlpCall] = None, # Optional, may not be needed directly
-                 chat_instance: Optional[Any] = None): # Optional, avoid tight coupling if possible
+                 nlp_instance: Optional[nlp.LlpCall] = None,
+                 chat_instance: Optional[Any] = None):
         """
         Initializes the Utilities class.
 
         Args:
             config_instance: The loaded configuration module or object.
-            nlp_instance (Optional[nlp.LlpCall]): Instance for LLM calls (potentially removed).
-            chat_instance (Optional[Any]): Instance of ChatManager (potentially removed).
+            nlp_instance (Optional[nlp.LlpCall]): Instance for LLM calls.
+            chat_instance (Optional[Any]): Instance of ChatManager.
         """
-        logging.info("Initializing Utilities...")
+        logger.info("Initializing Utilities...")
         self.config = config_instance
-        self.nlp = nlp_instance # Store if needed, but aim to remove direct use
-        self.chat = chat_instance # Store if needed, but aim to remove direct use
-        self.running = False
-        self.websocket = None
-        self.tasks = []
+        self.nlp = nlp_instance
+        self.chat = chat_instance
+        
+        # Video service components
+        self.video_client: Optional[FlowControlledClient] = None # type: ignore
+        self.visual_cache: Optional[VisualContextCache] = None # type: ignore
+        self.video_running = False
+        
+        # Selenium driver for mood setter
+        self._selenium_driver: Optional[webdriver.Chrome] = None
+        
+        logger.info("Utilities initialized.")
 
-        self.visual_cache = VisualContextCache()
-        self.video_client_instance: Optional[FelixTrackingClient] = None
-        self.cache_update_task: Optional[asyncio.Task] = None
-
-
-        # Location should be passed per request, weather info returned by function
-
-        self._selenium_driver: Optional[webdriver.Chrome] = None # Store Selenium driver if mood setter is active
-        logging.info("Utilities initialized.")
-
-    # --- REFACTOR: Keep tell_time simple, maybe return formatted string ---
     def tell_time(self) -> str:
         """
         Gets the current day, date, and time.
 
         Returns:
             str: A formatted string containing the current day, date, and time.
-                 Example: "It is currently Wednesday, 24 July 2024 at 14:35 PM."
         """
         now = datetime.datetime.now()
-        # Example format: Wednesday, 24 July 2024 at 14:35 PM
         formatted_time = now.strftime("%A, %d %B %Y at %H:%M %p")
-        logging.info(f"Generated time: {formatted_time}")
+        logger.info(f"Generated time: {formatted_time}")
         return f"It is currently {formatted_time}."
 
-    # --- REFACTOR: Refined get_weather method ---
     def get_weather(self, location: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """
         Get weather information for a location using WeatherAPI.com.
 
         Args:
-            location (Optional[str]): City name or location query. If None, uses
-                                      the default location from config.
+            location (Optional[str]): City name or location query.
 
         Returns:
-            Optional[Dict[str, Any]]: Dictionary containing formatted weather information
-                                      if successful, None otherwise.
+            Optional[Dict[str, Any]]: Dictionary containing weather information.
         """
         target_location = location if location else self.config.DEFAULT_WEATHER_LOCATION
         api_key = self.config.WEATHER_API_KEY
         if not api_key or "YOUR_DEFAULT" in api_key:
-            logging.error("WeatherAPI key not configured in config.py.")
+            logger.error("WeatherAPI key not configured in config.py.")
             return None
 
-        # Build the API URL
         url = f"http://api.weatherapi.com/v1/forecast.json?key={api_key}&q={target_location}&days=1&aqi=no&alerts=no"
-        logging.info(f"Fetching weather for '{target_location}' from {url.split('?')[0]}...") # Don't log key
+        logger.info(f"Fetching weather for '{target_location}'...")
 
         try:
-            response = requests.get(url, timeout=15) # Add timeout
-            response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
+            response = requests.get(url, timeout=15)
+            response.raise_for_status()
 
-            # Parse the results as JSON
             jsonData = response.json()
 
-            # Extract relevant data safely using .get()
+            # Extract relevant data
             current = jsonData.get("current", {})
             forecast_day = jsonData.get("forecast", {}).get("forecastday", [{}])[0].get("day", {})
             location_info = jsonData.get("location", {})
             astro_info = jsonData.get("forecast", {}).get("forecastday", [{}])[0].get("astro", {})
 
-            # Create a dictionary with desired weather information
-            # --- REFACTOR: Simplified structure, clearer keys ---
             weather_info = {
                 "location": f"{location_info.get('name', 'N/A')}, {location_info.get('region', 'N/A')}, {location_info.get('country', 'N/A')}",
                 "time": location_info.get('localtime', 'N/A'),
@@ -184,357 +159,240 @@ class Utilities:
                 "sunrise": astro_info.get('sunrise'),
                 "sunset": astro_info.get('sunset')
             }
-            logging.info(f"Weather fetched successfully for '{target_location}'. Condition: {weather_info['condition']}")
+            logger.info(f"Weather fetched successfully for '{target_location}'.")
             return weather_info
 
-        # --- REFACTOR: Handle specific errors ---
-        except requests.exceptions.Timeout:
-            logging.error(f"Weather request timed out for location '{target_location}'.")
-            return None
-        except requests.exceptions.HTTPError as e:
-            logging.error(f"HTTP error fetching weather for '{target_location}': {e.response.status_code} {e.response.reason}")
-            try:
-                 error_details = e.response.json()
-                 logging.error(f"API Error Details: {error_details}")
-            except json.JSONDecodeError:
-                 logging.error(f"API Error Response (non-JSON): {e.response.text[:200]}")
-            return None
         except requests.exceptions.RequestException as e:
-            logging.error(f"Network error fetching weather for '{target_location}': {e}", exc_info=True)
+            logger.error(f"Network error fetching weather: {e}")
             return None
-        except json.JSONDecodeError as e:
-             logging.error(f"Error decoding weather JSON response: {e}")
-             return None
         except Exception as e:
-            logging.error(f"Unexpected error in get_weather for '{target_location}': {e}", exc_info=True)
+            logger.error(f"Unexpected error in get_weather: {e}", exc_info=True)
             return None
 
-
-    # --- REFACTOR: Mood setter (internal method) ---
     def _start_youtube_mood(self) -> bool:
         """
-        (Internal) Opens a predefined YouTube video using Selenium to set the mood.
+        Opens a predefined YouTube video using Selenium.
 
         Returns:
-            bool: True if the browser was launched and video likely started, False otherwise.
+            bool: True if successful, False otherwise.
         """
         if not SELENIUM_AVAILABLE:
-            logging.error("Cannot start mood setter: Selenium library is not available.")
+            logger.error("Cannot start mood setter: Selenium library is not available.")
             return False
+        
         if self._selenium_driver is not None:
-             logging.warning("Mood setter already running. Stopping existing instance first.")
-             self._stop_youtube_mood() # Stop previous one if exists
+            logger.warning("Mood setter already running.")
+            self._stop_youtube_mood()
 
         url = self.config.YOUTUBE_MOOD_URL
-        logging.info(f"Starting mood setter: Launching browser to {url}")
+        logger.info(f"Starting mood setter: {url}")
 
         try:
-            # --- REFACTOR: Basic Selenium setup with error handling ---
-            # Optional: Use webdriver-manager to automatically handle chromedriver
-            # service = ChromeService(ChromeDriverManager().install())
-            # options = webdriver.ChromeOptions()
-            # options.add_argument("--headless") # Optional: Run headless
-            # self._selenium_driver = webdriver.Chrome(service=service, options=options)
-
-            # Basic setup (assumes chromedriver is in PATH or specified)
             options = webdriver.ChromeOptions()
-            # options.add_argument("--headless") # Run headless if GUI is not desired/possible
+            # options.add_argument("--headless")  # Uncomment for headless mode
             self._selenium_driver = webdriver.Chrome(options=options)
-
             self._selenium_driver.get(url)
-            time.sleep(5) # Increased wait for potential ads/page load
+            time.sleep(5)
 
-            # Find and click the play button (robustness could be improved)
-            # YouTube's class names can change. Consider more robust selectors (e.g., CSS selector with aria-label).
-            play_button_selector = "button.ytp-play-button[aria-label*='Play']" # More specific selector
+            # Try to click play button
+            play_button_selector = "button.ytp-play-button[aria-label*='Play']"
             try:
-                 play_button = self._selenium_driver.find_element(By.CSS_SELECTOR, play_button_selector)
-                 play_button.click()
-                 logging.info("Clicked YouTube play button.")
-                 return True
+                play_button = self._selenium_driver.find_element(By.CSS_SELECTOR, play_button_selector)
+                play_button.click()
+                logger.info("Clicked YouTube play button.")
             except NoSuchElementException:
-                 logging.warning("Could not find YouTube play button using selector. Video might auto-play or UI changed.")
-                 # Assume it might be playing anyway? Or return False? Let's assume success for now.
-                 return True
-            except WebDriverException as click_err:
-                 logging.error(f"Error clicking YouTube play button: {click_err}")
-                 return False # Clicking failed
+                logger.warning("Could not find play button - video might be auto-playing.")
+            
+            return True
 
         except WebDriverException as e:
-            logging.error(f"Selenium WebDriver error starting mood setter: {e}", exc_info=True)
-            # Common issue: chromedriver version mismatch or not found in PATH
-            logging.error("Ensure chromedriver is installed and compatible with your Chrome version, or use webdriver-manager.")
-            self._selenium_driver = None # Ensure driver is None on failure
+            logger.error(f"Selenium WebDriver error: {e}")
+            self._selenium_driver = None
             return False
         except Exception as e:
-             logging.error(f"Unexpected error starting mood setter: {e}", exc_info=True)
-             if self._selenium_driver:
-                  self._selenium_driver.quit()
-             self._selenium_driver = None
-             return False
+            logger.error(f"Unexpected error starting mood setter: {e}", exc_info=True)
+            if self._selenium_driver:
+                self._selenium_driver.quit()
+            self._selenium_driver = None
+            return False
 
     def _stop_youtube_mood(self) -> bool:
-        """(Internal) Quits the Selenium browser instance if it's running."""
+        """Quits the Selenium browser instance if running."""
         if self._selenium_driver:
-            logging.info("Stopping mood setter: Quitting browser instance.")
+            logger.info("Stopping mood setter.")
             try:
                 self._selenium_driver.quit()
                 self._selenium_driver = None
                 return True
-            except WebDriverException as e:
-                 logging.error(f"Error quitting Selenium driver: {e}")
-                 self._selenium_driver = None # Reset even on error
-                 return False
             except Exception as e:
-                 logging.error(f"Unexpected error stopping mood setter: {e}", exc_info=True)
-                 self._selenium_driver = None
-                 return False
-        else:
-             logging.info("Mood setter browser not running.")
-             return True # Nothing to stop
+                logger.error(f"Error stopping mood setter: {e}")
+                self._selenium_driver = None
+                return False
+        return True
 
-
-    async def entrance(self):
+    async def start_video_service(self) -> bool:
         """
-        Starts the video client, websocket connection, and cache update loop.
-        """
-        if self.running:
-            logging.warning("Video service is already running.")
-            return True # Indicate it's already running
-
-        self.running = True
-        logging.info("Attempting to start video client and cache update...")
-
-        # --- CORRECTED: Create the client AND store it in self.video_client_instance ---
-        self.video_client_instance = FelixTrackingClient(
-        )
-        # ------------------------------------------------------------------------------
-
-        try:
-            # Use self.video_client_instance here if needed for connection setup (doesn't seem necessary for websockets.connect)
-            self.websocket = await websockets.connect("ws://localhost:8080")
-            logging.info("WebSocket connection established.")
-        except Exception as e:
-            logging.error(f"Failed to connect WebSocket: {e}", exc_info=True)
-            self.running = False
-            self.video_client_instance = None # Reset on failure
-            return False # Indicate failure
-
-        # Start client tasks using the stored instance
-        # Ensure the client instance is valid before creating tasks
-        if not self.video_client_instance:
-             logging.error("Cannot start client tasks: video client instance is None.")
-             # Clean up websocket?
-             if self.websocket and not self.websocket.closed:
-                 await self.websocket.close()
-             self.running = False
-             return False
-
-        # --- CORRECTED: Start the persistent cache's update loop using the correct method and instance ---
-        if self.video_client_instance: # Check the instance variable
-            self.cache_update_task = asyncio.create_task(
-                self.visual_cache._update_loop(self.video_client_instance, update_interval=0.5) # CALL _update_loop HERE
-            )
-            logging.info(f"Visual context cache update loop started (Task ID: {self.cache_update_task.get_name()}).")
-        else:
-            # This path shouldn't be reached if the above check is done, but good for safety
-            logging.error("Cannot start cache update loop: video client instance is None.")
-        # ------------------------------------------------------------------------------------------
-
-        logging.info("Video client tasks and cache update loop initiated.")
-        return True # Indicate success
-
-    async def start(self):
-        """This function will be tasked to call the main video launcher, instead of having, complex logic, we will just
-        have this trigger, that will call the video tracking, if trigger word returned by LLM.
-
+        Starts the video tracking service with cache integration.
+        
         Returns:
-            None
+            bool: True if successful, False otherwise.
         """
+        if self.video_running:
+            logger.warning("Video service is already running.")
+            return True
+        
+        if not FlowControlledClient or not VisualContextCache:
+            logger.error("Video client or cache classes not available.")
+            return False
+        
         try:
-            success = await self.entrance()
-            return success
-        except KeyboardInterrupt as e:
-            logging.info("\nProgram Stopped by keyboard control")
+            # Create cache instance
+            self.visual_cache = VisualContextCache()
+            
+            # Create video client with cache callback
+            self.video_client = FlowControlledClient(
+                server_uri="ws://localhost:8080",
+                target_fps=30,
+                cache_callback=self.visual_cache.update_from_client
+            )
+            
+            # Start the client in background
+            self.video_task = asyncio.create_task(self.video_client.start())
+            self.video_running = True
+            
+            logger.info("Video service started successfully.")
+            return True
+            
         except Exception as e:
-            logging.info(f"Some weird ass Error Just happened: {e}")
+            logger.error(f"Failed to start video service: {e}", exc_info=True)
+            self.video_running = False
+            self.video_client = None
+            self.visual_cache = None
             return False
 
-
-    async def stop(self):
-        """This function will run the stop script
+    async def stop_video_service(self) -> bool:
         """
+        Stops the video tracking service gracefully.
+        
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        if not self.video_running:
+            logger.info("Video service not running.")
+            return True
+        
+        logger.info("Stopping video service...")
+        self.video_running = False
+        
         try:
-            await self.exit()
-        except KeyboardInterrupt as e:
-            logging.info("\nProgram Stopped by keyboard control")
-        except Exception as e:
-            logging.info(f"An error happen in the utility class: {e}")
-        finally:
-            self.running = False
+            # Stop the video client
+            if self.video_client:
+                await self.video_client.stop()
+                self.video_client = None
             
+            # Clear cache
+            if self.visual_cache:
+                await self.visual_cache.clear()
+                self.visual_cache = None
+            
+            logger.info("Video service stopped successfully.")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error stopping video service: {e}", exc_info=True)
+            return False
 
-
-    # services/utilities.py
-
-    # Inside class Utilities:
-    async def exit(self):
+    async def get_visual_context(self) -> Dict[str, Any]:
         """
-        Stops the video client tasks, websocket connection, and cache update loop gracefully.
+        Gets the current visual context from the cache.
+        
+        Returns:
+            Dict with 'context_string' key containing the formatted context.
         """
-        if not self.running:
-            logging.info("Vision service not running, nothing to exit.")
-            return True # Nothing to do
-
-        logging.info("Shutting Down the Vision Service and Cache Update...")
-        self.running = False # Mark as not running early
-
-        # --- ADDED: Cancel the cache update task ---
-        if self.cache_update_task and not self.cache_update_task.done():
-            self.cache_update_task.cancel()
-            logging.info(f"Cache update task (ID: {self.cache_update_task.get_name()}) cancellation requested.")
-            try:
-                # Wait briefly for the task to acknowledge cancellation
-                await asyncio.wait_for(self.cache_update_task, timeout=1.0)
-                logging.info("Cache update task confirmed cancelled.")
-            except asyncio.CancelledError:
-                logging.info("Cache update task confirmed cancelled (via exception).")
-            except asyncio.TimeoutError:
-                logging.warning("Timeout waiting for cache update task to cancel.")
-            except Exception as e:
-                logging.error(f"Error during cache update task cancellation wait: {e}", exc_info=True)
-        self.cache_update_task = None # Clear the task reference
-        # ------------------------------------------
-
-        # Cancel client tasks
-        cancelled_tasks = []
-        for task in self.tasks:
-            if task and not task.done(): # Check if task exists before checking if done
-                task.cancel()
-                cancelled_tasks.append(task)
-
-        # Gather cancelled tasks (important for cleanup)
-        if cancelled_tasks:
-            logging.info(f"Waiting for {len(cancelled_tasks)} client tasks to cancel...")
-            await asyncio.gather(*cancelled_tasks, return_exceptions=True) # Wait for cancellations
-            logging.info("Video client tasks gathered after cancellation.")
-        else:
-            logging.info("No active client tasks needed cancellation.")
-
-        self.tasks = [] # Clear task list
-
-        # Close websocket
-        if self.websocket and not self.websocket.closed: # Check if websocket exists before checking closed status
-            try:
-                await self.websocket.close()
-                logging.info("WebSocket closed.")
-            except Exception as e:
-                logging.error(f"Error closing WebSocket: {e}", exc_info=True)
-        self.websocket = None # Clear websocket reference
-
-        # Clear the client instance reference
-        self.video_client_instance = None
-        logging.info("Vision service resources cleaned up.")
-        return True
- 
-
+        if not self.visual_cache:
+            return {"context_string": "[Visual context: Vision system not active]"}
         
+        try:
+            context_string = await self.visual_cache.get_visual_context_string()
+            return {"context_string": context_string}
+        except Exception as e:
+            logger.error(f"Error getting visual context: {e}")
+            return {"context_string": "[Visual context: Error retrieving vision data]"}
 
-
-        
-
-
-
-    #  Central service dispatcher 
     async def dispatch_service(self, ai_response: str) -> Optional[Dict[str, Any]]:
         """
         Parses the AI response for function triggers and executes the corresponding service.
 
         Args:
-            ai_response (str): The response text from the AI, potentially containing triggers.
+            ai_response (str): The response text from the AI.
 
         Returns:
-            Optional[Dict[str, Any]]: A dictionary containing the service name and its result
-                                      (e.g., weather data, time string, success/failure bool).
-                                      Returns None if no trigger is found or execution fails.
-                                      Example: {"service": "GET_WEATHER", "result": weather_dict}
-                                               {"service": "START_VIDEO", "result": True}
-                                               {"service": "TELL_TIME", "result": "It is..."}
+            Optional[Dict[str, Any]]: Service result or None.
         """
         if not isinstance(ai_response, str):
-             return None
+            return None
 
         match = re.search(rf"{TRIGGER_PREFIX}(\w+)(?::(.*))?", ai_response)
         if not match:
-            # logging.debug("No function trigger found in AI response.") # Can be noisy
             return None
 
-        service_name = match.group(1).upper() # Extract service name (uppercase)
-        parameter = match.group(2) if match.group(2) else None # Extract optional parameter
-        logging.info(f"Detected trigger: Service='{service_name}', Parameter='{parameter}'")
+        service_name = match.group(1).upper()
+        parameter = match.group(2) if match.group(2) else None
+        logger.info(f"Detected trigger: Service='{service_name}', Parameter='{parameter}'")
 
         result_payload: Dict[str, Any] = {"service": service_name, "result": None}
-        service_executed = False
 
         try:
             if service_name == SERVICE_GET_WEATHER:
-                # Parameter is the location
                 weather_data = self.get_weather(location=parameter)
                 result_payload["result"] = weather_data
-                service_executed = True
+                
             elif service_name == SERVICE_TELL_TIME:
                 time_string = self.tell_time()
                 result_payload["result"] = time_string
-                service_executed = True
+                
             elif service_name == SERVICE_SET_MOOD:
                 success = self._start_youtube_mood()
                 result_payload["result"] = success
-                service_executed = True
-                # NOTE: Stopping the mood (closing browser) needs a separate trigger or logic
+                
             elif service_name == SERVICE_START_VIDEO:
-                success = await self.start()
+                success = await self.start_video_service()
                 result_payload["result"] = success
-                service_executed = True
+                
             elif service_name == SERVICE_STOP_VIDEO:
-                success = await self.stop()
+                success = await self.stop_video_service()
                 result_payload["result"] = success
-                service_executed = True
-
+                
             elif service_name == SERVICE_CHECK_VISUAL_CONTEXT:
-                if self.visual_cache:
-                    # Calls share_info_AI which now returns a dictionary or None
-                    service_result_dict = await self.visual_cache.share_info_AI(chat_manager=self.chat)
-                    # Store the dictionary (or None) in result_payload['result']
-                    result_payload['result'] = service_result_dict
-                    # --- ADD THIS LINE ---
-                    service_executed = True
-                    # --------------------
-                else:
-                    # This case should ideally not happen if __init__ ran correctly
-                    logging.error("Visual cache (self.visual_cache) is not initialized in Utilities.")
-                    result_payload['result'] = None # Set result to None on error
-                    service_executed = True # Keep this one too
+                context_data = await self.get_visual_context()
+                result_payload["result"] = context_data
+                
             else:
-                logging.warning(f"Unknown service trigger name: {service_name}")
-                return None # Unknown service
+                logger.warning(f"Unknown service trigger: {service_name}")
+                return None
 
-            if service_executed:
-                 logging.info(f"Service '{service_name}' executed. Result: {str(result_payload['result'])[:100]}...")
-                 return result_payload
-            else:
-                 # This case shouldn't be reached if all handlers set service_executed
-                 logging.warning(f"Service handler for '{service_name}' did not explicitly mark execution.")
-                 return None
+            logger.info(f"Service '{service_name}' executed successfully.")
+            return result_payload
 
         except Exception as e:
-             logging.error(f"Unexpected error during dispatch for service '{service_name}': {e}", exc_info=True)
-             return None # Return None on unexpected error during dispatch/execution
-
+            logger.error(f"Error executing service '{service_name}': {e}", exc_info=True)
+            return None
 
     def cleanup(self):
-        """Cleans up resources used by Utilities, like the Selenium driver."""
-        logging.info("Cleaning up Utilities resources...")
-        self._stop_youtube_mood() # Ensure browser is closed
-        logging.info("Utilities cleanup finished.")
+        """Cleans up resources used by Utilities."""
+        logger.info("Cleaning up Utilities resources...")
+        self._stop_youtube_mood()
+        logger.info("Utilities cleanup finished.")
 
+    # These methods maintain compatibility with existing code
+    async def start(self):
+        """Compatibility method for starting video service."""
+        return await self.start_video_service()
 
+    async def stop(self):
+        """Compatibility method for stopping video service."""
+        return await self.stop_video_service()
+
+    async def exit(self):
+        """Compatibility method for stopping video service."""
+        return await self.stop_video_service()
