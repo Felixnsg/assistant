@@ -53,12 +53,13 @@ class EdgeCaseCollector:
         
         # Collection thresholds
         self.thresholds = confidence_thresholds or {
-            'low_confidence_upper': 0.6,      # Collect if below this
-            'borderline_lower': 0.4,          # Borderline zone start
-            'borderline_upper': 0.7,          # Borderline zone end
-            'high_confidence_lower': 0.85,    # For potential false positives
-        }
+          'low_confidence_upper': 0.53,     # Collect Felix if < 53% confident it’s Felix
+           'borderline_lower':    0.53,      # (optional) start of ’uncertain’ zone
+           'borderline_upper':    0.65,      # (optional) end of ’uncertain’ zone
+           'high_confidence_lower': 0.65   # Collect Not-Felix if > 65% sure it’s Not-Felix
         
+        }
+
         # Collection settings
         self.min_interval_same_person = 15.0   # Seconds between collecting same tracker_id
         self.max_images_per_session = 1000
@@ -120,50 +121,53 @@ class EdgeCaseCollector:
     
     def _should_collect_detection(self, detection: Dict) -> Tuple[bool, str]:
         """
-        Determine if this detection should be collected.
-        
-        Returns:
-            (should_collect, reason)
+        Decide whether to snapshot this detection.
+
+        Returns (True, reason) if we should collect;
+        (False, reason) otherwise.
         """
         confidence = detection.get('confidence', 0.0)
-        is_felix = detection.get('is_felix', False)
+        is_felix   = detection.get('is_felix', False)
         tracker_id = detection.get('tracker_id')
-        
-        # Check if we've collected this person recently
-        if tracker_id and tracker_id in self.last_collection_time:
-            time_since_last = time.time() - self.last_collection_time[tracker_id]
-            if time_since_last < self.min_interval_same_person:
-                return False, "too_recent"
-        
-        # Collection logic
-        # 1. Low confidence detections (might be errors)
-        if confidence < self.thresholds['low_confidence_upper']:
-            return True, "low_confidence"
-        
-        # 2. Borderline cases (uncertain)
-        if (self.thresholds['borderline_lower'] <= confidence <= 
-            self.thresholds['borderline_upper']):
+
+        # 0. Throttle rapid repeats of the same person
+        last_time = self.last_collection_time.get(tracker_id, 0)
+        if time.time() - last_time < self.min_interval_same_person:
+            return False, "too_recent"
+
+        # 1. Collect FELIX when model < 0.53 confident it’s Felix
+        if is_felix and confidence < self.thresholds['low_confidence_upper']:
+            return True, "low_confidence_felix"
+
+        # 2. Collect NOT-FELIX when model ≥ 65% sure it’s not Felix
+        nonfelix_conf = 1.0 - confidence
+        if (not is_felix) and nonfelix_conf >= self.thresholds['high_confidence_lower']:
+            return True, "high_confidence_notfelix"
+
+        # 3. Borderline cases (uncertain zone 0.53–0.65)
+        if self.thresholds['borderline_lower'] <= confidence <= self.thresholds['borderline_upper']:
             return True, "borderline"
-        
-        # 3. High confidence but check for false positives
-        if (confidence > self.thresholds['high_confidence_lower'] and 
-            not is_felix and np.random.random() < 0.1):  # 10% chance
+
+        # 4. False-positive check: high-confidence Not-Felix samples (10% chance)
+        if confidence > self.thresholds['high_confidence_lower'] and not is_felix and np.random.random() < 0.1:
             return True, "false_positive_check"
-        
-        # 4. Balance collection - collect opposite class if imbalanced
-        current_ratio = self._get_collection_ratio()
-        if is_felix and current_ratio > 0.7:  # Too many Felix
-            if np.random.random() < 0.2:  # 20% chance to skip Felix
+
+        # 5. Balance collection – skip some if one class is over-represented
+        ratio = self._get_collection_ratio()  # fraction of Felix images so far
+        if is_felix and ratio > 0.7:
+            if np.random.random() < 0.2:
                 return False, "balance_skip"
-        elif not is_felix and current_ratio < 0.3:  # Too few Felix
-            if np.random.random() < 0.2:  # 20% chance to skip non-Felix
+        elif not is_felix and ratio < 0.3:
+            if np.random.random() < 0.2:
                 return False, "balance_skip"
-        
-        # 5. Random sampling for diversity (5% chance)
+
+        # 6. Random sampling for diversity (5% chance)
         if np.random.random() < 0.05:
-            return True, "balance_collection"
-        
+            return True, "random_sampling"
+
+        # 7. Otherwise, don’t collect
         return False, "not_selected"
+
     
     async def _collect_image(self, detection: Dict, reason: str):
         """Save image and metadata"""

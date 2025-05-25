@@ -1,3 +1,11 @@
+import sys, os
+# insert your project root (the folder that contains `core/`) into path
+sys.path.insert(
+    0,
+    os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+)
+
+
 import asyncio
 import cv2
 import websockets

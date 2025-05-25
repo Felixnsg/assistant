@@ -9,16 +9,39 @@ import numpy as np
 from mtcnn import MTCNN
 
 
-class FelixClassifier(nn.Module):
-    def __init__(self, base_model):
-        super(FelixClassifier, self).__init__()
-        self.model = base_model
-        self.classifier = nn.Linear(512, 2)
+class EnhancedFelixClassifier(nn.Module):
+    """Enhanced classifier with dropout and regularization - MUST MATCH TRAINING"""
+    def __init__(self, base_model, dropout_rate=0.5, hidden_size=256):
+        super(EnhancedFelixClassifier, self).__init__()
+        self.base_model = base_model
+        
+        # Get the output size of the base model
+        with torch.no_grad():
+            dummy_input = torch.randn(1, 3, 160, 160)
+            if torch.cuda.is_available():
+                dummy_input = dummy_input.cuda()
+                self.base_model = self.base_model.cuda()
+            features = self.base_model(dummy_input)
+            feature_size = features.shape[1]
+        
+        # Enhanced classifier with more dropout and batch norm
+        self.classifier = nn.Sequential(
+            nn.Linear(feature_size, hidden_size),
+            nn.BatchNorm1d(hidden_size),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout_rate),
+            nn.Linear(hidden_size, 128),
+            nn.BatchNorm1d(128),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout_rate * 0.8),  # Slightly less dropout in second layer
+            nn.Linear(128, 2)
+        )
     
     def forward(self, x):
-        embedding = self.model(x)
-        output = self.classifier(embedding)
-        return output
+        with torch.no_grad():
+            features = self.base_model(x)
+        x = self.classifier(features)
+        return x
 
 
 class FelixRecognizer:
@@ -40,37 +63,54 @@ class FelixRecognizer:
                 self.mtcnn = None
             
             print(f"• Loading base model...")
-            base_model = InceptionResnetV1(pretrained='vggface2')
+            base_model = InceptionResnetV1(pretrained='vggface2').eval()
+            
+            # Freeze base model parameters
+            for param in base_model.parameters():
+                param.requires_grad = False
+            
             base_model = base_model.to(self.device)
             print("• Base model loaded successfully")
             
-            print(f"• Creating classifier...")
-            self.model = FelixClassifier(base_model)
+            print(f"• Creating enhanced classifier...")
+            self.model = EnhancedFelixClassifier(base_model, dropout_rate=0.5, hidden_size=256)
             self.model = self.model.to(self.device)
             
             print(f"• Loading weights from {model_path}...")
             try:
-                model_data = torch.load(model_path, map_location=self.device)
+                checkpoint = torch.load(model_path, map_location=self.device)
                 
-                if isinstance(model_data, FelixClassifier):
+                if isinstance(checkpoint, dict):
+                    if 'model_state_dict' in checkpoint:
+                        print("• Found model_state_dict in checkpoint")
+                        self.model.load_state_dict(checkpoint['model_state_dict'])
+                        
+                        # Print training info if available
+                        if 'epoch' in checkpoint:
+                            print(f"• Loaded model from epoch: {checkpoint['epoch']}")
+                        if 'best_val_acc' in checkpoint:
+                            print(f"• Best validation accuracy: {checkpoint['best_val_acc']:.4f}")
+                    else:
+                        print("• Loading as direct state dictionary")
+                        self.model.load_state_dict(checkpoint)
+                elif isinstance(checkpoint, EnhancedFelixClassifier):
                     print("• Found complete model")
-                    self.model = model_data
-                elif isinstance(model_data, dict):
-                    print("• Found state dictionary")
-                    self.model.load_state_dict(model_data)
+                    self.model = checkpoint
                 else:
-                    print(f"• Unknown model format: {type(model_data)}")
+                    print(f"• Unknown checkpoint format: {type(checkpoint)}")
+                    raise ValueError("Unsupported checkpoint format")
+                    
             except Exception as e:
-                print(f"• Warning: Error loading model weights: {e}")
-                print("• Using base model only")
+                print(f"• Error loading model weights: {e}")
+                raise
             
             self.model = self.model.to(self.device)
-            self.model.eval()
+            self.model.eval()  # Set to evaluation mode to disable dropout
             print("• Model in evaluation mode")
             
-            # Optimized transform pipeline - do normalization on GPU
+            # Optimized transform pipeline - changed to 160x160 to match training
             self.transform = transforms.Compose([
-                transforms.Resize((224, 224)),
+                transforms.Resize((160, 160)),  # Changed from 224x224 to match training
                 transforms.ToTensor(),
             ])
             
@@ -181,7 +221,10 @@ class FelixRecognizer:
             # Get prediction
             output = self.model(tensor)
             probabilities = torch.softmax(output, dim=1)
-            felix_prob = probabilities[0][0].item()
+            
+            # Note: Class indices might be swapped - adjust based on your training
+            # If Felix is class 1 in training:
+            felix_prob = probabilities[0][1].item()  # Changed from [0][0] to [0][1]
             
             is_felix = felix_prob > 0.5
             
@@ -229,7 +272,8 @@ class FelixRecognizer:
             # Prepare results
             results = [(False, 0.0) for _ in boxes]
             for idx, valid_idx in enumerate(valid_indices):
-                felix_prob = probabilities[idx][0].item()
+                # Note: Class indices might be swapped - adjust based on your training
+                felix_prob = probabilities[idx][1].item()  # Changed from [idx][0] to [idx][1]
                 is_felix = felix_prob > 0.5
                 results[valid_idx] = (is_felix, felix_prob)
             
