@@ -315,7 +315,7 @@ class OptimizedGPUServer:
 
 async def main():
     # Configuration
-    felix_model_path = "/root/models/felix_classifier.pth"
+    felix_model_path = "/root/models/felix_classifier_enhanced.pth"
     yolo_model_path = None  # Use default
     host = "0.0.0.0"
     port = 8080
