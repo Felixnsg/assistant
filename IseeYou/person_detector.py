@@ -22,7 +22,7 @@ class PersonDetector:
                 print(f"Loading YOLOv8 model from {model_path}...")
                 self.model = YOLO(model_path)
                 
-            # Make sure we're using CUDA since we're on an RTX 4090
+            # Make sure we're using CUDA since we're on an RTX 4090 or something similar.
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             print(f"Using device: {self.device}")
             

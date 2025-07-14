@@ -56,13 +56,13 @@ class FelixRecognizer:
             # Initialize MTCNN once if needed (but we'll avoid using it)
             self.use_mtcnn = use_mtcnn
             if self.use_mtcnn:
-                print("• Initializing MTCNN (this will slow things down!)...")
+                print("Initializing MTCNN (this will slow things down!)...")
                 self.mtcnn = MTCNN(device=self.device)
             else:
-                print("• Skipping MTCNN for speed (recommended)")
+                print("Skipping MTCNN for speed (recommended)")
                 self.mtcnn = None
             
-            print(f"• Loading base model...")
+            print(f"Loading base model...")
             base_model = InceptionResnetV1(pretrained='vggface2').eval()
             
             # Freeze base model parameters
@@ -70,34 +70,34 @@ class FelixRecognizer:
                 param.requires_grad = False
             
             base_model = base_model.to(self.device)
-            print("• Base model loaded successfully")
+            print("Base model loaded successfully")
             
             print(f"• Creating enhanced classifier...")
             self.model = EnhancedFelixClassifier(base_model, dropout_rate=0.5, hidden_size=256)
             self.model = self.model.to(self.device)
             
-            print(f"• Loading weights from {model_path}...")
+            print(f"Loading weights from {model_path}...")
             try:
                 checkpoint = torch.load(model_path, map_location=self.device)
                 
                 if isinstance(checkpoint, dict):
                     if 'model_state_dict' in checkpoint:
-                        print("• Found model_state_dict in checkpoint")
+                        print("Found model_state_dict in checkpoint")
                         self.model.load_state_dict(checkpoint['model_state_dict'])
                         
                         # Print training info if available
                         if 'epoch' in checkpoint:
-                            print(f"• Loaded model from epoch: {checkpoint['epoch']}")
+                            print(f"Loaded model from epoch: {checkpoint['epoch']}")
                         if 'best_val_acc' in checkpoint:
-                            print(f"• Best validation accuracy: {checkpoint['best_val_acc']:.4f}")
+                            print(f"Best validation accuracy: {checkpoint['best_val_acc']:.4f}")
                     else:
-                        print("• Loading as direct state dictionary")
+                        print("Loading as direct state dictionary")
                         self.model.load_state_dict(checkpoint)
                 elif isinstance(checkpoint, EnhancedFelixClassifier):
-                    print("• Found complete model")
+                    print("Found complete model")
                     self.model = checkpoint
                 else:
-                    print(f"• Unknown checkpoint format: {type(checkpoint)}")
+                    print(f"Unknown checkpoint format: {type(checkpoint)}")
                     raise ValueError("Unsupported checkpoint format")
                     
             except Exception as e:
@@ -157,7 +157,7 @@ class FelixRecognizer:
     def preprocess_with_mtcnn(self, frame, box):
         """Slower preprocessing with MTCNN face detection"""
         try:
-            x, y, w, h = [int(v) for v in box]
+            x, y, w, h = [int(v) for v in box] #or maybe future me you can use "map(int, box)" I didnt use it because u might have forgotten what it means.
             
             # Add margin
             margin = 20
@@ -222,7 +222,7 @@ class FelixRecognizer:
             output = self.model(tensor)
             probabilities = torch.softmax(output, dim=1)
             
-            # Note: Class indices might be swapped - adjust based on your training
+            # Note: Class indices might be swapped - adjust based on your training, note PAST YOU 06/07/2025
             # If Felix is class 1 in training:
             felix_prob = probabilities[0][1].item()  # Changed from [0][0] to [0][1]
             

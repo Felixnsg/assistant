@@ -174,6 +174,9 @@ class ChatManager:
                 prompt_to_send = f"{self.pending_visual_context}\n\n{prompt_to_send}"
                 logger.info(f"Injected visual context: {self.pending_visual_context}")
                 self.pending_visual_context = None  # Clear after use
+                current_convos = self.memory
+                llm_data = data_prep(prompt_to_send, current_convos)
+                
             
             # Load current conversation history
             current_convos = self.memory.get_convos()

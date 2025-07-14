@@ -37,7 +37,7 @@ class LlpCall:
         Raises:
             ValueError: If the API key is not provided or invalid.
         """
-        if not api_key or "YOUR_DEFAULT" in api_key:
+        if not api_key:
             raise ValueError("LLM API key is missing or invalid. Please check config.py or .env file.")
 
         self.api_key = api_key

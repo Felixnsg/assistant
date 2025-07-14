@@ -239,7 +239,7 @@ class FlowControlledClient:
             track_id = detections.tracker_id[i] if detections.tracker_id is not None else -1
             
             # Create label
-            person_type = "Felix" if is_felix else "Person"
+            person_type = "Felix" if is_felix else "PERSON!"
             label = f"{person_type} #{track_id}: {conf:.2f}"
             labels.append(label)
         
@@ -345,14 +345,14 @@ class FlowControlledClient:
                 # Adaptive quality
                 if len(self.rtt_history) > 5:
                     avg_rtt = sum(self.rtt_history[-5:]) / 5
-                    if avg_rtt > 100:
+                    if avg_rtt > 400:
                         self.current_quality = max(self.min_quality, self.current_quality - 5)
-                    elif avg_rtt < 50:
+                    elif avg_rtt < 200:
                         self.current_quality = min(self.max_quality, self.current_quality + 5)
                 
                 # Encode frame
                 encode_params = [cv2.IMWRITE_JPEG_QUALITY, int(self.current_quality)]
-                _, buffer = await asyncio.to_thread(cv2.imencode, '.jpg', frame, encode_params)
+                _, encoded_frame = await asyncio.to_thread(cv2.imencode, '.jpg', frame, encode_params)
                 
                 # Prepare message
                 self.frame_id += 1
@@ -360,7 +360,7 @@ class FlowControlledClient:
                     'type': 'frame',
                     'id': self.frame_id,
                     'timestamp': time.time(),
-                    'data': buffer.tobytes().hex()
+                    'data': encoded_frame.tobytes().hex()
                 }
                 
                 # Track for RTT

@@ -1,94 +1,94 @@
 {
   "current_state": {
-    "is_felix": false,
-    "confidence": 0.0,
-    "timestamp": 1748129165.6641014,
+    "is_felix": true,
+    "confidence": 0.7039862871170044,
+    "timestamp": 1748946391.4961314,
     "data_available": true,
     "tracker_id": null,
     "raw_detections": "[1 detections]"
   },
-  "update_count": 262,
+  "update_count": 97,
   "detection_history": [
     {
-      "update_number": 253,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 88,
+      "time": "03:26:30",
+      "is_felix": true,
+      "confidence": 0.810748279094696,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 254,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 89,
+      "time": "03:26:30",
+      "is_felix": true,
+      "confidence": 0.7804076671600342,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 255,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 90,
+      "time": "03:26:30",
+      "is_felix": true,
+      "confidence": 0.7804076671600342,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 256,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 91,
+      "time": "03:26:30",
+      "is_felix": true,
+      "confidence": 0.7432507276535034,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 257,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 92,
+      "time": "03:26:30",
+      "is_felix": true,
+      "confidence": 0.7794842720031738,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 258,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 93,
+      "time": "03:26:30",
+      "is_felix": true,
+      "confidence": 0.7264865636825562,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 259,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 94,
+      "time": "03:26:31",
+      "is_felix": true,
+      "confidence": 0.8186858296394348,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 260,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 95,
+      "time": "03:26:31",
+      "is_felix": true,
+      "confidence": 0.7702435851097107,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 261,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 96,
+      "time": "03:26:31",
+      "is_felix": true,
+      "confidence": 0.7087405920028687,
       "tracker_id": null,
       "num_detections": 1
     },
     {
-      "update_number": 262,
-      "time": "16:26:05",
-      "is_felix": false,
-      "confidence": 0.0,
+      "update_number": 97,
+      "time": "03:26:31",
+      "is_felix": true,
+      "confidence": 0.7039862871170044,
       "tracker_id": null,
       "num_detections": 1
     }
   ],
-  "dump_time": "2025-05-24 16:26:05"
+  "dump_time": "2025-06-03 03:26:31"
 }

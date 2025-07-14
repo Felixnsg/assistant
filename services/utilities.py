@@ -85,12 +85,12 @@ class Utilities:
         self.nlp = nlp_instance
         self.chat = chat_instance
         
-        # Video service components
+        # Video service components, SIDE NOTE FUTURE ME, I didnt create it upfront because we dont need to start the system.
         self.video_client: Optional[FlowControlledClient] = None # type: ignore
         self.visual_cache: Optional[VisualContextCache] = None # type: ignore
         self.video_running = False
         
-        # Selenium driver for mood setter
+        # Selenium driver for mood setter/ I will remove this later and find a music api instead.
         self._selenium_driver: Optional[webdriver.Chrome] = None
         
         logger.info("Utilities initialized.")
@@ -119,7 +119,7 @@ class Utilities:
         """
         target_location = location if location else self.config.DEFAULT_WEATHER_LOCATION
         api_key = self.config.WEATHER_API_KEY
-        if not api_key or "YOUR_DEFAULT" in api_key:
+        if not api_key:
             logger.error("WeatherAPI key not configured in config.py.")
             return None
 
@@ -169,7 +169,7 @@ class Utilities:
             logger.error(f"Unexpected error in get_weather: {e}", exc_info=True)
             return None
 
-    def _start_youtube_mood(self) -> bool:
+    def _start_youtube_mood(self) -> bool: ##this will leave very soon just give me time.
         """
         Opens a predefined YouTube video using Selenium.
 
@@ -216,7 +216,7 @@ class Utilities:
             self._selenium_driver = None
             return False
 
-    def _stop_youtube_mood(self) -> bool:
+    def _stop_youtube_mood(self) -> bool: #yeah sorry this will leave soon, past me was thinking too far.
         """Quits the Selenium browser instance if running."""
         if self._selenium_driver:
             logger.info("Stopping mood setter.")

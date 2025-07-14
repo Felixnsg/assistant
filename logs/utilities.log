@@ -56,3 +56,82 @@ Traceback (most recent call last):
                               ^^^^^^^^^^^^^^^^^^^^^
 AttributeError: 'ClientConnection' object has no attribute 'closed'. Did you mean: 'close'?
 2025-05-23 23:16:55,257 - INFO - [services.utilities] - Service 'STOP_VIDEO' executed successfully.
+2025-05-24 20:22:43,399 - INFO - [services.utilities] - Initializing Utilities...
+2025-05-24 20:22:43,399 - INFO - [services.utilities] - Utilities initialized.
+2025-05-24 20:23:02,556 - INFO - [services.utilities] - Detected trigger: Service='START_VIDEO', Parameter='None'
+2025-05-24 20:23:18,240 - INFO - [services.utilities] - Video service started successfully.
+2025-05-24 20:23:18,241 - INFO - [services.utilities] - Service 'START_VIDEO' executed successfully.
+2025-05-24 20:23:36,101 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:23:36,102 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:24:25,037 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:24:25,037 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:24:57,654 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:24:57,654 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:25:59,635 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:25:59,635 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:26:18,618 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:26:18,619 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:26:35,530 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:26:35,530 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:26:44,260 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:26:44,260 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:26:55,122 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:26:55,122 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:27:47,323 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:27:47,323 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:28:28,608 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:28:28,608 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:29:21,146 - INFO - [services.utilities] - Initializing Utilities...
+2025-05-24 20:29:21,147 - INFO - [services.utilities] - Utilities initialized.
+2025-05-24 20:29:34,379 - INFO - [services.utilities] - Detected trigger: Service='START_VIDEO', Parameter='None'
+2025-05-24 20:29:49,887 - INFO - [services.utilities] - Video service started successfully.
+2025-05-24 20:29:49,887 - INFO - [services.utilities] - Service 'START_VIDEO' executed successfully.
+2025-05-24 20:30:22,207 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:30:22,207 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:30:31,752 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:30:31,752 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:30:41,532 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:30:41,532 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:30:51,143 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:30:51,143 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:31:08,875 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:31:08,875 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:31:19,890 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:31:19,891 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:31:42,679 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:31:42,680 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:32:42,286 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:32:42,286 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:32:50,504 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:32:50,504 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:33:19,569 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:33:19,569 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:33:36,991 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:33:36,991 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:33:47,735 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:33:47,735 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-24 20:34:01,279 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-24 20:34:01,279 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-25 00:02:42,271 - INFO - [services.utilities] - Initializing Utilities...
+2025-05-25 00:02:42,271 - INFO - [services.utilities] - Utilities initialized.
+2025-05-25 00:03:09,539 - INFO - [services.utilities] - Detected trigger: Service='TELL_TIME', Parameter='None'
+2025-05-25 00:03:09,539 - INFO - [services.utilities] - Generated time: Sunday, 25 May 2025 at 00:03 AM
+2025-05-25 00:03:09,540 - INFO - [services.utilities] - Service 'TELL_TIME' executed successfully.
+2025-05-25 00:03:49,157 - INFO - [services.utilities] - Detected trigger: Service='GET_WEATHER', Parameter='Seattle'
+2025-05-25 00:03:49,157 - ERROR - [services.utilities] - WeatherAPI key not configured in config.py.
+2025-05-25 00:03:49,157 - INFO - [services.utilities] - Service 'GET_WEATHER' executed successfully.
+2025-05-25 00:04:43,417 - INFO - [services.utilities] - Detected trigger: Service='START_VIDEO', Parameter='None'
+2025-05-25 00:05:01,819 - INFO - [services.utilities] - Video service started successfully.
+2025-05-25 00:05:01,819 - INFO - [services.utilities] - Service 'START_VIDEO' executed successfully.
+2025-05-25 00:05:40,613 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-25 00:05:40,613 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-25 00:06:16,340 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-25 00:06:16,340 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-25 00:07:07,103 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-25 00:07:07,103 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-25 00:07:27,811 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-25 00:07:27,811 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-25 00:07:58,928 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-25 00:07:58,929 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.
+2025-05-25 00:08:16,874 - INFO - [services.utilities] - Detected trigger: Service='CHECK_VISUAL_CONTEXT', Parameter='None'
+2025-05-25 00:08:16,875 - INFO - [services.utilities] - Service 'CHECK_VISUAL_CONTEXT' executed successfully.

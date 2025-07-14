@@ -1,8 +1,8 @@
-### memory
+### memory.py
+
 import json
 import sys
 import os
-# --- REFACTOR: Simplified path appending ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 try:
     import config
@@ -21,7 +21,7 @@ class Memory:
         time_prompt (str): A prompt related to time, loaded from config.
         convos (list): A list storing the conversation history in memory.
                        Each item is a dictionary representing a message turn,
-                       formatted for the LLM API (e.g., Google Generative AI).
+                       formatted for the LLM API (in this case we are using Google Generative AI).
         convo_file (str): The path to the JSON file used for persistence.
     """
     def __init__(self, system_prompt: str = config.SYSTEM_PROMPT, time_prompt: str = config.time_prompt, convo_file: str = DEFAULT_CONVO_FILE):
@@ -61,13 +61,12 @@ class Memory:
             bool: True if saving was successful, False otherwise.
         """
         if not isinstance(role, str) or not isinstance(prompt, str):
-            print("Error saving conversation: Role and prompt must be strings.")
+            print("Error saving conversation: Role and prompt must be strings.") #role is user or model
             return False
 
         try:
-            if not self.convos and role == "user": # Typically user starts
-                 if not any(entry.get("role") == "system" for entry in self.convos): 
-                    pass 
+            if not self.convos and role == "user": #if convo is empty just pass.
+                 pass
 
             self.convos.append({"role": role, "parts": [{"text": prompt}]})
 
