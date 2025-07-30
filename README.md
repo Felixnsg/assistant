@@ -1,7 +1,4 @@
-# IseeYou - AI Assistant with Face Recognition
-
-A sophisticated AI assistant system that combines conversational AI with real-time computer vision for personalized face recognition. The system can track specific individuals (like "Felix") using GPU-accelerated detection and maintain context-aware conversations.
-
+# Cypher AI - Multi-Modal Assistant System
 ## 🚀 Features
 
 ### 🤖 Core AI Capabilities
