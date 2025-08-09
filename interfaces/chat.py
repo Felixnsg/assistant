@@ -1,21 +1,15 @@
-# File: chat.py
 """
-Manages the main conversation flow of the assistant.
+Production-ready pipeline-based conversation manager.
 
-Handles user input (text/audio), interacts with the LLM (via nlp module),
-manages conversation history (via memory module), triggers utility services,
-and handles speech output/input (via speech module).
+This module provides the main ChatManager class that orchestrates conversations
+using a modular pipeline architecture. The pipeline processes conversations through
+distinct stages: Input → Context → LLM → Response → Service → Memory → Output.
 """
 
-import requests
 import sys
 import os
-import time
-import json
-import traceback
-import logging 
-import asyncio
-from typing import Optional, Dict, Any, Union, List
+import logging
+from typing import Optional, Any, Dict
 
 # Path setup
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -30,127 +24,102 @@ except ImportError as e:
     print(f"FATAL: Failed to import core modules: {e}", file=sys.stderr)
     sys.exit(1)
 
-# Speech interface imports
-try:
-    from interfaces import speech
-    try:
-        from interfaces import streamaudio
-    except ImportError:
-        print("Warning: Failed to import Streamaudio Module.")
-except ImportError:
-    print("Warning: 'interfaces.speech' not found. Using mock speech functions.", file=sys.stderr)
-    stream_tts_player_instance = None
-    STREAM_TTS_PLAYER_AVAILABLE = False
-    
-    class MockSpeech:
-        def text_to_speech(self, text: str, engine_choice: str = 'default') -> bool:
-            print(f"TTS (mock, engine={engine_choice}): {text}")
-            return True
-        def speech_to_text(self, method: str = 'default') -> str:
-            print(f"STT (mock, method={method}): Listening...")
-            try:
-                return input("You (mock audio input): ").lower()
-            except EOFError:
-                return "exit"
-    speech = MockSpeech()
-
-# Video client import
-try:
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "IseeYou")))
-    from IseeYou import IseeYouClass
-except ImportError:
-    print("Warning: Cannot import video client. Video features disabled.", file=sys.stderr)
+# Pipeline imports
+from interfaces.pipeline import PipelineBuilder, PipelineContext
 
 # Logging setup
 if not logging.getLogger().hasHandlers():
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - [%(module)s] %(message)s')
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - [%(module)s] %(message)s'
+    )
 
 logger = logging.getLogger(__name__)
 
-def data_prep(prompt: str, convos: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
-    """
-    Prepares the data payload for a Gemini API call.
-
-    Args:
-        prompt (str): The latest user input.
-        convos (Optional[List[Dict[str, Any]]]): Previous conversation messages.
-
-    Returns:
-        Dict[str, Any]: Formatted data for Gemini API.
-    """
-    if not isinstance(prompt, str):
-        logger.error("data_prep: Prompt must be a string.")
-        return {}
-
-    try:
-        convos_formatted = [c for c in convos] if convos else []
-        convos_filtered = [c for c in convos_formatted if c.get("role") in ["user", "model"]]
-        convos_filtered.append({"role": "user", "parts": [{"text": prompt}]})
-        
-        temperature = getattr(config, 'TEMPERATURE', 0.72)
-        top_p = getattr(config, 'TOP_P', 0.95)
-        top_k = getattr(config, 'TOP_K', 40)
-        max_tokens = getattr(config, 'MAX_OUTPUT_TOKENS', 8192)
-        safety_settings = getattr(config, 'SAFETY_SETTINGS', [])
-        system_instruction = getattr(config, 'SYSTEM_PROMPT', None)
-
-        data: Dict[str, Any] = {
-            "contents": convos_filtered,
-            "generationConfig": {
-                "temperature": temperature,
-                "topP": top_p,
-                "topK": top_k,
-                "maxOutputTokens": max_tokens,
-            },
-            "safetySettings": safety_settings
-        }
-        
-        if system_instruction:
-            data["system_instruction"] = {"parts": [{"text": system_instruction}]}
-
-        return data
-
-    except Exception as e:
-        logger.error(f"Error in data_prep: {e}", exc_info=True)
-        return {}
-
 
 class ChatManager:
+    """
+    Modern pipeline-based conversation manager.
+    
+    Uses a modular, scalable pipeline architecture where each conversation
+    turn flows through distinct, testable stages. This replaces the monolithic
+    design with a clean separation of concerns.
+    
+    Attributes:
+        memory: Memory manager for conversation history
+        nlp: LLM API handler
+        utilities: Utility services handler
+        config: Configuration object
+        format: Interaction format (text/audio)
+        pipeline: Pipeline orchestrator
+        visual_context_cache: Cached visual context for next turn
+    """
+    
     def __init__(self,
-                memory_instance: memory.Memory,
-                nlp_instance: nlp.LlpCall,
-                config_instance: Any,
-                utilities_instance: utilities.Utilities,
-                ):
+                 memory_instance: memory.Memory,
+                 nlp_instance: nlp.LlpCall,
+                 config_instance: Any,
+                 utilities_instance: utilities.Utilities):
         """
-        Initializes the ChatManager.
+        Initialize the pipeline-based ChatManager.
+        
+        Args:
+            memory_instance: Memory manager for conversation history
+            nlp_instance: LLM API handler
+            config_instance: Configuration object
+            utilities_instance: Utility services handler
         """
-        logger.info("Initializing ChatManager...")
+        logger.info("Initializing Pipeline-based ChatManager...")
+        
+        # Store dependencies
         self.memory = memory_instance
         self.nlp = nlp_instance
         self.utilities = utilities_instance
         self.config = config_instance
-        self.current_prompt: str = ""
-        self.current_ai_response: str = ""
+        
+        # Conversation state
         self.format: str = "text"
+        self.visual_context_cache: Optional[str] = None
         
-        # Visual context injection
-        self.pending_visual_context: Optional[str] = None
+        # Import speech module with fallback
+        try:
+            from interfaces import speech
+            self.speech_module = speech
+        except ImportError:
+            logger.warning("Speech module not available. Audio features disabled.")
+            self.speech_module = None
         
-        if not self.utilities:
-            logger.warning("Utilities instance is not available. Service calls will be skipped.")
-
+        # Build the pipeline using the builder pattern
+        self.pipeline = (
+            PipelineBuilder()
+            .with_standard_pipeline(
+                memory_instance=self.memory,
+                nlp_instance=self.nlp,
+                config_instance=self.config,
+                utilities_instance=self.utilities,
+                speech_module=self.speech_module
+            )
+            .build()
+        )
+        
+        # Choose interaction format
         try:
             self.format = self._choose_format()
         except Exception as e:
-            logger.error(f"Error during initial format selection: {e}. Defaulting to 'text'.")
+            logger.error(f"Error during format selection: {e}. Defaulting to 'text'.")
             self.format = "text"
-
-        logger.info(f"ChatManager initialized with format: {self.format}")
-
+        
+        logger.info(f"Pipeline ChatManager initialized with format: {self.format}")
+        logger.info(f"Pipeline has {len(self.pipeline.stages)} stages")
+    
     def _choose_format(self) -> str:
-        """Prompts the user to choose interaction format."""
-        while True:  
+        """
+        Prompts the user to choose interaction format.
+        
+        Returns:
+            Selected format: "text" or "audio"
+        """
+        while True:
             try:
                 format_choice = input("Choose interaction format (text/audio): ").lower().strip()
                 if format_choice in ["text", "audio"]:
@@ -164,234 +133,116 @@ class ChatManager:
             except Exception as e:
                 logger.error(f"Error during format input: {e}. Defaulting to 'text'.")
                 return "text"
-
-    async def _call_llm(self, prompt_to_send: str) -> str:
-        """Prepares data and makes the API request to get AI response."""
-        logger.info(f"Preparing LLM request for prompt: '{str(prompt_to_send[:50])}...'")
-        try:
-            # Inject any pending visual context
-            if self.pending_visual_context:
-                prompt_to_send = f"{self.pending_visual_context}\n\n{prompt_to_send}"
-                logger.info(f"Injected visual context: {self.pending_visual_context}")
-                self.pending_visual_context = None  # Clear after use
-                current_convos = self.memory
-                llm_data = data_prep(prompt_to_send, current_convos)
-                
-            
-            # Load current conversation history
-            current_convos = self.memory.get_convos()
-
-            # Prepare data
-            llm_data = data_prep(prompt_to_send, current_convos)
-            if not llm_data:
-                logger.error("Failed to prepare data for LLM request.")
-                return "Sorry, I couldn't prepare your request due to an internal error."
-
-            # Make API request
-            logger.info("Sending request to LLM...")
-            start_time = time.monotonic()
-            response = await asyncio.to_thread(self.nlp.send_request, llm_data)
-            duration = time.monotonic() - start_time
-            logger.info(f"LLM response received in {duration:.2f} seconds.")
-
-            # Handle response
-            if isinstance(response, str):
-                if response.startswith("Blocked:"):
-                    logger.warning(f"LLM response blocked by safety settings: {response}")
-                    return f"I cannot provide a response due to safety settings ({response})."
-                self.current_ai_response = response
-                logger.debug(f"LLM Raw Response: '{self.current_ai_response[:100]}...'")
-            elif isinstance(response, int):
-                logger.error(f"LLM request failed with status code: {response}")
-                self.current_ai_response = f"Sorry, I encountered an error (code {response}) while trying to get a response."
-            else:
-                logger.error(f"Received unexpected response type from nlp.send_request: {type(response)}")
-                self.current_ai_response = "Sorry, I received an unexpected response format."
-
-            return self.current_ai_response
-
-        except Exception as e:
-            logger.error(f"An unexpected error occurred in _call_llm: {e}", exc_info=True)
-            self.current_ai_response = "Sorry, an unexpected error occurred while processing your request."
-            return self.current_ai_response
-
-    def _save_current_turn(self) -> None:
-        """Save the current user prompt and AI response to memory."""
-        if not self.current_prompt or not self.current_ai_response:
-            logger.warning("Attempted to save conversation turn with empty prompt or response.")
-            return
-        try:
-            user_saved = self.memory.save_convos("user", self.current_prompt)
-            model_saved = self.memory.save_convos("model", self.current_ai_response)
-            if not user_saved or not model_saved:
-                logger.error("Failed to save one or both parts of the conversation turn to memory.")
-        except Exception as e:
-            logger.error(f"Error saving conversation turn to memory: {e}", exc_info=True)
-
-    def _speak_response(self) -> None:
-        """Handle text-to-speech output using the speech interface."""
-        if not self.current_ai_response:
-            logger.warning("No AI response available to speak.")
-            return
-        if self.format != "audio": 
-            return
-
-        logger.info("Sending response to TTS engine...")
-        try:
-            tts_engine = getattr(self.config, 'DEFAULT_TTS_ENGINE', 'pyttsx3')
-            logger.info(f"Using TTS engine: {tts_engine}")
-            success = speech.text_to_speech(self.current_ai_response, engine_choice=tts_engine)
-
-            if not success:
-                logger.error(f"Text-to-speech synthesis failed using engine: {tts_engine}")
-            else:
-                logger.info("TTS call finished.")
-        except Exception as e:
-            logger.error(f"Error during text-to-speech call: {e}", exc_info=True)
-
-    async def _handle_service_call(self, ai_response: str) -> Optional[Dict[str, Any]]:
-        """Checks for and executes utility service triggers."""
-        if not self.utilities:
-            return None
-
-        if not hasattr(self.utilities, 'dispatch_service'):
-            logger.error("Utilities instance is missing the 'dispatch_service' method.")
-            return None
-
-        try:
-            service_result_payload = await self.utilities.dispatch_service(ai_response)
-
-            if service_result_payload:
-                service_name = service_result_payload.get("service")
-                result = service_result_payload.get("result")
-                logger.info(f"Service '{service_name}' executed")
-                logger.info(f"Result: {str(result)[:200]}")
-                
-                # Handle visual context service specially
-                if service_name == "CHECK_VISUAL_CONTEXT" and isinstance(result, dict):
-                    context_string = result.get("context_string")
-                    if context_string:
-                        # Store context for next prompt instead of making another LLM call
-                        self.pending_visual_context = context_string
-                        logger.info(f"Visual context stored for next prompt: {context_string}")
-                
-                return service_result_payload
-
-            return None
-
-        except Exception as e:
-            logger.error(f"Error during utility service dispatch: {e}", exc_info=True)
-            return None
-
+    
     async def process_conversation_turn(self, user_input: str) -> Optional[str]:
         """
-        Processes a single turn of the conversation.
+        Process a single conversation turn through the pipeline.
+        
+        Args:
+            user_input: The user's input text
+            
+        Returns:
+            The AI's response or None if processing failed
         """
-        self.current_prompt = user_input.strip()
-        if not self.current_prompt:
-            logger.warning("Received empty user input.")
+        if not user_input or not user_input.strip():
+            logger.warning("Received empty user input")
             return None
-
-        print(f"You: {self.current_prompt}")
-
-        if self.current_prompt.lower() == "exit":
+        
+        user_input = user_input.strip()
+        print(f"You: {user_input}")
+        
+        # Handle exit command
+        if user_input.lower() == "exit":
             return "exit"
-
-        # Get AI response (may include injected visual context)
-        await self._call_llm(self.current_prompt)
-        initial_response = self.current_ai_response
-
-        # Handle errors
-        if any(err in initial_response for err in [
-            "Sorry, I encountered an error",
-            "Sorry, I'm having trouble connecting",
-            "Sorry, I received an unexpected response format",
-            "I cannot provide a response due to safety settings"
-        ]):
-            print(f"{self.config.MODEL_NAME}: {initial_response}")
-            self._save_current_turn()
-            return initial_response
-
-        # Save the turn
-        self._save_current_turn()
-
-        # Handle service calls
-        service_result_payload = await self._handle_service_call(initial_response)
         
-        # For visual context, we don't need to change the response
-        # The context is stored for the next turn
-        final_response = initial_response
+        # Create pipeline context
+        context = PipelineContext(
+            user_input=user_input,
+            input_format=self.format,
+            visual_context=self.visual_context_cache,
+            system_prompt=getattr(self.config, 'SYSTEM_PROMPT', None)
+        )
         
-        # Special handling for visual context service
-        if service_result_payload and service_result_payload.get("service") == "CHECK_VISUAL_CONTEXT":
-            # Add a note that context will be used in next response
-            if self.pending_visual_context:
-                final_response += "\n\n[Visual context has been updated and will be included in my next response.]"
+        # Process through pipeline
+        result_context = await self.pipeline.process(context)
         
-        # Print the response
-        print(f"{self.config.MODEL_NAME}: {final_response}")
+        # Handle visual context caching for next turn
+        if result_context.visual_context:
+            self.visual_context_cache = result_context.visual_context
+            logger.info("Visual context cached for next turn")
+        else:
+            # Clear cache if no new visual context
+            self.visual_context_cache = None
         
-        # Handle audio output
-        if self.format == "audio":
-            self.current_ai_response = final_response
-            self._speak_response()
+        # Log any errors that occurred
+        if result_context.errors:
+            for error in result_context.errors:
+                if error.get("severity") == "warning":
+                    logger.warning(f"Pipeline warning: {error}")
+                else:
+                    logger.error(f"Pipeline error: {error}")
         
-        return final_response
-
-    async def _get_audio_input(self) -> Optional[str]:
-        """Handles audio input using the configured STT method."""
-        logger.info("Listening via STT...")
-        try:
-            stt_method = getattr(self.config, 'DEFAULT_STT_METHOD', 'whisper_api')
-            audio_prompt = await asyncio.to_thread(speech.speech_to_text, method=stt_method)
-
-            if audio_prompt is None:
-                logger.warning("STT returned None.")
-                return None
-            elif not audio_prompt.strip():
-                logger.info("No speech detected or STT resulted in empty string.")
-                return None
-            else:
-                return audio_prompt
-        except Exception as e:
-            logger.error(f"Error during speech recognition: {e}", exc_info=True)
-            return None
-
-    async def _get_text_input(self) -> Optional[str]:
-        """Handles text input from the console."""
-        try:
-            text_prompt = await asyncio.to_thread(input, "You: ")
-            return text_prompt
-        except EOFError:
-            logger.info("Input stream closed (EOF). Exiting.")
-            return "exit"
-        except Exception as e:
-            logger.error(f"Error reading text input: {e}", exc_info=True)
-            return None
-
+        # Return the formatted response
+        return result_context.formatted_response
+    
     async def discussion_turn(self) -> Optional[str]:
         """
-        Handles one full turn of the discussion based on the chosen format.
+        Handle one full discussion turn with the appropriate input method.
+        
+        This method orchestrates getting input and processing it through the pipeline.
+        
+        Returns:
+            The AI response, "exit" to quit, or None if no valid input
         """
-        user_input: Optional[str] = None
-
-        if self.format == "text":
-            user_input = await self._get_text_input()
-        elif self.format == "audio":
-            user_input = await self._get_audio_input()
+        # Create context with format information
+        context = PipelineContext(
+            input_format=self.format,
+            visual_context=self.visual_context_cache,
+            system_prompt=getattr(self.config, 'SYSTEM_PROMPT', None)
+        )
+        
+        # Process through pipeline (InputHandler will get the input)
+        result_context = await self.pipeline.process(context)
+        
+        # Check for exit command
+        if result_context.user_input and result_context.user_input.lower() == "exit":
+            return "exit"
+        
+        # Handle visual context caching
+        if result_context.visual_context:
+            self.visual_context_cache = result_context.visual_context
+            logger.info("Visual context cached for next turn")
         else:
-            logger.error(f"Invalid format '{self.format}'. Defaulting to text.")
-            self.format = "text"
-            user_input = await self._get_text_input()
-
-        # Process the input if received
-        if user_input is not None:
-            if user_input == "exit":
-                return "exit"
-            if user_input.strip():
-                ai_response = await self.process_conversation_turn(user_input)
-                return ai_response
-            else:
-                return None
-        else:
-            return None
+            self.visual_context_cache = None
+        
+        # Log performance metrics
+        if result_context.stage_timings:
+            total_time = result_context.get_total_time()
+            logger.info(f"Turn completed in {total_time:.3f}s")
+            logger.debug(f"Stage timings: {result_context.stage_timings}")
+        
+        # Log any errors
+        if result_context.errors:
+            for error in result_context.errors:
+                if error.get("severity") == "warning":
+                    logger.warning(f"Pipeline warning: {error}")
+                else:
+                    logger.error(f"Pipeline error: {error}")
+        
+        return result_context.formatted_response
+    
+    def get_metrics(self) -> Dict[str, Any]:
+        """
+        Get performance metrics from the pipeline.
+        
+        Returns:
+            Dictionary containing pipeline metrics
+        """
+        return self.pipeline.get_metrics()
+    
+    def cleanup(self):
+        """Clean up resources."""
+        logger.info("Cleaning up ChatManager resources...")
+        if hasattr(self.pipeline, 'reset_metrics'):
+            self.pipeline.reset_metrics()
+        logger.info("ChatManager cleanup complete")

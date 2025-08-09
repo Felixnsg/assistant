@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  orpheus-tts:
+    build: .
+    image: orpheus-tts:latest
+    container_name: orpheus-tts-server
+    
+    # GPU support
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    
+    # Port mapping
+    ports:
+      - "8080:8080"  # API server
+      - "2222:22"    # SSH (optional)
+    
+    # Environment variables
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080
+      - MODEL_NAME=canopylabs/orpheus-tts-0.1-finetune-prod
+      - MAX_MODEL_LEN=2048
+      - GPU_MEMORY_UTILIZATION=0.95
+      - ENABLE_PREFIX_CACHING=true
+      - WARMUP_ON_START=true
+      - CUDA_VISIBLE_DEVICES=0
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+    
+    # Volumes for persistence
+    volumes:
+      - ./output:/app/output
+      - ./logs:/app/logs
+      - model_cache:/models
+      - audio_cache:/tmp/audio_cache
+    
+    # Resource limits
+    mem_limit: 32g
+    memswap_limit: 32g
+    shm_size: 8g
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+
+  # Optional: Monitoring service
+  monitor:
+    build: .
+    image: orpheus-tts:latest
+    container_name: orpheus-monitor
+    command: python3 monitor.py --url http://orpheus-tts:8080 --interval 30
+    
+    depends_on:
+      - orpheus-tts
+    
+    volumes:
+      - ./logs:/app/logs
+    
+    restart: unless-stopped
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+# Volumes
+volumes:
+  model_cache:
+    driver: local
+  audio_cache:
+    driver: local

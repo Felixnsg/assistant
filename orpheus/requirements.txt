@@ -1,0 +1,11 @@
+torch
+orpheus-speech
+vllm==0.7.3
+soundfile
+scipy
+flask
+transformers
+snac
+numpy
+pyyaml
+wave
