@@ -127,10 +127,11 @@ class OrpheusEngine:
             
             try:
                 # Load model with optimizations
+                # vLLM parameters go into engine_kwargs
                 self.model = OrpheusModel(
                     model_name=config.MODEL_NAME,
-                    max_model_len=config.MAX_MODEL_LEN,
                     dtype=config.DTYPE,
+                    max_model_len=config.MAX_MODEL_LEN,
                     trust_remote_code=True,
                     enforce_eager=False,  # Allow graph compilation
                     gpu_memory_utilization=0.9,  # Use most VRAM

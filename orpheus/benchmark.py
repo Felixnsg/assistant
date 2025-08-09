@@ -105,8 +105,8 @@ def benchmark_performance():
     try:
         model = OrpheusModel(
             model_name=model_name,
-            max_model_len=max_model_len,
-            dtype=torch.bfloat16
+            dtype=torch.bfloat16,
+            max_model_len=max_model_len
         )
         load_time = time.time() - load_start
         print(f"✅ Model loaded in {load_time:.2f} seconds\n")

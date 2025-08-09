@@ -38,8 +38,8 @@ def test_voice_cloning():
     try:
         model = OrpheusModel(
             model_name=model_name,
-            max_model_len=2048,
-            dtype=torch.bfloat16
+            dtype=torch.bfloat16,
+            max_model_len=2048
         )
         print(f"✅ Model loaded\n")
     except Exception as e:
@@ -126,8 +126,8 @@ def test_voice_comparison():
     try:
         model = OrpheusModel(
             model_name=model_name,
-            max_model_len=2048,
-            dtype=torch.bfloat16
+            dtype=torch.bfloat16,
+            max_model_len=2048
         )
         print(f"✅ Model loaded\n")
     except Exception as e:

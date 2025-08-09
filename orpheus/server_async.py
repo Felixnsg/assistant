@@ -106,10 +106,11 @@ class OrpheusAsyncServer:
             
             try:
                 # Load model with vLLM optimizations
+                # vLLM parameters go into engine_kwargs
                 self.model = OrpheusModel(
                     model_name=self.config["model_name"],
-                    max_model_len=self.config["max_model_len"],
                     dtype=torch.bfloat16,
+                    max_model_len=self.config["max_model_len"],
                     trust_remote_code=True,
                     gpu_memory_utilization=self.config["gpu_memory_utilization"],
                     enable_prefix_caching=self.config["enable_prefix_caching"],
