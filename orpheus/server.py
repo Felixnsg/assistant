@@ -127,12 +127,11 @@ class OrpheusEngine:
             
             try:
                 # Load model with optimizations
-                # Only model_name, dtype, and tokenizer are direct params
-                # Everything else goes through **engine_kwargs
+                # Start with minimal config, add optimizations if they work
                 self.model = OrpheusModel(
                     model_name=config.MODEL_NAME,
-                    dtype=config.DTYPE
-                    # vLLM parameters will be passed as engine_kwargs internally
+                    dtype=config.DTYPE,
+                    trust_remote_code=True  # This is usually needed for custom models
                 )
                 
                 # Optional torch.compile for faster inference
