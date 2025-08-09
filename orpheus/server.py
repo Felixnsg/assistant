@@ -126,12 +126,11 @@ class OrpheusEngine:
                 gc.collect()
             
             try:
-                # Load model with optimizations
-                # Start with minimal config, add optimizations if they work
+                # Load model - OrpheusModel only accepts model_name, dtype, and tokenizer
+                # All vLLM optimizations are handled internally
                 self.model = OrpheusModel(
                     model_name=config.MODEL_NAME,
-                    dtype=config.DTYPE,
-                    trust_remote_code=True  # This is usually needed for custom models
+                    dtype=config.DTYPE
                 )
                 
                 # Optional torch.compile for faster inference
