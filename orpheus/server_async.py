@@ -106,19 +106,11 @@ class OrpheusAsyncServer:
             
             try:
                 # Load model with vLLM optimizations
-                # vLLM parameters go into engine_kwargs
+                # Only model_name and dtype are direct params
                 self.model = OrpheusModel(
                     model_name=self.config["model_name"],
-                    dtype=torch.bfloat16,
-                    max_model_len=self.config["max_model_len"],
-                    trust_remote_code=True,
-                    gpu_memory_utilization=self.config["gpu_memory_utilization"],
-                    enable_prefix_caching=self.config["enable_prefix_caching"],
-                    enable_chunked_prefill=self.config["enable_chunked_prefill"],
-                    max_num_seqs=self.config["max_num_seqs"],
-                    tensor_parallel_size=self.config["tensor_parallel_size"],
-                    disable_log_stats=True,  # Reduce overhead
-                    enforce_eager=False,  # Allow CUDA graphs
+                    dtype=torch.bfloat16
+                    # vLLM engine will use its own defaults
                 )
                 
                 logger.info("✅ Model initialized successfully")

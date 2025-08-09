@@ -127,15 +127,12 @@ class OrpheusEngine:
             
             try:
                 # Load model with optimizations
-                # vLLM parameters go into engine_kwargs
+                # Only model_name, dtype, and tokenizer are direct params
+                # Everything else goes through **engine_kwargs
                 self.model = OrpheusModel(
                     model_name=config.MODEL_NAME,
-                    dtype=config.DTYPE,
-                    max_model_len=config.MAX_MODEL_LEN,
-                    trust_remote_code=True,
-                    enforce_eager=False,  # Allow graph compilation
-                    gpu_memory_utilization=0.9,  # Use most VRAM
-                    swap_space=4,  # GB of CPU swap space
+                    dtype=config.DTYPE
+                    # vLLM parameters will be passed as engine_kwargs internally
                 )
                 
                 # Optional torch.compile for faster inference

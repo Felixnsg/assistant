@@ -57,8 +57,7 @@ def initialize_model():
             try:
                 model = OrpheusModel(
                     model_name="canopylabs/orpheus-tts-0.1-finetune-prod",
-                    dtype=torch.bfloat16,
-                    max_model_len=2048
+                    dtype=torch.bfloat16
                 )
                 logger.info("✅ Model loaded successfully")
             except Exception as e:
