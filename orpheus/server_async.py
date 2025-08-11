@@ -6,6 +6,7 @@ Uses asyncio and vLLM's native async capabilities for maximum performance
 
 import asyncio
 import aiofiles
+import aiohttp
 from aiohttp import web
 import aiohttp_cors
 import time
@@ -260,7 +261,6 @@ async def handle_health(request):
                 "name": torch.cuda.get_device_name(0),
                 "memory_allocated_mb": torch.cuda.memory_allocated() / 1024**2,
                 "memory_cached_mb": torch.cuda.memory_reserved() / 1024**2,
-                "utilization": torch.cuda.utilization(),
             }
         })
     
