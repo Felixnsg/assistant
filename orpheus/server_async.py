@@ -105,16 +105,11 @@ class OrpheusAsyncServer:
                 gc.collect()
             
             try:
-                # Load model with vLLM optimizations
-                # Pass max_model_len and other vLLM configs as kwargs
+                # Load model - config.json now has max_position_embeddings=64000
+                # vLLM will read the modified config from HF cache
                 self.model = OrpheusModel(
                     model_name=self.config["model_name"],
-                    dtype=torch.bfloat16,
-                    max_model_len=self.config["max_model_len"],  # Override HF config
-                    gpu_memory_utilization=self.config["gpu_memory_utilization"],
-                    enable_prefix_caching=self.config["enable_prefix_caching"],
-                    enable_chunked_prefill=self.config["enable_chunked_prefill"],
-                    max_num_seqs=self.config["max_num_seqs"]
+                    dtype=torch.bfloat16
                 )
                 
                 logger.info("✅ Model initialized successfully")

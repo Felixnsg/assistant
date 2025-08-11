@@ -126,12 +126,11 @@ class OrpheusEngine:
                 gc.collect()
             
             try:
-                # Load model - Pass max_model_len to override HuggingFace config
-                # All vLLM optimizations are handled internally via **kwargs
+                # Load model - config.json now has max_position_embeddings=64000
+                # All vLLM optimizations are handled internally
                 self.model = OrpheusModel(
                     model_name=config.MODEL_NAME,
-                    dtype=config.DTYPE,
-                    max_model_len=config.MAX_MODEL_LEN  # This goes to **engine_kwargs
+                    dtype=config.DTYPE
                 )
                 
                 # Optional torch.compile for faster inference
