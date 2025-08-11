@@ -106,11 +106,11 @@ class OrpheusAsyncServer:
             
             try:
                 # Load model with vLLM optimizations
-                # Only model_name and dtype are direct params
+                # Pass max_model_len to fix KV cache error on RTX 4090
                 self.model = OrpheusModel(
                     model_name=self.config["model_name"],
-                    dtype=torch.bfloat16
-                    # vLLM engine will use its own defaults
+                    dtype=torch.bfloat16,
+                    max_model_len=64000  # Limit to 64k tokens for RTX 4090 24GB VRAM
                 )
                 
                 logger.info("✅ Model initialized successfully")
