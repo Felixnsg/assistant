@@ -126,12 +126,12 @@ class OrpheusEngine:
                 gc.collect()
             
             try:
-                # Load model - Pass max_model_len to fix KV cache error on RTX 4090
+                # Load model - Pass max_model_len through engine_kwargs to fix KV cache error on RTX 4090
                 # All vLLM optimizations are handled internally
                 self.model = OrpheusModel(
                     model_name=config.MODEL_NAME,
                     dtype=config.DTYPE,
-                    max_model_len=64000  # Limit to 64k tokens for RTX 4090 24GB VRAM
+                    **{"max_model_len": 64000}  # Limit to 64k tokens for RTX 4090 24GB VRAM
                 )
                 
                 # Optional torch.compile for faster inference
