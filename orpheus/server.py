@@ -47,7 +47,7 @@ stats = {
 # Configuration
 class ServerConfig:
     MODEL_NAME = os.getenv("MODEL_NAME", "canopylabs/orpheus-tts-0.1-finetune-prod")
-    MAX_MODEL_LEN = int(os.getenv("MAX_MODEL_LEN", "2048"))
+    MAX_MODEL_LEN = int(os.getenv("MAX_MODEL_LEN", "64000"))  # Safe for RTX 4090
     DTYPE = torch.bfloat16
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
     PORT = int(os.getenv("PORT", "8080"))
@@ -126,11 +126,12 @@ class OrpheusEngine:
                 gc.collect()
             
             try:
-                # Load model - max_model_len is now set automatically in engine_class.py for RTX 4090
-                # All vLLM optimizations are handled internally
+                # Load model - Pass max_model_len to override HuggingFace config
+                # All vLLM optimizations are handled internally via **kwargs
                 self.model = OrpheusModel(
                     model_name=config.MODEL_NAME,
-                    dtype=config.DTYPE
+                    dtype=config.DTYPE,
+                    max_model_len=config.MAX_MODEL_LEN  # This goes to **engine_kwargs
                 )
                 
                 # Optional torch.compile for faster inference

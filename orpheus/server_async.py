@@ -82,7 +82,7 @@ class OrpheusAsyncServer:
         # Configuration
         self.config = {
             "model_name": os.getenv("MODEL_NAME", "canopylabs/orpheus-tts-0.1-finetune-prod"),
-            "max_model_len": int(os.getenv("MAX_MODEL_LEN", "2048")),
+            "max_model_len": int(os.getenv("MAX_MODEL_LEN", "64000")),  # Safe for RTX 4090
             "gpu_memory_utilization": float(os.getenv("GPU_MEMORY_UTILIZATION", "0.95")),
             "enable_prefix_caching": os.getenv("ENABLE_PREFIX_CACHING", "true").lower() == "true",
             "enable_chunked_prefill": os.getenv("ENABLE_CHUNKED_PREFILL", "true").lower() == "true",
@@ -106,10 +106,15 @@ class OrpheusAsyncServer:
             
             try:
                 # Load model with vLLM optimizations
-                # max_model_len is now set automatically in engine_class.py for RTX 4090
+                # Pass max_model_len and other vLLM configs as kwargs
                 self.model = OrpheusModel(
                     model_name=self.config["model_name"],
-                    dtype=torch.bfloat16
+                    dtype=torch.bfloat16,
+                    max_model_len=self.config["max_model_len"],  # Override HF config
+                    gpu_memory_utilization=self.config["gpu_memory_utilization"],
+                    enable_prefix_caching=self.config["enable_prefix_caching"],
+                    enable_chunked_prefill=self.config["enable_chunked_prefill"],
+                    max_num_seqs=self.config["max_num_seqs"]
                 )
                 
                 logger.info("✅ Model initialized successfully")
