@@ -104,11 +104,11 @@ class OrpheusService:
             logger.info(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f}GB")
         
         try:
-            # Initialize model - will use fixed config from HF cache
+            # Initialize model - OrpheusModel doesn't take max_model_len directly
+            # The max_model_len is read from the fixed HuggingFace config.json
             self.model = OrpheusModel(
                 model_name=self.config['model']['name'],
-                dtype=getattr(torch, self.config['model']['dtype'], torch.bfloat16),
-                max_model_len=self.config['model']['max_model_len']
+                dtype=getattr(torch, self.config['model']['dtype'], torch.bfloat16)
             )
             
             logger.info("✅ Model loaded successfully")

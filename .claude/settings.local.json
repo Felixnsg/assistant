@@ -6,7 +6,8 @@
       "Bash(find:*)",
       "Bash(ls:*)",
       "Bash(rm:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(pip3 install:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
