@@ -501,6 +501,46 @@
             }
         }
         
+        // Process audio chunk (for JSON WebSocket messages)
+        async function processAudioChunk(arrayBuffer) {
+            totalBytes += arrayBuffer.byteLength;
+            chunkCount++;
+            
+            // Update metrics
+            document.getElementById('chunksMetric').textContent = chunkCount;
+            document.getElementById('bytesMetric').textContent = (totalBytes / 1024).toFixed(1) + 'K';
+            
+            const qualityMode = document.getElementById('qualityMode').checked;
+            
+            if (qualityMode) {
+                // Quality Mode: Collect all chunks
+                audioChunks.push(arrayBuffer);
+                document.getElementById('audioStatus').textContent = `Downloading... (${chunkCount} chunks)`;
+                
+                // Calculate latency on first chunk
+                if (chunkCount === 1 && startTime) {
+                    const latency = Date.now() - startTime;
+                    document.getElementById('latencyMetric').textContent = latency;
+                    log(`First chunk received (${latency}ms) - Quality Mode: buffering all chunks`);
+                }
+            } else {
+                // Streaming Mode: Play immediately
+                if (chunkCount === 1 && startTime) {
+                    const latency = Date.now() - startTime;
+                    document.getElementById('latencyMetric').textContent = latency;
+                    log(`First audio chunk received (${latency}ms latency) - Streaming Mode`);
+                    
+                    // Start playback immediately on first chunk
+                    isPlaying = true;
+                    nextStartTime = audioContext.currentTime + 0.05; // Small buffer
+                }
+                
+                // Schedule chunk for playback
+                playAudioChunk(arrayBuffer);
+                document.getElementById('audioStatus').textContent = `Streaming... (${chunkCount} chunks)`;
+            }
+        }
+        
         // Update character count
         document.getElementById('textInput').addEventListener('input', updateCharCount);
         
@@ -515,6 +555,14 @@
             if (!server) {
                 alert('Please enter server address');
                 return;
+            }
+            
+            // Initialize and resume audio context on user interaction
+            initAudioContext();
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    addLog('Audio context resumed');
+                });
             }
             
             if (ws) {
@@ -566,6 +614,53 @@
         
         // Handle incoming messages
         async function handleMessage(event) {
+            // Check if it's JSON (from our server) or binary
+            if (typeof event.data === 'string') {
+                // JSON message from server
+                try {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'audio_chunk') {
+                        // Decode base64 audio data
+                        const base64 = data.data;
+                        const binaryString = atob(base64);
+                        const len = binaryString.length;
+                        const bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+                        const arrayBuffer = bytes.buffer;
+                        
+                        // Process as audio
+                        await processAudioChunk(arrayBuffer);
+                        
+                    } else if (data.type === 'complete') {
+                        // Generation complete
+                        log(`✅ Generation complete! ${data.chunks || chunkCount} chunks received`);
+                        document.getElementById('loading').style.display = 'none';
+                        
+                        // Play collected audio if in quality mode
+                        const qualityMode = document.getElementById('qualityMode').checked;
+                        if (qualityMode && audioChunks.length > 0) {
+                            playCollectedAudio();
+                        }
+                        
+                        // Reset for next generation
+                        isGenerating = false;
+                        
+                    } else if (data.error) {
+                        log(`❌ Error: ${data.error}`);
+                        document.getElementById('loading').style.display = 'none';
+                        isGenerating = false;
+                    }
+                    
+                } catch (e) {
+                    console.error('Failed to parse JSON:', e);
+                }
+                return;
+            }
+            
+            // Original binary handling (keeping for compatibility)
             if (event.data instanceof Blob) {
                 // Binary audio data - RAW PCM from server
                 const arrayBuffer = await event.data.arrayBuffer();
@@ -649,6 +744,13 @@
             if (!ws || ws.readyState !== WebSocket.OPEN) {
                 alert('WebSocket not connected. Click Connect first.');
                 return;
+            }
+            
+            // Ensure audio context is running
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    addLog('Audio context resumed for playback');
+                });
             }
             
             const text = document.getElementById('textInput').value;
