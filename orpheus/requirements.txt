@@ -1,11 +1,25 @@
-torch
+# Orpheus TTS Requirements
+# Minimal dependencies for running the service
+
+# Core dependencies
+torch>=2.0.0
 orpheus-speech
-vllm==0.7.3
+vllm==0.7.3  # Specific version for stability
+
+# Server dependencies
+fastapi
+uvicorn[standard]
+aiohttp
+aiofiles
+aiohttp-cors
+pydantic
+
+# Audio processing
 soundfile
 scipy
-flask
-transformers
-snac
 numpy
+
+# Utilities
 pyyaml
-wave
+psutil
+requests

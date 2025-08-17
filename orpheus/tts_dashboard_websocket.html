@@ -333,6 +333,53 @@
                     <button class="preset-btn" onclick="setText('The quick brown fox jumps over the lazy dog.')">Quick Fox</button>
                     <button class="preset-btn" onclick="setText('Finally working through WebSockets!')">Success!</button>
                 </div>
+                
+                <!-- Conversational Flow Tests -->
+                <label style="margin-top: 20px;">🗣️ Conversational Tests:</label>
+                <div class="presets">
+                    <button class="preset-btn" onclick="setText('Sure!')">Sure!</button>
+                    <button class="preset-btn" onclick="setText('Got it')">Got it</button>
+                    <button class="preset-btn" onclick="setText('I understand')">I understand</button>
+                    <button class="preset-btn" onclick="setText('Okay')">Okay</button>
+                    <button class="preset-btn" onclick="setText('Hmm, let me think... <sigh>')">Thinking...</button>
+                    <button class="preset-btn" onclick="setText('Oh wait, actually...')">Oh wait...</button>
+                    <button class="preset-btn" onclick="setText('That\'s interesting! <chuckle>')">Interesting!</button>
+                    <button class="preset-btn" onclick="setText('I see what you mean <laugh>')">I see...</button>
+                </div>
+                
+                <!-- Emotion Tests -->
+                <label style="margin-top: 20px;">😊 Emotion Tests:</label>
+                <div class="presets">
+                    <button class="preset-btn" onclick="setText('This is funny <laugh>')">Laugh</button>
+                    <button class="preset-btn" onclick="setText('That\'s amusing <chuckle>')">Chuckle</button>
+                    <button class="preset-btn" onclick="setText('I\'m not sure <sigh>')">Sigh</button>
+                    <button class="preset-btn" onclick="setText('Really? <gasp>')">Gasp</button>
+                    <button class="preset-btn" onclick="setText('So tired <yawn>')">Yawn</button>
+                    <button class="preset-btn" onclick="setText('That\'s funny <laugh> but also concerning <sigh>')">Mixed</button>
+                    <button class="preset-btn" onclick="setText('Oh! <gasp> That\'s hilarious <laugh>')">Surprise→Joy</button>
+                </div>
+                
+                <!-- Response Length Tests -->
+                <label style="margin-top: 20px;">📏 Response Lengths:</label>
+                <div class="presets">
+                    <button class="preset-btn" onclick="setText('Yes')">Micro (1)</button>
+                    <button class="preset-btn" onclick="setText('Not sure')">Micro (2)</button>
+                    <button class="preset-btn" onclick="setText('Absolutely!')">Micro (exclaim)</button>
+                    <button class="preset-btn" onclick="setText('I\'d be happy to help you understand this concept better.')">Short (20-30)</button>
+                    <button class="preset-btn" onclick="setText('This is a fascinating topic that involves multiple interconnected concepts. Let me break it down into simpler components so we can explore each aspect thoroughly.')">Medium (50+)</button>
+                    <button class="preset-btn" onclick="setText('First, we need to understand the basics. Second, we\'ll explore the advanced concepts. Finally, we\'ll put it all together.')">List Format</button>
+                </div>
+                
+                <!-- Typical Assistant Responses -->
+                <label style="margin-top: 20px;">💬 Assistant Responses:</label>
+                <div class="presets">
+                    <button class="preset-btn" onclick="setText('I\'d be happy to help you with that! <chuckle> Let me explain how this works.')">Friendly</button>
+                    <button class="preset-btn" onclick="setText('That\'s a great question. <sigh> It\'s actually quite complex, but I\'ll break it down for you.')">Complex</button>
+                    <button class="preset-btn" onclick="setText('Oh! <gasp> I just realized something interesting about your question.')">Realization</button>
+                    <button class="preset-btn" onclick="setText('Hmm... <pause> I\'m thinking about the best way to explain this to you.')">Thoughtful</button>
+                    <button class="preset-btn" onclick="setText('I understand your frustration. <sigh> Let\'s work through this together step by step.')">Empathetic</button>
+                    <button class="preset-btn" onclick="setText('Excellent question! <laugh> You\'re really thinking deeply about this.')">Encouraging</button>
+                </div>
             </div>
             
             <!-- Voice Settings -->
@@ -350,6 +397,25 @@
                         <option value="zac">Zac (Male)</option>
                     </select>
                 </div>
+            </div>
+            
+            <!-- Voice Comparison Quick Test -->
+            <label style="margin-top: 20px;">🎭 Quick Voice Test:</label>
+            <div class="presets">
+                <button class="preset-btn" onclick="testVoice('tara')">Test Tara</button>
+                <button class="preset-btn" onclick="testVoice('leah')">Test Leah</button>
+                <button class="preset-btn" onclick="testVoice('mia')">Test Mia</button>
+                <button class="preset-btn" onclick="testVoice('leo')">Test Leo</button>
+                <button class="preset-btn" onclick="testVoice('dan')">Test Dan</button>
+                <button class="preset-btn" onclick="testAllVoices()">Test All Voices</button>
+            </div>
+            
+            <!-- Quality Mode Toggle -->
+            <div style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 8px;">
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="qualityMode" style="width: auto;">
+                    <span>🎵 <strong>Quality Mode</strong> (Download complete audio before playing - better quality, higher latency)</span>
+                </label>
             </div>
             
             <!-- Action Buttons -->
@@ -402,10 +468,15 @@
     
     <script>
         let ws = null;
-        let audioChunks = [];
+        let audioContext = null;
+        let nextStartTime = 0;
         let startTime = null;
         let totalBytes = 0;
         let chunkCount = 0;
+        let isPlaying = false;
+        let audioQueue = [];
+        let scheduledSources = [];
+        let audioChunks = []; // For quality mode
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -414,7 +485,21 @@
             if (savedServer) {
                 document.getElementById('serverInput').value = savedServer;
             }
+            
+            // Initialize Web Audio API
+            initAudioContext();
         });
+        
+        // Initialize Web Audio Context
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                    sampleRate: 24000,
+                    latencyHint: 'interactive'
+                });
+                log('Web Audio API initialized (24kHz)');
+            }
+        }
         
         // Update character count
         document.getElementById('textInput').addEventListener('input', updateCharCount);
@@ -482,9 +567,8 @@
         // Handle incoming messages
         async function handleMessage(event) {
             if (event.data instanceof Blob) {
-                // Binary audio data
+                // Binary audio data - RAW PCM from server
                 const arrayBuffer = await event.data.arrayBuffer();
-                audioChunks.push(arrayBuffer);
                 totalBytes += arrayBuffer.byteLength;
                 chunkCount++;
                 
@@ -492,14 +576,37 @@
                 document.getElementById('chunksMetric').textContent = chunkCount;
                 document.getElementById('bytesMetric').textContent = (totalBytes / 1024).toFixed(1) + 'K';
                 
-                // Calculate latency on first chunk
-                if (chunkCount === 1 && startTime) {
-                    const latency = Date.now() - startTime;
-                    document.getElementById('latencyMetric').textContent = latency;
-                    log(`First audio chunk received (${latency}ms latency)`);
-                }
+                const qualityMode = document.getElementById('qualityMode').checked;
                 
-                document.getElementById('audioStatus').textContent = `Receiving audio... (${chunkCount} chunks)`;
+                if (qualityMode) {
+                    // Quality Mode: Collect all chunks
+                    audioChunks.push(arrayBuffer);
+                    document.getElementById('audioStatus').textContent = `Downloading... (${chunkCount} chunks)`;
+                    
+                    // Calculate latency on first chunk
+                    if (chunkCount === 1 && startTime) {
+                        const latency = Date.now() - startTime;
+                        document.getElementById('latencyMetric').textContent = latency;
+                        log(`First chunk received (${latency}ms) - Quality Mode: buffering all chunks`);
+                    }
+                } else {
+                    // Streaming Mode: Play immediately
+                    // Calculate latency on first chunk
+                    if (chunkCount === 1 && startTime) {
+                        const latency = Date.now() - startTime;
+                        document.getElementById('latencyMetric').textContent = latency;
+                        log(`First audio chunk received (${latency}ms latency) - Streaming Mode`);
+                        
+                        // Start playback immediately on first chunk
+                        isPlaying = true;
+                        nextStartTime = audioContext.currentTime + 0.05; // Small buffer to prevent underrun
+                    }
+                    
+                    // Schedule chunk for playback
+                    scheduleAudioChunk(arrayBuffer);
+                    
+                    document.getElementById('audioStatus').textContent = `Streaming audio... (${chunkCount} chunks)`;
+                }
                 
             } else {
                 // JSON message
@@ -508,15 +615,27 @@
                     
                     if (data.type === 'complete') {
                         log(`✅ Generation complete! ${data.chunks} chunks received`);
-                        playAudio();
+                        
+                        const qualityMode = document.getElementById('qualityMode').checked;
+                        if (qualityMode && audioChunks.length > 0) {
+                            // Play complete audio in quality mode
+                            playQualityAudio();
+                        }
+                        
                         document.getElementById('loading').classList.remove('show');
                         document.getElementById('generateBtn').disabled = false;
                         document.getElementById('statusMetric').textContent = 'Complete';
+                        
+                        if (!qualityMode) {
+                            document.getElementById('audioStatus').textContent = 'Playback complete';
+                        }
+                        isPlaying = false;
                     } else if (data.error) {
                         log(`❌ Error: ${data.error}`);
                         document.getElementById('loading').classList.remove('show');
                         document.getElementById('generateBtn').disabled = false;
                         document.getElementById('statusMetric').textContent = 'Error';
+                        isPlaying = false;
                     }
                 } catch (e) {
                     // Not JSON, might be text
@@ -541,10 +660,20 @@
             }
             
             // Reset state
-            audioChunks = [];
+            stopAudio(); // Stop any playing audio
+            audioQueue = [];
+            scheduledSources = [];
+            audioChunks = []; // Reset for quality mode
             totalBytes = 0;
             chunkCount = 0;
             startTime = Date.now();
+            isPlaying = false;
+            nextStartTime = 0;
+            
+            // Resume audio context if suspended
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
             
             // Update UI
             document.getElementById('loading').classList.add('show');
@@ -564,10 +693,72 @@
             ws.send(JSON.stringify(request));
         }
         
-        // Play received audio
-        function playAudio() {
+        // Schedule audio chunk for seamless playback
+        function scheduleAudioChunk(arrayBuffer) {
+            // Convert raw PCM to audio buffer
+            const dataView = new DataView(arrayBuffer);
+            const frameCount = arrayBuffer.byteLength / 2; // 16-bit samples
+            
+            // Create audio buffer
+            const audioBuffer = audioContext.createBuffer(1, frameCount, 24000);
+            const channelData = audioBuffer.getChannelData(0);
+            
+            // Convert Int16 PCM to Float32 (-1 to 1)
+            for (let i = 0; i < frameCount; i++) {
+                // Read 16-bit signed integer and normalize to [-1, 1]
+                const sample = dataView.getInt16(i * 2, true); // little-endian
+                channelData[i] = sample / 32768.0;
+            }
+            
+            // Create and schedule buffer source
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioContext.destination);
+            
+            // Schedule playback
+            source.start(nextStartTime);
+            
+            // Update next start time for gapless playback
+            nextStartTime += audioBuffer.duration;
+            
+            // Store source for cleanup
+            scheduledSources.push(source);
+            
+            // Clean up old sources
+            source.onended = () => {
+                const index = scheduledSources.indexOf(source);
+                if (index > -1) {
+                    scheduledSources.splice(index, 1);
+                }
+            };
+            
+            // Update visual feedback
+            updateAudioPlayer(audioBuffer.duration);
+        }
+        
+        // Update audio player visual feedback
+        function updateAudioPlayer(duration) {
+            const audio = document.getElementById('audioPlayer');
+            if (!audio.src || audio.src === '') {
+                // Create a dummy blob URL to show controls
+                const silence = new Uint8Array(44);
+                const blob = new Blob([silence], { type: 'audio/wav' });
+                audio.src = URL.createObjectURL(blob);
+            }
+            
+            // Update playback position (approximate)
+            if (isPlaying) {
+                const currentTime = audioContext.currentTime - (nextStartTime - duration);
+                if (currentTime > 0) {
+                    audio.currentTime = Math.max(0, currentTime);
+                }
+            }
+        }
+        
+        // Play complete audio in quality mode (better quality)
+        function playQualityAudio() {
             if (audioChunks.length === 0) {
-                log('No audio chunks received');
+                log('No audio chunks to play');
                 return;
             }
             
@@ -581,12 +772,12 @@
                 offset += chunk.byteLength;
             }
             
-            // Create WAV header if needed (24kHz, 16-bit, mono)
+            // Create WAV file with proper header for best quality
             const sampleRate = 24000;
             const wavHeader = new ArrayBuffer(44);
             const view = new DataView(wavHeader);
             
-            // RIFF header
+            // Write WAV header
             const writeString = (offset, string) => {
                 for (let i = 0; i < string.length; i++) {
                     view.setUint8(offset + i, string.charCodeAt(i));
@@ -620,15 +811,31 @@
             audio.src = audioUrl;
             audio.play();
             
-            document.getElementById('audioStatus').textContent = `Audio ready (${(totalBytes / 1024).toFixed(1)}KB)`;
-            log(`Playing audio: ${(totalBytes / 1024).toFixed(1)}KB in ${chunkCount} chunks`);
+            document.getElementById('audioStatus').textContent = `Quality Mode: Playing ${(totalLength / 1024).toFixed(1)}KB`;
+            log(`Quality Mode: Playing complete audio (${(totalLength / 1024).toFixed(1)}KB)`);
         }
         
         // Stop audio
         function stopAudio() {
+            // Stop all scheduled sources
+            scheduledSources.forEach(source => {
+                try {
+                    source.stop();
+                } catch (e) {
+                    // Source may have already ended
+                }
+            });
+            scheduledSources = [];
+            
+            // Reset audio player
             const audio = document.getElementById('audioPlayer');
             audio.pause();
             audio.currentTime = 0;
+            
+            // Reset playback state
+            isPlaying = false;
+            nextStartTime = 0;
+            
             log('Audio stopped');
         }
         
@@ -673,6 +880,39 @@
                 generateSpeech();
             }
         });
+        
+        // Test specific voice
+        function testVoice(voice) {
+            const testText = "Hello! I'm your assistant. How can I help you today?";
+            document.getElementById('voiceSelect').value = voice;
+            document.getElementById('textInput').value = testText;
+            updateCharCount();
+            log(`Testing voice: ${voice}`);
+            generateSpeech();
+        }
+        
+        // Test all voices sequentially
+        let voiceQueue = [];
+        function testAllVoices() {
+            voiceQueue = ['tara', 'leah', 'mia', 'leo', 'dan'];
+            log('Starting voice comparison test...');
+            testNextVoice();
+        }
+        
+        function testNextVoice() {
+            if (voiceQueue.length > 0) {
+                const voice = voiceQueue.shift();
+                testVoice(voice);
+                // Wait 5 seconds between tests
+                setTimeout(() => {
+                    if (voiceQueue.length > 0) {
+                        testNextVoice();
+                    } else {
+                        log('Voice comparison test complete!');
+                    }
+                }, 5000);
+            }
+        }
     </script>
 </body>
 </html>

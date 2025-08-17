@@ -1,127 +1,48 @@
-# Orpheus TTS Server Configuration
-# Environment variables override these settings
-
-server:
-  host: "0.0.0.0"
-  port: 8080
-  workers: 1  # Single worker for GPU
-  debug: false
-  cors_enabled: true
-  max_request_size: 10485760  # 10MB
-  request_timeout: 60  # seconds
-  keepalive_timeout: 5
+# Orpheus TTS Configuration
+# All settings for the TTS service
 
 model:
-  name: "canopylabs/orpheus-tts-0.1-finetune-prod"
-  max_model_len: 2048
-  dtype: "bfloat16"
-  device: "cuda"  # cuda or cpu
-  trust_remote_code: true
-  
-  # vLLM optimization settings
-  gpu_memory_utilization: 0.95  # Use 95% of VRAM
-  enforce_eager: false  # Allow CUDA graphs
-  enable_prefix_caching: true
-  enable_chunked_prefill: true
-  max_num_seqs: 256
-  tensor_parallel_size: 1  # For multi-GPU
-  swap_space: 4  # GB of CPU swap
-  disable_log_stats: true  # Reduce overhead
+  name: canopylabs/orpheus-tts-0.1-finetune-prod
+  max_model_len: 64000  # Maximum context length for model
+  max_tokens: 64000     # FIXED: Was 2000, now 64000 for 12+ minutes of audio!
+  dtype: bfloat16       # Model precision (bfloat16 recommended for RTX 4090)
 
-generation:
-  default_voice: "tara"
-  default_temperature: 0.6
-  default_top_p: 0.8
-  default_repetition_penalty: 1.3
-  default_max_tokens: 2000
-  stop_token_ids: [128258]
-  
-  # Voice-specific settings
-  voice_settings:
-    tara:
-      temperature: 0.6
-      top_p: 0.8
-    leo:
-      temperature: 0.65
-      top_p: 0.85
-    mia:
-      temperature: 0.55
-      top_p: 0.75
-    whisper:
-      temperature: 0.4
-      top_p: 0.7
-    shout:
-      temperature: 0.8
-      top_p: 0.9
-
-performance:
-  warmup_on_start: true
-  warmup_samples: 3
-  cache_enabled: true
-  cache_size: 10
-  max_concurrent_requests: 10
-  max_text_length: 5000
-  enable_torch_compile: false  # Experimental
-  
-  # Streaming settings
-  chunk_size: 4096
-  stream_buffer_size: 16384
-  flush_immediately: true
-
-monitoring:
-  stats_window_size: 100
-  log_level: "INFO"
-  log_requests: true
-  log_performance: true
-  metrics_endpoint: "/metrics"
-  health_check_interval: 30  # seconds
+server:
+  host: 0.0.0.0         # Listen on all interfaces
+  port: 8080            # Server port
+  workers: 1            # Number of workers
 
 audio:
-  sample_rate: 24000
-  bits_per_sample: 16
-  channels: 1
-  codec: "pcm"  # pcm, wav, mp3
-  
-  # SNAC decoder settings
-  snac_device: "cuda"
-  snac_batch_size: 1
+  sample_rate: 24000    # Output sample rate (24kHz for Orpheus)
+  channels: 1           # Mono audio
+  bits_per_sample: 16   # 16-bit PCM
 
+generation:
+  temperature: 0.6      # Controls randomness (0.0-1.0)
+  top_p: 0.8           # Nucleus sampling threshold
+  repetition_penalty: 1.3  # Penalty for repeated tokens
+
+# Voice options
+voices:
+  - tara    # Female, neutral
+  - leah    # Female, warm
+  - jess    # Female, energetic
+  - leo     # Male, deep
+  - dan     # Male, neutral
+  - mia     # Female, young
+  - zac     # Male, casual
+  - zoe     # Female, professional
+
+# Performance settings
+performance:
+  gpu_memory_utilization: 0.95  # How much GPU memory to use
+  enable_prefix_caching: true    # Speed up similar prompts
+  enable_chunked_prefill: true   # Better streaming performance
+  max_num_seqs: 256             # Maximum concurrent sequences
+  tensor_parallel_size: 1       # Number of GPUs for tensor parallelism
+
+# Limits
 limits:
-  max_batch_size: 10
-  max_text_chars: 5000
-  max_generation_time: 60  # seconds
-  rate_limit:
-    enabled: false
-    requests_per_minute: 60
-    burst_size: 10
-
-deployment:
-  environment: "production"  # development, staging, production
-  gpu_type: "rtx4090"
-  min_vram_gb: 12
-  cuda_version: "12.1"
-  pytorch_version: "2.0.0"
-  
-  # vast.ai specific
-  vastai:
-    instance_type: "RTX 4090"
-    docker_image: "pytorch/pytorch:2.0.0-cuda12.1-cudnn8-runtime"
-    open_ports: [8080, 22]
-    disk_space_gb: 50
-    ssh_enabled: true
-
-# Feature flags
-features:
-  voice_cloning: true
-  emotion_tags: true
-  batch_processing: true
-  websocket_streaming: true
-  audio_caching: true
-  metrics_collection: true
-  
-# Paths
-paths:
-  model_cache: "/tmp/model_cache"
-  audio_cache: "/tmp/audio_cache"
-  logs: "/var/log/orpheus"
-  outputs: "./output"
+  max_text_length: 10000        # Maximum input text length
+  max_audio_duration_seconds: 771  # ~64000 tokens / 83 tokens per second
+  tokens_per_second: 83         # Approximate tokens per second of audio
