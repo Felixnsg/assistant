@@ -374,16 +374,11 @@ class OrpheusEnhancedServer:
                 logger.info(f"🎮 GPU: {gpu_name} ({gpu_memory:.1f}GB)")
             
             try:
-                # Load model with optimizations
+                # Load model - OrpheusModel only accepts model_name and dtype
+                # The vLLM parameters are set internally by the library
                 self.model = OrpheusModel(
                     model_name=self.config["model_name"],
-                    dtype=torch.bfloat16,
-                    gpu_memory_utilization=self.config["gpu_memory_utilization"],
-                    max_model_len=self.config["max_model_len"],
-                    enable_prefix_caching=True,
-                    enable_chunked_prefill=True,
-                    max_num_seqs=256,
-                    tensor_parallel_size=1
+                    dtype=torch.bfloat16
                 )
                 
                 logger.info("✅ Model initialized successfully")
@@ -581,8 +576,8 @@ class OrpheusEnhancedServer:
                     temperature=temperature,
                     top_p=top_p,
                     max_tokens=max_tokens,
-                    repetition_penalty=repetition_penalty,
-                    stop_token_ids=[]  # Removed stop tokens for full generation
+                    repetition_penalty=repetition_penalty
+                    # Note: stop_token_ids removed - let model decide when to stop naturally
                 )
             
             # Run generator in executor
