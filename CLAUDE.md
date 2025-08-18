@@ -34,17 +34,27 @@ Cypher is an AI assistant project with multiple capabilities. The current focus 
 - **MUST** understand why Orpheus TTS is needed in the broader Cypher ecosystem
 - **MUST** map out current file dependencies and usage patterns
 
-### 2. Cleanup and Organization Goals
-- **Current Problem**: Too many unused/unnecessary files in orpheus folder
-- **Target Solution**: Consolidate into a few well-organized `.sh` scripts
-- **Deployment Goal**: Simple execution via `chmod +x script.sh && bash script.sh`
-- **Alternative**: Propose even more professional solutions than basic shell scripts
+### 2. Critical Audio Output Investigation
+- **Primary Issue**: TTS system limited to maximum 24 seconds of audio output
+- **Extended Issue**: When increasing token output for longer text:
+  - Server produces maximum 40 seconds of audio
+  - Audio starts in the middle of text instead of from the beginning
+  - Complete text is not being processed properly
 
-### 3. Analysis and Planning Workflow
+### 3. Senior Engineering Analysis Required
+- **ULTRATHINK** like a professional senior software engineer
+- **Deep dive** into the server architecture and TTS processing pipeline
+- **Identify bottlenecks** in audio generation and text processing
+- **Analyze** token handling, memory management, and audio streaming
+- **Investigate** text chunking, audio concatenation, and buffer management
+- **Examine** server limitations, timeout issues, and resource constraints
+
+### 4. Analysis and Planning Workflow
 - **Step 1**: Comprehensive codebase analysis and understanding
-- **Step 2**: Map current orpheus folder structure and identify unused files
-- **Step 3**: Propose cleanup and organization strategy
-- **Step 4**: **WAIT FOR EXPLICIT APPROVAL** before any code changes
+- **Step 2**: Deep investigation of TTS audio length limitations
+- **Step 3**: Identify root causes of 24-second limit and mid-text starting issues
+- **Step 4**: Engineer professional solutions for extended audio generation
+- **Step 5**: **WAIT FOR EXPLICIT APPROVAL** before any code changes
 
 ## Critical Rules - NO CODE WITHOUT APPROVAL
 
@@ -76,24 +86,46 @@ Cypher is an AI assistant project with multiple capabilities. The current focus 
 ### Understanding Phase
 1. Read and analyze all files in the orpheus folder
 2. Understand the TTS implementation architecture
-3. Identify which files are actually used vs unused
-4. Map dependencies between files
-5. Understand how orpheus should integrate with main Cypher workflow
+3. Map the complete audio generation pipeline
+4. Identify server-side processing limitations
+5. Understand how orpheus integrates with main Cypher workflow
 
-### Cleanup Proposal Phase
-1. Identify unused/redundant files
-2. Group related functionality
-3. Propose script-based organization (or better alternatives)
-4. Design clean deployment workflow
-5. Present comprehensive reorganization plan
+### Critical Investigation Phase - Audio Length Limitations
+1. **Investigate 24-second limit**:
+   - Analyze audio generation code for hard limits
+   - Check buffer sizes, memory allocation, and streaming limits
+   - Examine token processing and text chunking mechanisms
+   - Identify timeout configurations and resource constraints
 
-### Professional Solutions to Consider
-- Shell scripts for different TTS operations
-- Python modules with proper imports
-- Configuration-based setup
-- Docker containers (if applicable)
-- Virtual environment setup scripts
-- Automated dependency management
+2. **Diagnose 40-second + mid-text issue**:
+   - Trace text processing pipeline from input to audio output
+   - Analyze text segmentation and audio concatenation logic
+   - Check for buffer overflow, memory leaks, or processing interruptions
+   - Examine async processing, threading, and queue management
+
+3. **Senior Engineering Analysis**:
+   - **Performance bottlenecks**: CPU, memory, I/O constraints
+   - **Architecture review**: Streaming vs batch processing
+   - **Scalability issues**: Token limits, API constraints, server capacity
+   - **Error handling**: Graceful degradation and recovery mechanisms
+   - **Resource management**: Memory cleanup, garbage collection
+   - **Threading/Async**: Concurrent processing optimization
+
+### Professional Solution Design Phase
+1. Engineer solutions for extended audio generation (>24 seconds)
+2. Design robust text-to-audio pipeline for complete text processing
+3. Propose server architecture improvements
+4. Design professional deployment and scaling strategies
+5. Present comprehensive technical improvement plan
+
+### Professional Engineering Solutions to Consider
+- **Streaming Architecture**: Real-time audio streaming with chunked processing
+- **Queue-based Processing**: Asynchronous text processing with audio concatenation
+- **Memory Optimization**: Efficient buffer management and resource cleanup
+- **Text Segmentation**: Intelligent text chunking with context preservation
+- **Error Recovery**: Robust handling of processing failures and timeouts
+- **Load Balancing**: Distributed processing for longer texts
+- **Caching Mechanisms**: Audio segment caching for improved performance
 
 ## Success Criteria
 - Clean, organized orpheus folder with minimal necessary files
@@ -114,6 +146,9 @@ Cypher is an AI assistant project with multiple capabilities. The current focus 
 3. Streamlining server deployment process
 4. Reducing file complexity while maintaining functionality
 
+
+## orpheus
+1. The orpheus TTS repo can be found in the code base also read it throughfully. 
 ---
 
 **REMEMBER**: This is an analysis and planning phase. Understand everything first, propose solutions second, execute only after explicit approval.

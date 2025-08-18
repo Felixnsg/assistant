@@ -1,0 +1,159 @@
+# Orpheus Enhanced TTS Configuration
+# Professional production-grade settings for extended audio generation
+
+model:
+  name: canopylabs/orpheus-tts-0.1-finetune-prod
+  max_model_len: 64000      # Maximum context length - FULL MODEL CAPACITY
+  max_tokens: 64000         # Allow full token range
+  dtype: bfloat16           # Optimal for RTX 4090
+  
+  # vLLM optimizations
+  gpu_memory_utilization: 0.95    # Use most GPU memory for performance
+  enable_prefix_caching: true      # Speed up similar prompts
+  enable_chunked_prefill: true     # Better streaming performance
+  max_num_seqs: 256               # Maximum concurrent sequences
+  tensor_parallel_size: 1         # Single GPU (adjust for multi-GPU)
+
+server:
+  host: 0.0.0.0             # Listen on all interfaces
+  port: 8080                # Server port
+  workers: 8                # Increased worker threads
+  max_request_size_mb: 100 # Maximum request size
+  
+  # Performance tuning
+  request_timeout: 600      # 10 minutes for very long generation
+  keepalive_timeout: 65     # Keep connections alive
+  client_max_size: 104857600  # 100MB max client request
+
+audio:
+  sample_rate: 24000        # Orpheus native sample rate
+  channels: 1               # Mono audio
+  bits_per_sample: 16       # 16-bit PCM
+  
+  # Audio processing
+  crossfade_ms: 50          # Crossfade between chunks
+  silence_between_chunks_ms: 100  # Natural pause between chunks
+
+generation:
+  # Default generation parameters
+  temperature: 0.6          # Balance between creativity and coherence
+  top_p: 0.8               # Nucleus sampling threshold
+  repetition_penalty: 1.3   # Reduce repetition
+  
+  # Advanced parameters
+  top_k: 50                 # Top-k sampling
+  min_p: 0.05              # Minimum probability threshold
+  presence_penalty: 0.0     # OpenAI-style presence penalty
+  frequency_penalty: 0.0    # OpenAI-style frequency penalty
+
+# Text chunking configuration
+chunking:
+  enabled: true             # Enable intelligent chunking
+  strategy: hybrid          # Options: sentence, paragraph, token_count, hybrid
+  max_chunk_size: 400       # Maximum characters per chunk
+  overlap_size: 30          # Context overlap between chunks
+  
+  # Token management per chunk
+  max_tokens_per_chunk: 8000    # Safe token limit per chunk
+  min_tokens_per_chunk: 500     # Minimum for coherence
+  dynamic_sizing: true          # Adjust chunk size based on content
+
+# Voice configurations with optimal settings
+voices:
+  tara:
+    description: "Female, neutral, clear"
+    temperature_adjustment: 0.0
+    speed_adjustment: 1.0
+  
+  leah:
+    description: "Female, warm, friendly"
+    temperature_adjustment: 0.1
+    speed_adjustment: 0.95
+  
+  jess:
+    description: "Female, energetic, young"
+    temperature_adjustment: 0.2
+    speed_adjustment: 1.05
+  
+  leo:
+    description: "Male, deep, authoritative"
+    temperature_adjustment: -0.1
+    speed_adjustment: 0.9
+  
+  dan:
+    description: "Male, neutral, professional"
+    temperature_adjustment: 0.0
+    speed_adjustment: 1.0
+  
+  mia:
+    description: "Female, young, cheerful"
+    temperature_adjustment: 0.15
+    speed_adjustment: 1.1
+  
+  zac:
+    description: "Male, casual, friendly"
+    temperature_adjustment: 0.1
+    speed_adjustment: 1.0
+  
+  zoe:
+    description: "Female, professional, articulate"
+    temperature_adjustment: -0.05
+    speed_adjustment: 0.95
+
+# Performance monitoring
+monitoring:
+  enable_metrics: true      # Track performance metrics
+  log_level: INFO          # Logging verbosity
+  log_requests: true       # Log all requests
+  log_performance: true    # Log RTF and timing
+  
+  # Alerting thresholds
+  high_memory_threshold_mb: 8000    # Alert if memory exceeds
+  high_latency_threshold_ms: 5000   # Alert if TTFB exceeds
+  low_rtf_threshold: 0.5            # Alert if RTF drops below
+
+# Cache configuration
+cache:
+  enabled: true            # Enable audio caching
+  max_entries: 100         # Maximum cache entries
+  max_size_mb: 500        # Maximum cache size
+  ttl_seconds: 3600       # Cache time-to-live
+  
+  # Cache key components
+  include_voice: true
+  include_temperature: true
+  include_top_p: true
+
+# Advanced limits and safety
+limits:
+  max_text_length: 50000          # Maximum input text characters
+  max_concurrent_requests: 20      # Maximum parallel requests
+  max_audio_duration_seconds: 3600 # 1 hour maximum (safety limit)
+  
+  # Token budgets
+  tokens_per_second_estimate: 83   # For duration calculation
+  safety_token_buffer: 1000        # Reserve tokens for safety
+
+# Error handling
+error_handling:
+  retry_on_oom: true              # Retry with smaller chunks on OOM
+  fallback_chunk_size: 200        # Smaller chunks on error
+  max_retries: 3                  # Maximum retry attempts
+  
+  # Recovery strategies
+  auto_recovery: true             # Automatic error recovery
+  graceful_degradation: true      # Reduce quality on resource pressure
+
+# Experimental features
+experimental:
+  parallel_chunk_generation: false  # Generate chunks in parallel
+  adaptive_temperature: false       # Adjust temperature based on content
+  emotion_enhancement: true         # Process emotion tags
+  voice_cloning: false             # Future: custom voice support
+  
+# Development/Debug settings
+debug:
+  save_audio_chunks: false        # Save individual chunks to disk
+  save_concatenated: false        # Save final audio
+  profile_performance: false      # Detailed performance profiling
+  verbose_logging: false          # Extra verbose logs

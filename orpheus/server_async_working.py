@@ -93,7 +93,7 @@ class OrpheusAsyncServer:
         temperature: float = 0.6,
         top_p: float = 0.8,
         repetition_penalty: float = 1.3,
-        max_tokens: int = 64000  # FIXED from 2000!
+        max_tokens: int = 2000  # Back to original working limit
     ) -> AsyncGenerator[bytes, None]:
         """Async generator for audio streaming"""
         
@@ -113,7 +113,7 @@ class OrpheusAsyncServer:
                     top_p=top_p,
                     max_tokens=max_tokens,  # Using 64000!
                     repetition_penalty=repetition_penalty,
-                    stop_token_ids=[]  # REMOVED stop tokens - let it generate full length!
+                    stop_token_ids=[128258]  # RESTORED - this marks end of speech!
                 )
             
             # Run generator in executor

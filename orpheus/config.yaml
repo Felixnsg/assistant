@@ -4,7 +4,7 @@
 model:
   name: canopylabs/orpheus-tts-0.1-finetune-prod
   max_model_len: 64000  # Maximum context length for model
-  max_tokens: 64000     # FIXED: Was 2000, now 64000 for 12+ minutes of audio!
+  max_tokens: 2000      # Stable limit - ~24 seconds of audio
   dtype: bfloat16       # Model precision (bfloat16 recommended for RTX 4090)
 
 server:
