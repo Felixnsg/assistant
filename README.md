@@ -45,14 +45,14 @@
 
 ## 📊 Performance Metrics
 
-| Metric | Value | Industry Benchmark |
-|--------|-------|-----------|
-| Response Latency | <100ms | 250ms |
-| Vision Accuracy | 97% | 95% |
-| Concurrent Connections | 100+ | 50 |
-| Audio Generation | 12+ min continuous | 2 min |
-| Daily API Requests | 1000+ | - |
-| System Uptime | 99.9% | 99% |
+| Metric | Value |
+|--------|-------|
+| Response Latency | <300ms |
+| Vision Accuracy | 97% | 
+| Concurrent Connections | 100+ |
+| Audio Generation | 12+ min continuous |
+| Daily API Requests | 1000+ |
+| System Uptime | 99.9% |
 
 ## 🏗️ Architecture
 
