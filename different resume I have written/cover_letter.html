@@ -1,0 +1,180 @@
+ <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width,
+  initial-scale=1.0">
+      <title>Felix Nsenga - Cover Letter</title>
+      <style>
+          body {
+              font-family: "Times New Roman", Times, serif;
+              line-height: 1.6;
+              color: #333;
+              max-width: 8.5in;
+              margin: 0 auto;
+              padding: 0.6in;
+          }
+
+          .header {
+              text-align: right;
+              margin-bottom: 30px;
+              font-size: 12px;
+          }
+
+          .recipient {
+              margin-bottom: 25px;
+              font-size: 12px;
+          }
+
+          .subject {
+              font-weight: bold;
+              margin-bottom: 20px;
+              font-size: 12px;
+          }
+
+          p {
+              margin-bottom: 15px;
+              font-size: 12px;
+              text-align: justify;
+          }
+
+          .closing {
+              margin-top: 25px;
+              font-size: 12px;
+          }
+
+          .signature {
+              margin-top: 40px;
+              font-size: 12px;
+          }
+
+          /* Download button styling */
+          .download-container {
+              text-align: center;
+              margin: 8px 0;
+              padding: 3px;
+          }
+
+          .download-button {
+              background-color: #4CAF50;
+              border: none;
+              color: white;
+              padding: 8px 16px;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 14px;
+              margin: 2px;
+              cursor: pointer;
+              border-radius: 4px;
+          }
+
+          .download-button:hover {
+              background-color: #45a049;
+          }
+
+          /* Hide the button when printing */
+          @media print {
+              .download-container {
+                  display: none;
+              }
+
+              body {
+                  padding: 0;
+                  margin: 0.6in;
+              }
+
+              @page {
+                  margin: 0;
+                  size: auto;
+              }
+          }
+      </style>
+  </head>
+  <body>
+      <div class="download-container">
+          <button class="download-button"
+  onclick="printAsPDF()">Download as PDF</button>
+      </div>
+
+      <div class="header">
+          Felix Wa Ngoy Nsenga<br>
+          Seattle, WA<br>
+          425-500-9954<br>
+          fnsenga@seattleu.edu<br>
+          January 30, 2025
+      </div>
+
+      <div class="recipient">
+          Multiverse Computing<br>
+          Software Engineering Team<br>
+          San Sebastian, Spain
+      </div>
+
+      <div class="subject">
+          Re: Software Engineer Position
+      </div>
+
+      <p>I want to join Multiverse Computing as a Software Engineer.
+  I'm an Electrical and Computer Engineering student who builds
+  software that actually works. Your mission of making AI more
+  efficient through smart engineering matches exactly how I think about
+   building systems.</p>
+
+      <p>I built Cypher, a full-stack AI application that combines
+  real-time computer vision with conversational AI. The system uses
+  Python throughout, from the WebSocket streaming architecture to the
+  API design that handles concurrent users. I faced real performance
+  problems and solved them through engineering, not hardware. When my
+  GPU server was crashing from frame queue overload, I engineered a
+  solution that works better on weaker hardware than the original
+  approach worked on powerful hardware.</p>
+
+      <p>My technical skills fit what you need. I write Python daily
+  and understand both frontend fundamentals and backend architecture.
+  The Cypher project required building APIs that handle real-time data
+  processing, designing efficient application workflows, and creating
+  systems that stay responsive under load. I work with Git for version
+  control and understand CI/CD concepts through managing the deployment
+   pipeline for my multi-component system.</p>
+
+      <p>What excites me about Multiverse Computing is how you approach
+   efficiency. CompactifAI solves the same kind of problems I think
+  about. Instead of accepting that AI systems need massive resources,
+  you engineer solutions that make them smaller and faster. That's
+  exactly the mindset I used when I threw out the frame queue and built
+   something that performs better while using less computing power.</p>
+
+      <p>I'm ready to move to San Sebastian and work with your
+  international team. I have basic Spanish skills and am working to
+  improve them. Moving to Spain excites me because I want to learn from
+   your team of experts and contribute to solving real problems for
+  Fortune 500 customers.</p>
+
+      <p>I thrive in fast-paced startup environments where I can take
+  on technical leadership responsibilities. My experience building
+  Cypher independently shows I can work with experts from different
+  backgrounds and deliver software that solves actual problems. I
+  understand the balance between academic rigor and practical
+  engineering that makes systems work in the real world.</p>
+
+      <p>You can see my complete work at github.com/Felixnsg. The
+  repository shows how I approach software engineering challenges and
+  the kind of solutions I build when performance matters.</p>
+
+      <div class="closing">
+          Thank you for considering my application.
+      </div>
+
+      <div class="signature">
+          Sincerely,<br><br>
+          Felix Wa Ngoy Nsenga
+      </div>
+
+      <script>
+          function printAsPDF() {
+              window.print();
+          }
+      </script>
+  </body>
+  </html>

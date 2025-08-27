@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felix Nsenga - Resume</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.1;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.3in 0.5in;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3px;
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .contact-info {
+            font-size: 11px;
+            margin: 3px 0;
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 1px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            margin-bottom: 0;
+            font-size: 12px;
+        }
+
+        .company-location {
+            font-style: italic;
+            margin-top: 1px;
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .dates {
+            float: right;
+            font-weight: normal;
+        }
+
+        ul {
+            margin-top: 1px;
+            margin-bottom: 6px;
+            padding-left: 16px;
+        }
+
+        li {
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .summary {
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .skills-section {
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        /* Download button styling */
+        .download-container {
+            text-align: center;
+            margin: 6px 0;
+            padding: 2px;
+        }
+
+        .download-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 1px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .download-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Hide the button when printing */
+        @media print {
+            .download-container {
+                display: none;
+            }
+
+            body {
+                padding: 0;
+                margin: 0.3in;
+            }
+
+            @page {
+                margin: 0;
+                size: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-container">
+        <button class="download-button" onclick="printAsPDF()">Download as PDF</button>
+    </div>
+
+    <div class="header">
+        <h1 class="name">FELIX WA NGOY NSENGA</h1>
+        <p class="contact-info">Seattle, WA • 425-500-9954 • fnsenga@seattleu.edu • linkedin.com/in/felix-nsenga-7a52a8280</p>
+    </div>
+
+    <div class="summary">
+        Dedicated Seattle University student passionate about youth development and educational equity. Experienced peer mentor with demonstrated ability to build authentic relationships with students from diverse backgrounds. Multilingual communicator skilled in creating inclusive, supportive environments that promote academic success and social-emotional growth. Committed to community engagement and social justice through meaningful youth mentorship.
+    </div>
+
+    <div class="section-title">EDUCATION</div>
+
+    <div class="job-title">Bachelor of Science in Electrical and Computer Engineering <span class="dates">Expected 2027</span></div>
+    <div class="company-location">Seattle University, Seattle, WA</div>
+    <ul>
+        <li>GPA: 3.8/4.0 • Dean's List: Three consecutive quarters</li>
+        <li>Commitment to full academic year • Available 10 hours/week for mentoring sessions and team meetings</li>
+    </ul>
+
+    <div class="section-title">YOUTH MENTORING EXPERIENCE</div>
+
+    <div class="job-title">Peer Educator & Student Mentor <span class="dates">2022-2024</span></div>
+    <div class="company-location">Bellevue College, Bellevue, WA</div>
+    <ul>
+        <li>Built trusting relationships with 50+ students weekly, providing one-on-one academic and social-emotional support</li>
+        <li>Supported students from underrepresented backgrounds, helping them navigate academic challenges and connect to campus resources</li>
+        <li>Maintained detailed session records documenting student progress, concerns, and successful interventions</li>
+        <li>Collaborated with faculty supervisor Melissa to plan targeted support strategies for struggling students</li>
+        <li>Participated in weekly team meetings to coordinate support efforts and share effective mentoring practices</li>
+        <li>Demonstrated reliability and consistency in mentoring relationships, maintaining regular schedules with students</li>
+        <li>Adapted communication styles to effectively connect with students from various social and economic backgrounds</li>
+    </ul>
+
+    <div class="job-title">Community Engagement & Youth Support <span class="dates">2023-Present</span></div>
+    <div class="company-location">Personal Initiative - Youth Technology Education</div>
+    <ul>
+        <li>Developed educational materials and activities to make technology accessible to young learners</li>
+        <li>Created positive learning environments emphasizing growth mindset and celebrating small victories</li>
+        <li>Used positive language and accountability practices to encourage student engagement and persistence</li>
+        <li>Documented student interactions and progress to track development and adjust support strategies</li>
+    </ul>
+
+    <div class="section-title">RELEVANT SKILLS</div>
+
+    <p class="skills-section"><strong>Mentoring & Relationship Building</strong>: One-on-one mentoring, Active listening, Trust building, Cultural sensitivity, Positive reinforcement<br>
+    <strong>Communication</strong>: Multilingual (English, French, Swahili, 5+ African dialects), Written documentation, Family engagement<br>
+    <strong>Youth Development</strong>: Social-emotional support, Academic guidance, Belonging and connection building, Healing-centered approaches<br>
+    <strong>Professional Skills</strong>: Record keeping, Team collaboration, Time management, Dependable attendance, Professional development</p>
+
+    <div class="section-title">CULTURAL COMPETENCY & LANGUAGES</div>
+
+    <ul>
+        <li><strong>Multilingual Communication:</strong> Fluent in English, French, and Swahili, enabling connection with diverse student populations</li>
+        <li><strong>Cultural Understanding:</strong> Native speaker of multiple African dialects with deep understanding of immigrant and refugee experiences</li>
+        <li><strong>Inclusive Practices:</strong> Experienced in creating welcoming spaces for students from various cultural backgrounds</li>
+        <li><strong>Bridge Building:</strong> Ability to connect with international students and families, helping them navigate educational systems</li>
+    </ul>
+
+    <div class="section-title">COMMITMENT TO SOCIAL JUSTICE</div>
+
+    <ul>
+        <li><strong>Educational Equity:</strong> Passionate about removing barriers to academic success for underserved youth</li>
+        <li><strong>Community Engagement:</strong> Dedicated to building stronger connections between university and local communities</li>
+        <li><strong>Anti-Racist Practices:</strong> Committed to ongoing learning about racial equity and culturally responsive mentoring</li>
+        <li><strong>Youth Empowerment:</strong> Focused on helping young people recognize their potential and build confidence</li>
+        <li><strong>Long-term Commitment:</strong> Available for full academic year commitment to ensure consistent mentoring relationships</li>
+    </ul>
+
+    <script>
+        function printAsPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

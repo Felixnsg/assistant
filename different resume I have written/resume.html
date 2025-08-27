@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width,
+  initial-scale=1.0">
+      <title>Felix Nsenga - Resume</title>
+      <style>
+          body {
+              font-family: "Times New Roman", Times, serif;
+              line-height: 1.1;
+              color: #333;
+              max-width: 8.5in;
+              margin: 0 auto;
+              padding: 0.3in 0.5in;
+          }
+
+          .header {
+              text-align: center;
+              margin-bottom: 8px;
+              border-bottom: 1px solid #000;
+              padding-bottom: 3px;
+          }
+
+          .name {
+              font-size: 20px;
+              font-weight: bold;
+              text-transform: uppercase;
+              margin: 0;
+          }
+
+          .contact-info {
+              font-size: 11px;
+              margin: 3px 0;
+          }
+
+          .section-title {
+              text-transform: uppercase;
+              font-weight: bold;
+              border-bottom: 1px solid #000;
+              padding-bottom: 1px;
+              margin-top: 8px;
+              margin-bottom: 4px;
+              font-size: 13px;
+          }
+
+          .job-title {
+              font-weight: bold;
+              margin-bottom: 0;
+              font-size: 12px;
+          }
+
+          .company-location {
+              font-style: italic;
+              margin-top: 1px;
+              margin-bottom: 1px;
+              font-size: 11px;
+          }
+
+          .dates {
+              float: right;
+              font-weight: normal;
+          }
+
+          ul {
+              margin-top: 1px;
+              margin-bottom: 6px;
+              padding-left: 16px;
+          }
+
+          li {
+              margin-bottom: 1px;
+              font-size: 11px;
+          }
+
+          .summary {
+              margin-bottom: 8px;
+              font-size: 11px;
+          }
+
+          .skills-section {
+              font-size: 11px;
+              line-height: 1.2;
+          }
+
+          /* Download button styling */
+          .download-container {
+              text-align: center;
+              margin: 6px 0;
+              padding: 2px;
+          }
+
+          .download-button {
+              background-color: #4CAF50;
+              border: none;
+              color: white;
+              padding: 6px 12px;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 12px;
+              margin: 1px;
+              cursor: pointer;
+              border-radius: 3px;
+          }
+
+          .download-button:hover {
+              background-color: #45a049;
+          }
+
+          /* Hide the button when printing */
+          @media print {
+              .download-container {
+                  display: none;
+              }
+
+              body {
+                  padding: 0;
+                  margin: 0.3in;
+              }
+
+              @page {
+                  margin: 0;
+                  size: auto;
+              }
+          }
+      </style>
+  </head>
+  <body>
+      <div class="download-container">
+          <button class="download-button"
+  onclick="printAsPDF()">Download as PDF</button>
+      </div>
+
+      <div class="header">
+          <h1 class="name">FELIX WA NGOY NSENGA</h1>
+          <p class="contact-info">Seattle, WA • 425-500-9954 •
+  fnsenga@seattleu.edu • linkedin.com/in/felix-nsenga-7a52a8280</p>
+      </div>
+
+      <div class="summary">
+          Electrical and Computer Engineering student with software
+  engineering experience in Python development, API design, and system
+  architecture. Demonstrated expertise in full-stack development
+  through production-scale AI applications with WebSocket
+  communications, real-time processing, and cloud-ready deployment.
+  Strong foundation in machine learning applications with proven
+  technical leadership abilities.
+      </div>
+
+      <div class="section-title">EDUCATION</div>
+
+      <div class="job-title">Bachelor of Science in Electrical and
+  Computer Engineering <span class="dates">Expected 2027</span></div>
+      <div class="company-location">Seattle University, Seattle,
+  WA</div>
+      <ul>
+          <li>GPA: 3.8/4.0 • Dean's List: Three consecutive
+  quarters</li>
+          <li>Relevant Coursework: Object-Oriented Programming, Data
+  Structures & Algorithms, Systems Design, Software Engineering</li>
+      </ul>
+
+      <div class="section-title">SOFTWARE ENGINEERING PROJECTS</div>
+
+      <div class="job-title">Cypher AI - Full-Stack Multi-Modal
+  Application <span class="dates">2024-Present</span></div>
+      <div class="company-location">Lead Software Engineer & Technical
+  Architect</div>
+      <ul>
+          <li>Architected complete software system integrating ML APIs
+  with real-time web applications using Python, WebSocket protocols,
+  and async programming</li>
+          <li>Designed RESTful API architecture supporting concurrent
+  users and real-time data processing with sub-100ms response
+  times</li>
+          <li>Built front-end interfaces with focus on accessibility
+  and responsive design, demonstrating full-stack development
+  capabilities</li>
+          <li>Implemented cloud-ready deployment architecture with
+  containerization support and scalable infrastructure design</li>
+          <li>Developed Git-based version control workflows and
+  automated testing frameworks following software engineering best
+  practices</li>
+      </ul>
+
+      <div class="section-title">TECHNICAL EXPERIENCE</div>
+
+      <div class="job-title">Software Development & System Integration
+  <span class="dates">2023-2024</span></div>
+      <ul>
+          <li>Led end-to-end software development from requirements
+  analysis through deployment of complex technical systems</li>
+          <li>Implemented modular architecture with clean separation of
+   concerns enabling independent component development</li>
+          <li>Designed APIs for multi-service communication with
+  performance optimization and efficient data flow management</li>
+          <li>Built comprehensive debugging and monitoring systems with
+   detailed logging and performance metrics</li>
+          <li>Demonstrated technical leadership through independent
+  project management and delivery of production-ready solutions</li>
+      </ul>
+
+      <div class="job-title">Technical Support & Documentation
+  Specialist <span class="dates">2023-2024</span></div>
+      <div class="company-location">Bellevue College, Bellevue,
+  WA</div>
+      <ul>
+          <li>Provided technical troubleshooting and system
+  optimization support, developing strong debugging skills</li>
+          <li>Created comprehensive technical documentation
+  demonstrating ability to communicate complex concepts
+  effectively</li>
+          <li>Collaborated with diverse teams on technical issue
+  resolution with detailed reporting and knowledge sharing</li>
+      </ul>
+
+      <div class="section-title">TECHNICAL SKILLS</div>
+
+      <p class="skills-section"><strong>Programming</strong>: Python
+  (Expert), JavaScript fundamentals, Object-Oriented Programming, Data
+  Structures & Algorithms, Async/Concurrent Programming<br>
+      <strong>Software Engineering</strong>: System Architecture,
+  RESTful APIs, WebSocket Communications, Modular Design, Performance
+  Optimization, Git Version Control, CI/CD<br>
+      <strong>Development & Deployment</strong>: Cloud Architecture,
+  Docker fundamentals, Environment Management, Debugging & Testing,
+  Technical Documentation<br>
+      <strong>Specialized Applications</strong>: Machine Learning
+  Integration, Real-time Data Processing, API Development, Database
+  Management, Web Applications</p>
+
+      <div class="section-title">ADDITIONAL QUALIFICATIONS</div>
+
+      <ul>
+          <li><strong>Technical Leadership:</strong> Independent
+  management of complex software projects from conception through
+  deployment</li>
+          <li><strong>API Design:</strong> Experience creating
+  efficient application workflows and robust communication
+  protocols</li>
+          <li><strong>Problem-Solving:</strong> Strong analytical
+  skills with proven ability to debug complex issues and implement
+  solutions</li>
+          <li><strong>Knowledge Sharing:</strong> Experience mentoring
+  through clear technical documentation and engineering concept
+  communication</li>
+          <li><strong>Adaptability:</strong> Demonstrated ability to
+  quickly master new technologies and development methodologies</li>
+      </ul>
+
+      <div class="section-title">ADDITIONAL FILES</div>
+
+      <ul>
+          <li><strong>Cypher AI Repository:</strong> Complete software
+  engineering project showcasing full-stack development and system
+  architecture</li>
+      </ul>
+
+      <script>
+          function printAsPDF() {
+              window.print();
+          }
+      </script>
+  </body>
+  </html>

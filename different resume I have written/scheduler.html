@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Weekly Schedule</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4c9f70;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --border-color: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--light-color);
+            flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
+        }
+
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            background-color: var(--light-color);
+            border: none;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+            min-width: 100px; /* Ensure tabs have a minimum width */
+        }
+
+        .tab:hover {
+            background-color: #e9ecef;
+        }
+
+        .tab.active {
+            background-color: white;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .content {
+            padding: 30px;
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .day-overview {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .day-overview h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .schedule-section {
+            margin-bottom: 15px;
+        }
+
+        .time-period {
+            font-weight: 600;
+            margin: 12px 0 8px 0;
+            color: var(--secondary-color);
+        }
+        /* Added style for the time range text */
+        .time-period-range {
+            font-weight: normal;
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-left: 8px;
+        }
+
+        .schedule-blocks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .time-block {
+            background-color: #e9ecef;
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            flex-grow: 1;
+            min-width: 150px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .time-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .time-block.morning { background-color: #d4edda; border-left: 3px solid #28a745; }
+        .time-block.midday { background-color: #fff3cd; border-left: 3px solid #ffc107; }
+        .time-block.afternoon { background-color: #cce5ff; border-left: 3px solid #007bff; }
+        .time-block.evening { background-color: #d1ecf1; border-left: 3px solid #17a2b8; }
+        .time-block.night { background-color: #e2e3e5; border-left: 3px solid #6c757d; }
+
+        .task-list {
+            margin: 25px 0;
+        }
+
+        .task-list h3 {
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--secondary-color);
+        }
+
+        .tasks {
+            list-style-type: none;
+        }
+
+        .task-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .task-checkbox {
+            margin-right: 15px;
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0; /* Prevent checkbox from shrinking */
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-time {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .task-desc {
+            color: var(--dark-color);
+        }
+
+        .subtasks {
+            margin-top: 10px;
+            padding-left: 20px;
+            list-style-type: disc;
+            font-size: 0.9em;
+        }
+
+        .subtask-item {
+            padding: 5px 0;
+            color: #6c757d;
+        }
+
+        .task-item.completed {
+            background-color: #f0f0f0;
+            opacity: 0.8;
+        }
+
+        .task-item.completed .task-content {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 10px; /* Reduced margin */
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 14px;
+            color: var(--accent-color);
+            margin-bottom: 5px; /* Reduced margin */
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .tab {
+                padding: 12px 15px; /* Adjusted padding */
+                font-size: 14px;
+            }
+
+            .content {
+                padding: 20px; /* Adjusted padding */
+            }
+
+            .time-block {
+                min-width: 130px; /* Adjusted min-width */
+                font-size: 13px;
+            }
+             .task-item {
+                 padding: 10px;
+             }
+             .task-time {
+                 font-size: 0.85em;
+             }
+             .task-desc {
+                 font-size: 0.95em;
+             }
+             .subtasks {
+                 font-size: 0.85em;
+             }
+             .time-period-range {
+                 display: block; /* Stack time range below title */
+                 margin-left: 0;
+                 margin-top: 2px;
+             }
+        }
+
+         @media (max-width: 480px) {
+            .tab {
+                 padding: 10px;
+                 font-size: 13px;
+            }
+            .time-block {
+                min-width: 100%; /* Stack blocks vertically */
+                text-align: center;
+            }
+            .task-item {
+                flex-direction: column; /* Stack checkbox and content */
+                align-items: flex-start;
+            }
+            .task-checkbox {
+                margin-bottom: 8px; /* Add space below checkbox */
+                margin-right: 0;
+            }
+         }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Weekly Schedule & Prep Plan</h1>
+            <p>April 29 - May 4, 2025</p>
+        </header>
+
+        <div class="tab-container">
+            <button class="tab active" data-day="tuesday">Tuesday</button>
+            <button class="tab" data-day="wednesday">Wednesday</button>
+            <button class="tab" data-day="thursday">Thursday</button>
+            <button class="tab" data-day="friday">Friday</button>
+            <button class="tab" data-day="saturday">Saturday</button>
+            <button class="tab" data-day="sunday">Sunday</button>
+        </div>
+
+        <!-- Tuesday Content -->
+        <div class="content active" id="tuesday">
+            <div class="progress-text">0% completed</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="tuesday-progress"></div>
+            </div>
+
+            <div class="day-overview">
+                <h3>Tuesday 4/29/2025 Overview</h3>
+                <div class="schedule-section">
+                    <div class="time-period">🌅 Morning <span class="time-period-range">(~9:30AM - 1:30PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block morning">Wake 9:30AM</div>
+                        <div class="time-block morning">Assignment work (Friday)</div>
+                        <div class="time-block morning">Lunch</div>
+                    </div>
+                    <div class="time-period">🕛 Midday <span class="time-period-range">(~1:30PM - 3:30PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block midday">Class 1:30–3:30</div>
+                    </div>
+                    <div class="time-period">🌇 Afternoon <span class="time-period-range">(~3:30PM - 6:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block afternoon">Assignment work (Friday)</div>
+                    </div>
+                    <div class="time-period">🌆 Evening <span class="time-period-range">(~6:00PM - 9:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block evening">Dinner</div>
+                        <div class="time-block evening">LC Arrays/Hashing Focus</div>
+                    </div>
+                    <div class="time-period">🌃 Night <span class="time-period-range">(~9:00PM onwards)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block night">Leadership Principles Work</div>
+                        <div class="time-block night">Sleep by 12:00–1:00AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <h3>Detailed To-Do List</h3>
+                <ul class="tasks" id="tuesday-tasks">
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">9:30AM</div>
+                            <div class="task-desc">Wake up</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">Morning</div>
+                            <div class="task-desc">Morning Routine</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">10:15AM–12:15PM</div>
+                            <div class="task-desc">School Assignment (Start Friday's)</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Open the Friday Assignment</li>
+                                <li class="subtask-item">Understand prompt fully</li>
+                                <li class="subtask-item">Create a rough outline</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">~12:15PM - 1:30PM</div>
+                            <div class="task-desc">Lunch Break</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">1:30PM–3:30PM</div>
+                            <div class="task-desc">Class</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">3:30PM–5:30PM</div>
+                            <div class="task-desc">School Assignment Push</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Write ~30% of the assignment</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">6:00PM–7:00PM</div>
+                            <div class="task-desc">Dinner</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">7:00PM–9:00PM</div>
+                            <div class="task-desc">LeetCode Arrays/Hashing Practice</div>
+                             <ul class="subtasks">
+                                <li class="subtask-item">Solve 2 Easy + 1 Medium</li>
+                                <li class="subtask-item">Focus on time/space complexity explanations</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">9:00PM–10:00PM</div>
+                            <div class="task-desc">Leadership Principles Work</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Read 1-2 LPs</li>
+                                <li class="subtask-item">Bullet keywords of your related experiences</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="tuesday">
+                        <div class="task-content">
+                            <div class="task-time">By 12:00–1:00AM</div>
+                            <div class="task-desc">Sleep</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Wednesday Content -->
+        <div class="content" id="wednesday">
+            <div class="progress-text">0% completed</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="wednesday-progress"></div>
+            </div>
+
+            <div class="day-overview">
+                 <h3>Wednesday 4/30/2025 Overview</h3>
+                 <div class="schedule-section">
+                    <div class="time-period">🌅 Morning <span class="time-period-range">(~9:00AM - 10:30AM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block morning">Wake 9:00AM</div>
+                        <div class="time-block morning">LC Mini Practice</div>
+                    </div>
+                    <div class="time-period">🕛 Midday <span class="time-period-range">(~10:30AM - 3:00PM)</span></div>
+                    <div class="schedule-blocks">
+                         <div class="time-block midday">Class 10:30–1:55</div>
+                         <div class="time-block midday">Office Hours (Optional)</div>
+                         <div class="time-block midday">Lunch</div>
+                    </div>
+                    <div class="time-period">🌇 Afternoon <span class="time-period-range">(~3:00PM - 5:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block afternoon">Assignment push (Finalize Friday's)</div>
+                    </div>
+                    <div class="time-period">🌆 Evening <span class="time-period-range">(~5:00PM - 8:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block evening">LC Arrays/Hashing (Mediums)</div>
+                        <div class="time-block evening">Debugging Practice</div>
+                    </div>
+                    <div class="time-period">🌃 Night <span class="time-period-range">(~8:00PM onwards)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block night">Behavioral Prep (STAR Brainstorm)</div>
+                        <div class="time-block night">Sleep by 12:00–1:00AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <h3>Detailed To-Do List</h3>
+                <ul class="tasks" id="wednesday-tasks">
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">9:00AM</div>
+                            <div class="task-desc">Wake up</div>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">Morning</div>
+                            <div class="task-desc">Morning Routine</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">9:30–10:15AM</div>
+                            <div class="task-desc">LeetCode Mini Practice</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Solve 1 Quick Easy problem</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">10:30AM–1:55PM</div>
+                            <div class="task-desc">Class</div>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">Optional 2:00PM–3:00PM</div>
+                            <div class="task-desc">Office Hours</div>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">~Before 3:00PM</div>
+                            <div class="task-desc">Lunch Break</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">3:00–5:00PM</div>
+                            <div class="task-desc">Assignment Finalization (Friday's)</div>
+                             <ul class="subtasks">
+                                <li class="subtask-item">Finish 80–100% of Friday assignment</li>
+                            </ul>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">5:00–7:00PM</div>
+                            <div class="task-desc">LeetCode Practice: Arrays/Hashing Mediums</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Time yourself: try to solve each under 30 min</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">7:00–8:00PM</div>
+                            <div class="task-desc">Debugging Practice</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Solve 2 Python debugging exercises</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">8:00–9:00PM</div>
+                            <div class="task-desc">Behavioral STAR Story Brainstorm</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Outline 1-2 new stories</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="wednesday">
+                        <div class="task-content">
+                            <div class="task-time">By 12:00–1:00AM</div>
+                            <div class="task-desc">Sleep</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Thursday Content -->
+        <div class="content" id="thursday">
+            <div class="progress-text">0% completed</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="thursday-progress"></div>
+            </div>
+
+             <div class="day-overview">
+                 <h3>Thursday 5/1/2025 Overview</h3>
+                 <div class="schedule-section">
+                    <div class="time-period">🌅 Morning <span class="time-period-range">(~8:00AM - 1:30PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block morning">Wake 8:00AM</div>
+                        <div class="time-block morning">Submit Assignment</div>
+                    </div>
+                    <div class="time-period">🕛 Midday <span class="time-period-range">(~1:30PM - ~3:30PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block midday">Class 1:30–~3:30</div>
+                    </div>
+                    <div class="time-period">🌇 Afternoon <span class="time-period-range">(~3:30PM - 7:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block afternoon">Class ~3:30–7:00</div>
+                    </div>
+                    <div class="time-period">🌆 Evening <span class="time-period-range">(~7:00PM - 9:30PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block evening">Break / Dinner</div>
+                        <div class="time-block evening">LC Two Pointers Start</div>
+                    </div>
+                    <div class="time-period">🌃 Night <span class="time-period-range">(~9:30PM onwards)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block night">Write 1 STAR Story</div>
+                        <div class="time-block night">Sleep by 12:00–1:00AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <h3>Detailed To-Do List</h3>
+                <ul class="tasks" id="thursday-tasks">
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="thursday">
+                        <div class="task-content">
+                            <div class="task-time">8:00AM</div>
+                            <div class="task-desc">Wake up</div>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="thursday">
+                        <div class="task-content">
+                            <div class="task-time">Morning</div>
+                            <div class="task-desc">Morning Routine</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="thursday">
+                        <div class="task-content">
+                            <div class="task-time">Before Class</div>
+                            <div class="task-desc">Submit Assignment</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="thursday">
+                        <div class="task-content">
+                            <div class="task-time">1:30PM–7:00PM</div>
+                            <div class="task-desc">Class</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="thursday">
+                        <div class="task-content">
+                            <div class="task-time">7:00PM–8:00PM</div>
+                            <div class="task-desc">Break and Dinner</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="thursday">
+                        <div class="task-content">
+                            <div class="task-time">8:00PM–9:30PM</div>
+                            <div class="task-desc">LeetCode: Two Pointers Focus</div>
+                            <ul class="subtasks">
+                                 <li class="subtask-item">Solve 2 Easies + 1 Medium</li>
+                             </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="thursday">
+                        <div class="task-content">
+                            <div class="task-time">9:30PM–10:30PM</div>
+                            <div class="task-desc">Write 1 Full STAR Story</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Situation, Task, Action, Result structure</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="thursday">
+                        <div class="task-content">
+                            <div class="task-time">By 12:00–1:00AM</div>
+                            <div class="task-desc">Sleep</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Friday Content -->
+        <div class="content" id="friday">
+            <div class="progress-text">0% completed</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="friday-progress"></div>
+            </div>
+
+            <div class="day-overview">
+                <h3>Friday 5/2/2025 Overview</h3>
+                <div class="schedule-section">
+                    <div class="time-period">🌅 Morning <span class="time-period-range">(~8:30AM - 10:30AM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block morning">Wake 8:30AM</div>
+                        <div class="time-block morning">Morning Routine</div>
+                     </div>
+                    <div class="time-period">🕛 Midday <span class="time-period-range">(~10:30AM - 3:30PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block midday">Class 10:30–1:55</div>
+                        <div class="time-block midday">Lunch and Break</div>
+                    </div>
+                    <div class="time-period">🌇 Afternoon <span class="time-period-range">(~3:30PM - 7:30PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block afternoon">LC Two Pointers/Sliding Window</div>
+                        <div class="time-block afternoon">Stacks Concept Learning</div>
+                        <div class="time-block afternoon">Debugging Practice</div>
+                    </div>
+                    <div class="time-period">🌆 Evening <span class="time-period-range">(~7:30PM - 9:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block evening">Dinner / Break</div>
+                        <div class="time-block evening">Leadership Principle Mock Practice</div>
+                    </div>
+                    <div class="time-period">🌃 Night <span class="time-period-range">(~9:00PM onwards)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block night">Relax/Sleep by 12:00–1:00AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <h3>Detailed To-Do List</h3>
+                <ul class="tasks" id="friday-tasks">
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">8:30AM</div>
+                            <div class="task-desc">Wake up</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">Morning</div>
+                            <div class="task-desc">Morning Routine</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">10:30AM–1:55PM</div>
+                            <div class="task-desc">Class</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">2:00–3:30PM</div>
+                            <div class="task-desc">Lunch and Break</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">3:30–5:30PM</div>
+                            <div class="task-desc">LeetCode Two Pointers/Sliding Window</div>
+                             <ul class="subtasks">
+                                <li class="subtask-item">Solve 2 Mediums</li>
+                             </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">5:30–6:30PM</div>
+                            <div class="task-desc">Stacks Concept Learning</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Watch NeetCode Stack video</li>
+                                <li class="subtask-item">Solve 1 Easy stack problem</li>
+                             </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">6:30–7:30PM</div>
+                            <div class="task-desc">Debugging Practice</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Find and solve 1-2 exercises</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">~7:30PM - 8:00PM</div>
+                            <div class="task-desc">Short Break / Dinner Prep</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">8:00PM–9:00PM</div>
+                            <div class="task-desc">Leadership Principle Mock Practice</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Verbally answer 1-2 LP questions using STAR</li>
+                            </ul>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="friday">
+                        <div class="task-content">
+                            <div class="task-time">By 12:00–1:00AM</div>
+                            <div class="task-desc">Sleep</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Saturday Content -->
+        <div class="content" id="saturday">
+            <div class="progress-text">0% completed</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="saturday-progress"></div>
+            </div>
+
+            <div class="day-overview">
+                <h3>Saturday 5/3/2025 Overview</h3>
+                <div class="schedule-section">
+                    <div class="time-period">🌅 Morning <span class="time-period-range">(~9:30AM - 12:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block morning">Wake 9:30AM</div>
+                        <div class="time-block morning">LC Stacks + Sliding Window Practice</div>
+                    </div>
+                    <div class="time-period">🕛 Midday <span class="time-period-range">(~12:00PM - 3:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block midday">Break / Lunch</div>
+                         <div class="time-block midday">LC Stack Practice</div>
+                    </div>
+                    <div class="time-period">🌇 Afternoon <span class="time-period-range">(~3:00PM - 6:00PM)</span></div>
+                    <div class="schedule-blocks">
+                         <div class="time-block afternoon">Debugging Session</div>
+                        <div class="time-block afternoon">Expand Behavioral Stories</div>
+                    </div>
+                    <div class="time-period">🌆 Evening <span class="time-period-range">(~6:00PM onwards)</span></div>
+                    <div class="schedule-blocks">
+                         <div class="time-block evening">Free Time / Chill Evening</div>
+                    </div>
+                    <div class="time-period">🌃 Night <span class="time-period-range">(Covered by Evening)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block night">Relax/Sleep</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <h3>Detailed To-Do List</h3>
+                <ul class="tasks" id="saturday-tasks">
+                   <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="saturday">
+                        <div class="task-content">
+                            <div class="task-time">9:30AM</div>
+                            <div class="task-desc">Wake up</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="saturday">
+                        <div class="task-content">
+                            <div class="task-time">Morning</div>
+                            <div class="task-desc">Morning Routine</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="saturday">
+                        <div class="task-content">
+                            <div class="task-time">10:00AM–12:00PM</div>
+                            <div class="task-desc">LeetCode Practice</div>
+                             <ul class="subtasks">
+                                <li class="subtask-item">Focus on Sliding Window and Two Pointers (1-2 Mediums)</li>
+                             </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="saturday">
+                        <div class="task-content">
+                            <div class="task-time">12:00PM–1:30PM</div>
+                            <div class="task-desc">Break / Lunch</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="saturday">
+                        <div class="task-content">
+                            <div class="task-time">1:30PM–3:00PM</div>
+                            <div class="task-desc">LeetCode Stack Practice</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Solve 2-3 Stack problems (Easy/Medium)</li>
+                            </ul>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="saturday">
+                        <div class="task-content">
+                            <div class="task-time">3:00PM–4:00PM</div>
+                            <div class="task-desc">Debugging Session</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Review past debugging errors or do 1-2 new exercises</li>
+                             </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="saturday">
+                        <div class="task-content">
+                            <div class="task-time">4:00PM–6:00PM</div>
+                            <div class="task-desc">Expand Behavioral Stories</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Add more detail (Actions, Results) to STAR outlines</li>
+                                <li class="subtask-item">Refine wording</li>
+                            </ul>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="saturday">
+                        <div class="task-content">
+                            <div class="task-time">6:00PM onward</div>
+                            <div class="task-desc">Free Time / Chill Evening</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sunday Content -->
+        <div class="content" id="sunday">
+            <div class="progress-text">0% completed</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="sunday-progress"></div>
+            </div>
+
+            <div class="day-overview">
+                <h3>Sunday 5/4/2025 Overview</h3>
+                 <div class="schedule-section">
+                    <div class="time-period">🌅 Morning <span class="time-period-range">(~9:00AM - 11:00AM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block morning">Wake 9:00AM</div>
+                        <div class="time-block morning">Study for Monday</div>
+                    </div>
+                    <div class="time-period">🕛 Midday <span class="time-period-range">(~11:00AM - 2:00PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block midday">LC Review (Two Pointers/Sliding)</div>
+                        <div class="time-block midday">Lunch Break</div>
+                    </div>
+                    <div class="time-period">🌇 Afternoon <span class="time-period-range">(~2:00PM - 5:30PM)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block afternoon">STAR Stories Final Polish</div>
+                         <div class="time-block afternoon">Behavioral Mock Interview</div>
+                    </div>
+                    <div class="time-period">🌆 Evening <span class="time-period-range">(~5:30PM onwards)</span></div>
+                    <div class="schedule-blocks">
+                        <div class="time-block evening">Light Relaxation + Setup for Monday</div>
+                    </div>
+                    <div class="time-period">🌃 Night <span class="time-period-range">(Covered by Evening)</span></div>
+                    <div class="schedule-blocks">
+                         <div class="time-block night">Relax/Sleep</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <h3>Detailed To-Do List</h3>
+                <ul class="tasks" id="sunday-tasks">
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="sunday">
+                        <div class="task-content">
+                            <div class="task-time">9:00AM</div>
+                            <div class="task-desc">Wake up</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="sunday">
+                        <div class="task-content">
+                            <div class="task-time">Morning</div>
+                            <div class="task-desc">Morning Routine</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="sunday">
+                        <div class="task-content">
+                            <div class="task-time">9:30–11:00AM</div>
+                            <div class="task-desc">Study Monday Classes</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Quick review of notes/topics</li>
+                             </ul>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="sunday">
+                        <div class="task-content">
+                            <div class="task-time">11:00AM–1:00PM</div>
+                            <div class="task-desc">LeetCode Review (Two Pointers/Sliding)</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Redo 1-2 problems you found hard</li>
+                                <li class="subtask-item">Review concepts if needed</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="sunday">
+                        <div class="task-content">
+                            <div class="task-time">1:00–2:00PM</div>
+                            <div class="task-desc">Lunch Break</div>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="sunday">
+                        <div class="task-content">
+                            <div class="task-time">2:00–4:00PM</div>
+                            <div class="task-desc">STAR Stories Final Polish</div>
+                            <ul class="subtasks">
+                                <li class="subtask-item">Read stories aloud</li>
+                                <li class="subtask-item">Check for clarity and impact</li>
+                             </ul>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="sunday">
+                        <div class="task-content">
+                            <div class="task-time">4:00–5:30PM</div>
+                            <div class="task-desc">Behavioral Mock Interview</div>
+                             <ul class="subtasks">
+                                <li class="subtask-item">Ask yourself 2-3 common behavioral questions</li>
+                                <li class="subtask-item">Answer aloud using your prepared STAR stories</li>
+                             </ul>
+                        </div>
+                    </li>
+                     <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-day="sunday">
+                        <div class="task-content">
+                            <div class="task-time">5:30PM onward</div>
+                            <div class="task-desc">Light Relaxation + Setup for Monday</div>
+                             <ul class="subtasks">
+                                <li class="subtask-item">Prepare bag, clothes, etc.</li>
+                                <li class="subtask-item">Relax before the week starts</li>
+                             </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="save-indicator" id="save-indicator">Progress saved!</div>
+
+        <footer>
+            <p>Weekly Schedule & Prep Plan | Updated April 28, 2025</p>
+            <p>Mindset: Consistency beats intensity. Focus on daily wins for OA Prep.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const day = tab.getAttribute('data-day');
+                    document.getElementById(day).classList.add('active');
+                });
+            });
+
+            // Task completion
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            const days = ['tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+            // Load saved state
+            loadTaskState();
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const taskItem = this.closest('.task-item'); // Use closest to ensure we get the right parent
+                    const day = this.getAttribute('data-day');
+
+                    if (this.checked) {
+                        taskItem.classList.add('completed');
+                    } else {
+                        taskItem.classList.remove('completed');
+                    }
+
+                    // Update progress bar
+                    updateProgress(day);
+
+                    // Save state
+                    saveTaskState();
+
+                    // Show save indicator
+                    showSaveIndicator();
+                });
+            });
+
+            // Update progress for all days on load
+            days.forEach(day => {
+                updateProgress(day);
+            });
+
+            function updateProgress(day) {
+                const dayContent = document.getElementById(day);
+                if (!dayContent) return; // Exit if the day content doesn't exist
+
+                const dayTasks = dayContent.querySelectorAll('.task-checkbox');
+                const completedTasks = dayContent.querySelectorAll('.task-checkbox:checked');
+
+                const progress = dayTasks.length > 0 ? (completedTasks.length / dayTasks.length) * 100 : 0;
+                const progressBar = dayContent.querySelector(`#${day}-progress`);
+                const progressText = dayContent.querySelector(`.progress-text`);
+
+                if (progressBar) progressBar.style.width = `${progress}%`;
+                if (progressText) progressText.textContent = `${Math.round(progress)}% completed`;
+            }
+
+            function saveTaskState() {
+                const state = {};
+                days.forEach(day => {
+                    const dayContent = document.getElementById(day);
+                    if (dayContent) {
+                        const dayTasks = dayContent.querySelectorAll('.task-checkbox');
+                        state[day] = Array.from(dayTasks).map(checkbox => checkbox.checked);
+                    } else {
+                        state[day] = []; // Save empty array if day content not found
+                    }
+                });
+
+                try {
+                   localStorage.setItem('taskState', JSON.stringify(state));
+                } catch (e) {
+                    console.error("Could not save task state to localStorage:", e);
+                }
+            }
+
+            function loadTaskState() {
+                 let savedState = null;
+                 try {
+                    savedState = localStorage.getItem('taskState');
+                 } catch (e) {
+                     console.error("Could not read task state from localStorage:", e);
+                     return; // Exit if localStorage is inaccessible
+                 }
+
+                if (savedState) {
+                    try {
+                        const state = JSON.parse(savedState);
+
+                        days.forEach(day => {
+                             const dayContent = document.getElementById(day);
+                             if (dayContent && state[day] && Array.isArray(state[day])) {
+                                const dayTasks = dayContent.querySelectorAll('.task-checkbox');
+
+                                dayTasks.forEach((checkbox, index) => {
+                                     // Check if the index exists in the saved state array
+                                     if (index < state[day].length) {
+                                         checkbox.checked = state[day][index]; // Set checked state
+                                         const taskItem = checkbox.closest('.task-item');
+                                         if (taskItem) {
+                                             if (checkbox.checked) {
+                                                 taskItem.classList.add('completed');
+                                             } else {
+                                                 taskItem.classList.remove('completed');
+                                             }
+                                         }
+                                     } else {
+                                         // Handle case where saved state has fewer items than current tasks (e.g., added new tasks)
+                                         checkbox.checked = false;
+                                          const taskItem = checkbox.closest('.task-item');
+                                          if(taskItem) taskItem.classList.remove('completed');
+                                     }
+                                });
+                            }
+                        });
+                    } catch (e) {
+                         console.error("Error parsing saved task state:", e);
+                         localStorage.removeItem('taskState'); // Clear corrupted state
+                    }
+                }
+                 // Ensure initial progress bars are set correctly after loading
+                 days.forEach(day => updateProgress(day));
+            }
+
+            function showSaveIndicator() {
+                const indicator = document.getElementById('save-indicator');
+                if (indicator) {
+                    indicator.classList.add('show');
+                    setTimeout(() => {
+                        indicator.classList.remove('show');
+                    }, 1500); // Slightly shorter duration
+                }
+            }
+        });
+    </script>
+</body>
+</html>

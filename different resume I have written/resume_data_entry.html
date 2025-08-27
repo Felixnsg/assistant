@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felix Nsenga - Resume</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.1;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.3in 0.5in;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3px;
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .contact-info {
+            font-size: 11px;
+            margin: 3px 0;
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 1px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            margin-bottom: 0;
+            font-size: 12px;
+        }
+
+        .company-location {
+            font-style: italic;
+            margin-top: 1px;
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .dates {
+            float: right;
+            font-weight: normal;
+        }
+
+        ul {
+            margin-top: 1px;
+            margin-bottom: 6px;
+            padding-left: 16px;
+        }
+
+        li {
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .summary {
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .skills-section {
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        /* Download button styling */
+        .download-container {
+            text-align: center;
+            margin: 6px 0;
+            padding: 2px;
+        }
+
+        .download-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 1px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .download-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Hide the button when printing */
+        @media print {
+            .download-container {
+                display: none;
+            }
+
+            body {
+                padding: 0;
+                margin: 0.3in;
+            }
+
+            @page {
+                margin: 0;
+                size: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-container">
+        <button class="download-button" onclick="printAsPDF()">Download as PDF</button>
+    </div>
+
+    <div class="header">
+        <h1 class="name">FELIX WA NGOY NSENGA</h1>
+        <p class="contact-info">Seattle, WA • 425-500-9954 • fnsenga@seattleu.edu • linkedin.com/in/felix-nsenga-7a52a8280</p>
+    </div>
+
+    <div class="summary">
+        Detail-oriented undergraduate student with extensive data management experience seeking Data Entry Specialist position at Seattle University Procurement Services. Proven track record of accurate data entry, database maintenance, and vendor communication. Strong organizational skills with ability to work independently while maintaining confidentiality and meeting strict deadlines.
+    </div>
+
+    <div class="section-title">EDUCATION</div>
+
+    <div class="job-title">Bachelor of Science in Electrical and Computer Engineering <span class="dates">Expected 2027</span></div>
+    <div class="company-location">Seattle University, Seattle, WA</div>
+    <ul>
+        <li>GPA: 3.8/4.0 • Dean's List: Three consecutive quarters</li>
+        <li>Available 20 hours/week Monday-Friday, 9 AM - 4 PM, including summer availability</li>
+    </ul>
+
+    <div class="section-title">DATA MANAGEMENT EXPERIENCE</div>
+
+    <div class="job-title">Database Administrator & Records Specialist <span class="dates">2023-2024</span></div>
+    <div class="company-location">Bellevue College - Student Support Services, Bellevue, WA</div>
+    <ul>
+        <li>Maintained accurate student records and databases while ensuring FERPA compliance and confidentiality</li>
+        <li>Performed high-volume data entry with 99%+ accuracy for student information and academic records</li>
+        <li>Communicated with students, faculty, and staff via email to verify information and resolve data discrepancies</li>
+        <li>Updated and maintained multiple database systems simultaneously while meeting tight deadlines</li>
+        <li>Created and organized digital filing systems for efficient document retrieval and storage</li>
+        <li>Worked independently to prioritize tasks and complete assignments without direct supervision</li>
+    </ul>
+
+    <div class="job-title">System Developer - Data Processing & Management <span class="dates">2024-Present</span></div>
+    <div class="company-location">Personal Project - Cypher AI Assistant System</div>
+    <ul>
+        <li>Developed comprehensive data management system requiring meticulous attention to detail and accuracy</li>
+        <li>Created automated data validation processes to identify and correct errors in large datasets</li>
+        <li>Designed database structures for efficient information storage and retrieval across multiple platforms</li>
+        <li>Generated detailed reports and documentation for system diagnostics and data integrity checks</li>
+        <li>Implemented creative problem-solving approaches to optimize data processing workflows</li>
+    </ul>
+
+    <div class="section-title">TECHNICAL SKILLS</div>
+
+    <p class="skills-section"><strong>Microsoft Office Suite</strong>: Excel (Advanced - pivot tables, VLOOKUP, data validation), Word (Advanced), Outlook (Advanced)<br>
+    <strong>Data Management</strong>: Database Entry, Data Validation, Error Detection & Correction, File Organization, Report Generation<br>
+    <strong>Communication Tools</strong>: Professional Email Correspondence, Vendor Communication, Documentation, Training Materials<br>
+    <strong>Technical Proficiencies</strong>: Fast & Accurate Keyboarding (75+ WPM), Google Suite, Database Systems, Python (data processing)</p>
+
+    <div class="section-title">KEY COMPETENCIES</div>
+
+    <ul>
+        <li><strong>Attention to Detail:</strong> Consistently maintains high accuracy rates in data entry and database management tasks</li>
+        <li><strong>Independent Work:</strong> Proven ability to manage workload and meet deadlines without supervision</li>
+        <li><strong>Problem Solving:</strong> Creative approach to identifying and resolving data inconsistencies and system issues</li>
+        <li><strong>Organizational Skills:</strong> Expert at prioritizing multiple tasks and maintaining organized digital filing systems</li>
+        <li><strong>Communication:</strong> Clear written communication for vendor inquiries and interdepartmental correspondence</li>
+        <li><strong>Confidentiality:</strong> Extensive experience handling sensitive information in compliance with privacy regulations</li>
+    </ul>
+
+    <div class="section-title">ADDITIONAL QUALIFICATIONS</div>
+
+    <ul>
+        <li>Experience with procurement and vendor management processes in educational settings</li>
+        <li>Strong initiative-taking abilities with track record of identifying process improvements</li>
+        <li>Demonstrated ability to learn new database systems and software quickly</li>
+        <li>Commitment to accuracy and quality in all data-related tasks</li>
+        <li>Available to start August 2025 with flexibility for summer hours</li>
+    </ul>
+
+    <script>
+        function printAsPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

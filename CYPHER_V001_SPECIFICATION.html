@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cypher v001 - Engineering Specification & Test Requirements</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 1in;
+        }
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            color: #000;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 1in;
+            background: white;
+        }
+        
+        h1 {
+            font-size: 24pt;
+            text-align: center;
+            margin-bottom: 0.5in;
+            border-bottom: 3px double #000;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 18pt;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #000;
+            page-break-after: avoid;
+        }
+        
+        h3 {
+            font-size: 14pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            page-break-after: avoid;
+        }
+        
+        h4 {
+            font-size: 12pt;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+        
+        .document-header {
+            text-align: center;
+            margin-bottom: 1in;
+        }
+        
+        .version-info {
+            text-align: center;
+            margin-bottom: 0.5in;
+            font-style: italic;
+        }
+        
+        .toc {
+            page-break-after: always;
+            margin-top: 30px;
+        }
+        
+        .toc h2 {
+            border: none;
+            text-align: center;
+        }
+        
+        .toc-item {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        
+        .toc-subitem {
+            margin: 3px 0;
+            padding-left: 40px;
+            font-size: 11pt;
+        }
+        
+        .phase {
+            page-break-before: always;
+            margin-top: 0;
+        }
+        
+        .checklist {
+            margin-left: 20px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .checklist-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .checkbox {
+            width: 15px;
+            height: 15px;
+            border: 1px solid #000;
+            margin-right: 10px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .test-spec {
+            background-color: #f0f0f0;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 3px solid #333;
+        }
+        
+        .test-spec h4 {
+            margin-top: 0;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            font-size: 10pt;
+        }
+        
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10pt;
+            overflow-x: auto;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ff9800;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        
+        .critical {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .success-criteria {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .timeline {
+            margin: 20px 0;
+        }
+        
+        .footer {
+            margin-top: 2in;
+            text-align: center;
+            font-size: 10pt;
+            font-style: italic;
+        }
+        
+        @media print {
+            .phase {
+                page-break-before: always;
+            }
+            .toc {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document-header">
+        <h1>CYPHER v001</h1>
+        <h2 style="border:none; font-size: 16pt;">Engineering Specification & Test Requirements Document</h2>
+        <div class="version-info">
+            <p>Version 1.0.0 - Final Specification</p>
+            <p>Document Date: January 2024</p>
+            <p>Target Completion: 90 Days</p>
+        </div>
+    </div>
+
+    <div class="toc">
+        <h2>TABLE OF CONTENTS</h2>
+        <div class="toc-item"><strong>1. Executive Summary</strong></div>
+        <div class="toc-item"><strong>2. Development Principles</strong></div>
+        <div class="toc-item"><strong>3. Phase 1: Foundation (Days 1-30)</strong></div>
+        <div class="toc-subitem">3.1 Orpheus TTS Integration</div>
+        <div class="toc-subitem">3.2 Pipeline Standardization</div>
+        <div class="toc-item"><strong>4. Phase 2: Sensory Enhancement (Days 31-60)</strong></div>
+        <div class="toc-subitem">4.1 Vision Context System</div>
+        <div class="toc-subitem">4.2 Environmental Awareness</div>
+        <div class="toc-item"><strong>5. Phase 3: Physical Embodiment (Days 61-90)</strong></div>
+        <div class="toc-subitem">5.1 Raspberry Pi Integration</div>
+        <div class="toc-subitem">5.2 Hardware Assembly</div>
+        <div class="toc-item"><strong>6. Test Specifications</strong></div>
+        <div class="toc-item"><strong>7. Final Acceptance Criteria</strong></div>
+    </div>
+
+    <div class="phase">
+        <h2>1. EXECUTIVE SUMMARY</h2>
+        
+        <h3>Project Definition</h3>
+        <p>Cypher v001 is an embodied AI assistant featuring neural text-to-speech, real-time vision capabilities, and physical presence through embedded hardware. This document defines the complete engineering specification for delivering a production-ready v001 release.</p>
+        
+        <h3>Core Objectives</h3>
+        <ul>
+            <li>Implement streaming neural TTS with 5+ minute continuous speech capability</li>
+            <li>Establish standardized pipeline architecture for all features</li>
+            <li>Maintain existing Felix recognition while adding contextual awareness</li>
+            <li>Deploy on Raspberry Pi with complete audio I/O</li>
+            <li>Achieve 100% test coverage for critical paths</li>
+        </ul>
+        
+        <h3>Success Metrics</h3>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Target</th>
+                <th>Measurement Method</th>
+            </tr>
+            <tr>
+                <td>TTS Latency</td>
+                <td>&lt; 100ms to first audio</td>
+                <td>test_tts_latency()</td>
+            </tr>
+            <tr>
+                <td>Audio Duration</td>
+                <td>&gt; 5 minutes continuous</td>
+                <td>test_orpheus_long_form()</td>
+            </tr>
+            <tr>
+                <td>Felix Recognition</td>
+                <td>&gt; 95% accuracy</td>
+                <td>test_felix_detection()</td>
+            </tr>
+            <tr>
+                <td>System Uptime</td>
+                <td>&gt; 24 hours continuous</td>
+                <td>test_system_stability()</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="phase">
+        <h2>2. DEVELOPMENT PRINCIPLES</h2>
+        
+        <h3>The Three Commandments</h3>
+        <div class="critical">
+            <ol>
+                <li><strong>Working Code is Sacred</strong> - Never modify working features during development of new features</li>
+                <li><strong>No Feature Without Test</strong> - Every feature must have passing tests before considered complete</li>
+                <li><strong>One Phase at a Time</strong> - Complete current phase before beginning next</li>
+            </ol>
+        </div>
+        
+        <h3>Feature Freeze Protocol</h3>
+        <p>When a feature reaches working state:</p>
+        <ol>
+            <li>Tag in version control: <code>git tag WORKING_[FEATURE]_v1</code></li>
+            <li>Document in WORKS.md file</li>
+            <li>Freeze for minimum 14 days</li>
+            <li>Add comment blocks: <code># FROZEN UNTIL: [DATE]</code></li>
+        </ol>
+        
+        <h3>Daily Discipline Framework</h3>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Morning:</strong> Review current phase objectives</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Coding:</strong> Work ONLY on current phase tasks</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Testing:</strong> Run test suite before any commit</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Evening:</strong> Document progress in daily log</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>3. PHASE 1: FOUNDATION (DAYS 1-30)</h2>
+        
+        <div class="warning">
+            <strong>CRITICAL:</strong> No progression to Phase 2 until ALL Phase 1 tests pass
+        </div>
+        
+        <h3>3.1 Orpheus TTS Integration</h3>
+        
+        <h4>Prerequisites</h4>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>GPU server accessible (local or remote)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Orpheus model downloaded</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Python environment configured</span>
+            </div>
+        </div>
+        
+        <h4>Implementation Checklist - Week 1-2</h4>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Delete orpheus_service.py and server_async_working.py</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Update orpheus/config.yaml: <code>max_tokens: 64000</code></span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Start orpheus_enhanced_server.py</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Test with orpheus_enhanced_dashboard.html</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Verify 5+ minute audio generation</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Create orpheus_client.py in interfaces/</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Implement WebSocket connection with reconnection logic</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Add streaming audio reception</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Integrate into speech.py as new engine</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Delete all legacy TTS code (pyttsx3, gTTS, etc.)</span>
+            </div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_orpheus_connection</h4>
+            <div class="code-block">
+def test_orpheus_connection():
+    """Verify Orpheus server is accessible"""
+    client = OrpheusClient("ws://localhost:8080")
+    assert client.connect() == True
+    assert client.health_check()["status"] == "healthy"
+    client.disconnect()</div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_orpheus_streaming</h4>
+            <div class="code-block">
+def test_orpheus_streaming():
+    """Verify streaming audio generation"""
+    client = OrpheusClient("ws://localhost:8080")
+    chunks_received = 0
+    for chunk in client.generate_stream("Hello, this is a test"):
+        assert len(chunk) > 0
+        chunks_received += 1
+    assert chunks_received > 1  # Confirms streaming</div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_orpheus_long_form</h4>
+            <div class="code-block">
+def test_orpheus_long_form():
+    """Verify 5+ minute audio generation"""
+    text = " ".join(["This is a long sentence."] * 500)
+    audio = generate_tts(text)
+    duration = len(audio) / (24000 * 2)  # 24kHz, 16-bit
+    assert duration > 300  # 5 minutes in seconds</div>
+        </div>
+        
+        <div class="success-criteria">
+            <strong>Week 1-2 Success Criteria:</strong>
+            <ul>
+                <li>✓ Orpheus generates 5+ minute audio without interruption</li>
+                <li>✓ WebSocket connection stable with auto-reconnect</li>
+                <li>✓ Streaming latency &lt; 100ms to first audio</li>
+                <li>✓ All Orpheus tests passing</li>
+            </ul>
+        </div>
+        
+        <h3>3.2 Pipeline Standardization</h3>
+        
+        <h4>Implementation Checklist - Week 3-4</h4>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Document pipeline pattern in ARCHITECTURE.md</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Create base PipelineStage class if not exists</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Refactor utilities.py to pipeline pattern</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Refactor vision system to pipeline pattern</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Refactor memory system to pipeline pattern</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Remove all legacy code patterns</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Create pipeline test suite</span>
+            </div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_pipeline_pattern_compliance</h4>
+            <div class="code-block">
+def test_pipeline_pattern_compliance():
+    """Verify all components follow pipeline pattern"""
+    components = [
+        VisionStage, TTSStage, MemoryStage, 
+        LLMStage, ServiceStage
+    ]
+    for component in components:
+        assert hasattr(component, 'process')
+        assert hasattr(component, 'name')
+        # Verify returns PipelineContext
+        ctx = PipelineContext()
+        result = component().process(ctx)
+        assert isinstance(result, PipelineContext)</div>
+        </div>
+        
+        <div class="success-criteria">
+            <strong>Phase 1 Completion Criteria:</strong>
+            <ul>
+                <li>✓ Orpheus TTS fully integrated and tested</li>
+                <li>✓ All components follow pipeline pattern</li>
+                <li>✓ Zero legacy code remaining</li>
+                <li>✓ 100% test coverage for critical path</li>
+                <li>✓ Documentation complete</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>4. PHASE 2: SENSORY ENHANCEMENT (DAYS 31-60)</h2>
+        
+        <div class="warning">
+            <strong>PREREQUISITE:</strong> Phase 1 must be complete with all tests passing
+        </div>
+        
+        <h3>4.1 Vision Context System</h3>
+        
+        <div class="critical">
+            <strong>FROZEN FEATURE:</strong> Felix recognition must NOT be modified
+        </div>
+        
+        <h4>Implementation Checklist - Week 5-6</h4>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Create ObjectDetectionStage as NEW pipeline stage</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Integrate YOLO for object detection</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Add object list to LLM context</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Create object persistence cache</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Implement context formatting for LLM</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Test object detection WITHOUT touching Felix detection</span>
+            </div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_felix_still_works</h4>
+            <div class="code-block">
+def test_felix_still_works():
+    """Ensure Felix detection unchanged"""
+    result = vision_system.detect(felix_test_image)
+    assert result['is_felix'] == True
+    assert result['confidence'] > 0.95
+    # This test MUST NOT FAIL during Phase 2</div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_object_detection</h4>
+            <div class="code-block">
+def test_object_detection():
+    """Verify object detection works"""
+    objects = object_detector.detect(test_image)
+    assert len(objects) > 0
+    assert 'chair' in [obj['class'] for obj in objects]
+    assert all(obj['confidence'] > 0.5 for obj in objects)</div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_context_generation</h4>
+            <div class="code-block">
+def test_context_generation():
+    """Verify vision context for LLM"""
+    context = vision_context.generate()
+    assert 'Felix' in context
+    assert 'objects' in context
+    assert 'red chair' in context  # Example
+    # Context format: "I see Felix (95%), red chair, laptop"</div>
+        </div>
+        
+        <h3>4.2 Environmental Awareness</h3>
+        
+        <h4>Implementation Checklist - Week 7-8</h4>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Add temporal tracking (object persistence)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Implement "just appeared" / "just left" logic</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Create context history buffer</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Add movement detection</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Test contextual awareness</span>
+            </div>
+        </div>
+        
+        <div class="success-criteria">
+            <strong>Phase 2 Completion Criteria:</strong>
+            <ul>
+                <li>✓ Object detection operational</li>
+                <li>✓ Felix detection still works (unchanged)</li>
+                <li>✓ Context generation for LLM functional</li>
+                <li>✓ Temporal awareness implemented</li>
+                <li>✓ All vision tests passing</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>5. PHASE 3: PHYSICAL EMBODIMENT (DAYS 61-90)</h2>
+        
+        <div class="warning">
+            <strong>PREREQUISITE:</strong> Phases 1-2 complete, software stable
+        </div>
+        
+        <h3>5.1 Raspberry Pi Integration</h3>
+        
+        <h4>Hardware Requirements</h4>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Raspberry Pi 4 (minimum 4GB RAM)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>USB Microphone</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Speaker (3.5mm or USB)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Camera module or USB webcam</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Power supply (5V 3A minimum)</span>
+            </div>
+        </div>
+        
+        <h4>Software Implementation - Week 9-10</h4>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Install Raspberry Pi OS Lite</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Clone Cypher repository</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Install Python dependencies</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Configure PyAudio for audio I/O</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Test WebSocket connection to Orpheus server</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Implement PyAudio streaming player</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Test camera capture</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Configure systemd service for autostart</span>
+            </div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_pi_audio_output</h4>
+            <div class="code-block">
+def test_pi_audio_output():
+    """Verify audio plays on Pi"""
+    player = PyAudioPlayer()
+    test_audio = generate_test_tone()
+    player.play(test_audio)
+    # Manual verification: Did you hear the tone?
+    assert True  # Manual check</div>
+        </div>
+        
+        <div class="test-spec">
+            <h4>Test: test_pi_orpheus_streaming</h4>
+            <div class="code-block">
+def test_pi_orpheus_streaming():
+    """Verify Pi can stream from Orpheus"""
+    client = OrpheusClient("ws://gpu-server:8080")
+    player = PyAudioPlayer()
+    
+    for chunk in client.generate_stream("Hello from Pi"):
+        player.play_chunk(chunk)
+    
+    # Verify no underruns
+    assert player.underrun_count == 0</div>
+        </div>
+        
+        <h3>5.2 Hardware Assembly</h3>
+        
+        <h4>Physical Construction - Week 11-12</h4>
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Design chassis in CAD (simple box structure)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>3D print chassis components</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Mount Raspberry Pi</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Install speaker and microphone</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Mount camera with proper angle</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Wire power distribution</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Add status LED (optional)</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span>Final assembly and cable management</span>
+            </div>
+        </div>
+        
+        <div class="success-criteria">
+            <strong>Phase 3 Completion Criteria:</strong>
+            <ul>
+                <li>✓ Cypher runs on Raspberry Pi</li>
+                <li>✓ Audio I/O functional</li>
+                <li>✓ Camera operational</li>
+                <li>✓ Physical chassis assembled</li>
+                <li>✓ 24-hour stability test passed</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="phase">
+        <h2>6. TEST SPECIFICATIONS</h2>
+        
+        <h3>Critical Path Test Suite</h3>
+        
+        <div class="test-spec">
+            <h4>Test Suite: test_critical_path.py</h4>
+            <div class="code-block">
+"""Complete test suite for Cypher v001 critical path"""
+
+class TestOrpheusTTS:
+    def test_server_health(self):
+        """Orpheus server is running and healthy"""
+        
+    def test_websocket_connection(self):
+        """WebSocket connects and maintains connection"""
+        
+    def test_streaming_audio(self):
+        """Audio streams without interruption"""
+        
+    def test_long_form_generation(self):
+        """Can generate 5+ minutes of audio"""
+        
+    def test_latency(self):
+        """First audio chunk arrives < 100ms"""
+
+class TestVisionSystem:
+    def test_felix_recognition(self):
+        """Felix detected with >95% accuracy"""
+        
+    def test_object_detection(self):
+        """Objects detected and classified"""
+        
+    def test_context_generation(self):
+        """Vision context properly formatted for LLM"""
+        
+    def test_tracking_persistence(self):
+        """Tracking IDs persist across frames"""
+
+class TestPipeline:
+    def test_pipeline_flow(self):
+        """Request flows through all stages"""
+        
+    def test_error_handling(self):
+        """Errors handled gracefully"""
+        
+    def test_stage_isolation(self):
+        """Stages don't affect each other"""
+
+class TestIntegration:
+    def test_end_to_end(self):
+        """Complete conversation flow works"""
+        
+    def test_pi_deployment(self):
+        """System runs on Raspberry Pi"""
+        
+    def test_24_hour_stability(self):
+        """System stable for 24 hours"""</div>
+        </div>
+        
+        <h3>Test Execution Schedule</h3>
+        <table>
+            <tr>
+                <th>Test Suite</th>
+                <th>Frequency</th>
+                <th>Phase</th>
+            </tr>
+            <tr>
+                <td>Unit Tests</td>
+                <td>Every commit</td>
+                <td>All</td>
+            </tr>
+            <tr>
+                <td>Integration Tests</td>
+                <td>Daily</td>
+                <td>All</td>
+            </tr>
+            <tr>
+                <td>Performance Tests</td>
+                <td>Weekly</td>
+                <td>2-3</td>
+            </tr>
+            <tr>
+                <td>Stability Tests</td>
+                <td>Before phase completion</td>
+                <td>All</td>
+            </tr>
+        </table>
+        
+        <h3>Test Coverage Requirements</h3>
+        <ul>
+            <li>Critical Path: 100% coverage required</li>
+            <li>Pipeline Stages: 100% coverage required</li>
+            <li>Utilities: 80% coverage minimum</li>
+            <li>Integration: All paths tested</li>
+        </ul>
+    </div>
+
+    <div class="phase">
+        <h2>7. FINAL ACCEPTANCE CRITERIA</h2>
+        
+        <h3>Cypher v001 Release Checklist</h3>
+        
+        <div class="checklist">
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Voice:</strong> Orpheus TTS generates 5+ minute audio</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Streaming:</strong> Audio streams with <100ms latency</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Vision:</strong> Felix recognition maintains 95% accuracy</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Context:</strong> Object detection provides environmental awareness</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Architecture:</strong> All components follow pipeline pattern</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Testing:</strong> 100% critical path test coverage</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Hardware:</strong> Runs on Raspberry Pi 4</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Stability:</strong> 24-hour continuous operation verified</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Documentation:</strong> All systems documented</span>
+            </div>
+            <div class="checklist-item">
+                <div class="checkbox"></div>
+                <span><strong>Deployment:</strong> Physical chassis assembled and operational</span>
+            </div>
+        </div>
+        
+        <h3>Performance Benchmarks</h3>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Target</th>
+                <th>Achieved</th>
+                <th>Test</th>
+            </tr>
+            <tr>
+                <td>TTS First Byte</td>
+                <td>&lt;100ms</td>
+                <td>___ms</td>
+                <td>test_tts_latency</td>
+            </tr>
+            <tr>
+                <td>Audio Duration</td>
+                <td>&gt;5 min</td>
+                <td>___min</td>
+                <td>test_long_form</td>
+            </tr>
+            <tr>
+                <td>Felix Accuracy</td>
+                <td>&gt;95%</td>
+                <td>___%</td>
+                <td>test_felix_recognition</td>
+            </tr>
+            <tr>
+                <td>Pipeline Throughput</td>
+                <td>&gt;10 req/s</td>
+                <td>___req/s</td>
+                <td>test_pipeline_throughput</td>
+            </tr>
+            <tr>
+                <td>Memory Usage</td>
+                <td>&lt;2GB</td>
+                <td>___GB</td>
+                <td>test_memory_usage</td>
+            </tr>
+            <tr>
+                <td>Uptime</td>
+                <td>&gt;24hr</td>
+                <td>___hr</td>
+                <td>test_stability</td>
+            </tr>
+        </table>
+        
+        <h3>Release Sign-off</h3>
+        <div class="success-criteria">
+            <h4>Cypher v001 is ready for release when:</h4>
+            <ul>
+                <li>All acceptance criteria checkboxes are marked</li>
+                <li>All performance benchmarks meet or exceed targets</li>
+                <li>Zero critical bugs in issue tracker</li>
+                <li>Documentation is complete and accurate</li>
+                <li>Physical unit assembled and tested</li>
+            </ul>
+        </div>
+        
+        <div class="critical">
+            <p><strong>RELEASE DECISION:</strong></p>
+            <p>☐ APPROVED FOR RELEASE</p>
+            <p>☐ REQUIRES ADDITIONAL WORK</p>
+            <br>
+            <p>Signature: _________________________</p>
+            <p>Date: _________________________</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>End of Document - Cypher v001 Engineering Specification</p>
+        <p>This document represents the complete technical requirements for Cypher v001</p>
+        <p>Deviation from this specification requires formal change management</p>
+    </div>
+</body>
+</html>

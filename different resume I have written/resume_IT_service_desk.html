@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felix Nsenga - Resume</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.1;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.3in 0.5in;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3px;
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .contact-info {
+            font-size: 11px;
+            margin: 3px 0;
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 1px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            margin-bottom: 0;
+            font-size: 12px;
+        }
+
+        .company-location {
+            font-style: italic;
+            margin-top: 1px;
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .dates {
+            float: right;
+            font-weight: normal;
+        }
+
+        ul {
+            margin-top: 1px;
+            margin-bottom: 6px;
+            padding-left: 16px;
+        }
+
+        li {
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .summary {
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .skills-section {
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        /* Download button styling */
+        .download-container {
+            text-align: center;
+            margin: 6px 0;
+            padding: 2px;
+        }
+
+        .download-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 1px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .download-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Hide the button when printing */
+        @media print {
+            .download-container {
+                display: none;
+            }
+
+            body {
+                padding: 0;
+                margin: 0.3in;
+            }
+
+            @page {
+                margin: 0;
+                size: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-container">
+        <button class="download-button" onclick="printAsPDF()">Download as PDF</button>
+    </div>
+
+    <div class="header">
+        <h1 class="name">FELIX WA NGOY NSENGA</h1>
+        <p class="contact-info">Seattle, WA • 425-500-9954 • fnsenga@seattleu.edu • linkedin.com/in/felix-nsenga-7a52a8280</p>
+    </div>
+
+    <div class="summary">
+        Multilingual Electrical and Computer Engineering student with extensive technical experience seeking IT Service Desk Student Technician position. Proven track record providing front-line support to diverse users, troubleshooting complex technical issues, and maintaining professional communication. Strong background in Python development, system administration, and customer service with demonstrated ability to explain technical concepts to non-technical audiences.
+    </div>
+
+    <div class="section-title">EDUCATION</div>
+
+    <div class="job-title">Bachelor of Science in Electrical and Computer Engineering <span class="dates">Expected 2027</span></div>
+    <div class="company-location">Seattle University, Seattle, WA</div>
+    <ul>
+        <li>GPA: 3.8/4.0 • Dean's List: Three consecutive quarters</li>
+        <li>Available for 10-20 hours/week during business hours (7 AM - 7 PM), with flexibility for summer full-time</li>
+    </ul>
+
+    <div class="section-title">TECHNICAL SUPPORT EXPERIENCE</div>
+
+    <div class="job-title">Technical Support Specialist & Peer Educator <span class="dates">2023-2024</span></div>
+    <div class="company-location">Bellevue College, Bellevue, WA</div>
+    <ul>
+        <li>Provided first-point-of-contact technical support to 50+ students weekly via in-person, phone, and virtual platforms</li>
+        <li>Diagnosed and resolved hardware/software issues across Windows, macOS, Android, and iOS platforms while documenting solutions</li>
+        <li>Explained complex technical concepts in accessible language to non-technical users from diverse backgrounds</li>
+        <li>Maintained strict confidentiality when handling sensitive student information in compliance with educational privacy standards</li>
+        <li>Collaborated with faculty and IT staff to escalate unresolved technical issues and track resolution progress</li>
+        <li>Managed multiple service requests simultaneously while maintaining professional communication and positive attitude</li>
+    </ul>
+
+    <div class="job-title">System Developer & Technical Project Lead <span class="dates">2024-Present</span></div>
+    <div class="company-location">Personal Project - Cypher AI Assistant System</div>
+    <ul>
+        <li>Developed comprehensive technical system requiring extensive troubleshooting across Windows, macOS, and Linux environments</li>
+        <li>Created detailed documentation and user guides demonstrating ability to communicate technical processes clearly</li>
+        <li>Built administrative dashboard for monitoring system performance and tracking issue resolution similar to Jira workflows</li>
+        <li>Implemented ticketing and logging systems for tracking technical problems, follow-ups, and customer satisfaction</li>
+        <li>Managed project independently while coordinating with online technical communities for support and collaboration</li>
+    </ul>
+
+    <div class="section-title">TECHNICAL SKILLS</div>
+
+    <p class="skills-section"><strong>Operating Systems</strong>: Windows (Advanced), macOS (Proficient), Linux/Unix, Android, iOS<br>
+    <strong>Software Proficiency</strong>: Microsoft Office Suite (Advanced), Google Suite (Advanced), Python Programming, System Administration<br>
+    <strong>IT Support Skills</strong>: Hardware/Software Troubleshooting, Technical Documentation, Service Request Management, Remote Support Tools<br>
+    <strong>Customer Service</strong>: Multi-channel Support (Phone/Zoom/In-person), Technical Communication, Problem-solving, Time Management</p>
+
+    <div class="section-title">LANGUAGE SKILLS</div>
+
+    <ul>
+        <li><strong>Multilingual Communication:</strong> Fluent in English, French, and Swahili</li>
+        <li><strong>African Languages:</strong> Native proficiency in 5+ African dialects including Lingala, Kikongo, and Tshiluba</li>
+        <li><strong>Technical Communication:</strong> Near-native English fluency with excellent verbal and written communication skills</li>
+        <li><strong>Cultural Competency:</strong> Extensive experience providing technical support to diverse, international user populations</li>
+    </ul>
+
+    <div class="section-title">ADDITIONAL QUALIFICATIONS</div>
+
+    <ul>
+        <li><strong>Customer Service Excellence:</strong> Two years experience providing front-line support in educational settings</li>
+        <li><strong>Technical Curiosity:</strong> Self-directed learner passionate about technology with proven ability to quickly master new systems</li>
+        <li><strong>Team Collaboration:</strong> Experience working with cross-functional teams and escalating issues appropriately</li>
+        <li><strong>Equipment Management:</strong> Experience collecting, delivering, and managing technical equipment inventory across campus</li>
+        <li><strong>Professional Standards:</strong> Consistent track record maintaining confidentiality and professionalism with sensitive information</li>
+        <li><strong>Work Availability:</strong> Flexible schedule with availability for 10-20 hours/week during business hours</li>
+        <li><strong>Career Interest:</strong> Strong interest in pursuing IT career with focus on technical support and system administration</li>
+    </ul>
+
+    <script>
+        function printAsPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

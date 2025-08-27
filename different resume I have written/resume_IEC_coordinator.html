@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felix Nsenga - Resume</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.1;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.3in 0.5in;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3px;
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .contact-info {
+            font-size: 11px;
+            margin: 3px 0;
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 1px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            margin-bottom: 0;
+            font-size: 12px;
+        }
+
+        .company-location {
+            font-style: italic;
+            margin-top: 1px;
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .dates {
+            float: right;
+            font-weight: normal;
+        }
+
+        ul {
+            margin-top: 1px;
+            margin-bottom: 6px;
+            padding-left: 16px;
+        }
+
+        li {
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .summary {
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .skills-section {
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        /* Download button styling */
+        .download-container {
+            text-align: center;
+            margin: 6px 0;
+            padding: 2px;
+        }
+
+        .download-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 1px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .download-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Hide the button when printing */
+        @media print {
+            .download-container {
+                display: none;
+            }
+
+            body {
+                padding: 0;
+                margin: 0.3in;
+            }
+
+            @page {
+                margin: 0;
+                size: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-container">
+        <button class="download-button" onclick="printAsPDF()">Download as PDF</button>
+    </div>
+
+    <div class="header">
+        <h1 class="name">FELIX WA NGOY NSENGA</h1>
+        <p class="contact-info">Seattle, WA • 425-500-9954 • fnsenga@seattleu.edu • linkedin.com/in/felix-nsenga-7a52a8280</p>
+    </div>
+
+    <div class="summary">
+        Organized and proactive Seattle University student passionate about innovation and community building. Experienced event coordinator and communicator with strong skills in program support, stakeholder engagement, and digital marketing. Proven ability to manage multiple projects while maintaining attention to detail. Enthusiastic about entrepreneurship and creating meaningful connections between students, alumni, and business leaders.
+    </div>
+
+    <div class="section-title">EDUCATION</div>
+
+    <div class="job-title">Bachelor of Science in Electrical and Computer Engineering <span class="dates">Expected 2027</span></div>
+    <div class="company-location">Seattle University, Seattle, WA</div>
+    <ul>
+        <li>GPA: 3.8/4.0 • Dean's List: Three consecutive quarters</li>
+        <li>Available 20 hours/week with weekday availability (9 AM - 5 PM) and flexibility for evening/weekend events</li>
+    </ul>
+
+    <div class="section-title">EVENT COORDINATION & PROGRAM SUPPORT EXPERIENCE</div>
+
+    <div class="job-title">Program Support Specialist & Event Coordinator <span class="dates">2022-2024</span></div>
+    <div class="company-location">Bellevue College - Student Support Services, Bellevue, WA</div>
+    <ul>
+        <li>Coordinated and executed campus events including workshops, student orientations, and community-building activities</li>
+        <li>Managed event logistics including room reservations, registration tracking, setup/takedown, and day-of support</li>
+        <li>Maintained participant databases and RSVP lists for 50+ student events per quarter</li>
+        <li>Drafted and sent targeted email communications to students, faculty, and community partners</li>
+        <li>Collaborated with faculty supervisor Melissa to develop program timelines and marketing deliverables</li>
+        <li>Recruited and coordinated volunteers for events, providing clear communication and scheduling</li>
+        <li>Conducted post-event follow-ups including thank-you emails and feedback collection</li>
+    </ul>
+
+    <div class="job-title">Digital Marketing & Communications Developer <span class="dates">2024-Present</span></div>
+    <div class="company-location">Personal Project - Cypher AI Platform</div>
+    <ul>
+        <li>Created comprehensive marketing materials and user documentation for technical platform launch</li>
+        <li>Developed email campaigns and newsletter content to engage user community</li>
+        <li>Built professional dashboard interface demonstrating strong attention to visual design and user experience</li>
+        <li>Managed project timelines and coordinated with online communities for feedback and testing</li>
+        <li>Maintained organized digital files and documentation systems for efficient project management</li>
+    </ul>
+
+    <div class="section-title">TECHNICAL & COMMUNICATION SKILLS</div>
+
+    <p class="skills-section"><strong>Microsoft Office Suite</strong>: Word (Advanced), Excel (Advanced - data management, tracking), PowerPoint (Proficient)<br>
+    <strong>Communication Tools</strong>: Professional email writing, Newsletter creation, Social media content, Stakeholder engagement<br>
+    <strong>Project Management</strong>: Event coordination, Timeline management, Calendar scheduling, Task prioritization<br>
+    <strong>Digital Skills</strong>: Database management, RSVP tracking, File organization, Basic design principles</p>
+
+    <div class="section-title">RELEVANT EXPERIENCE & INTERESTS</div>
+
+    <ul>
+        <li><strong>Innovation Mindset:</strong> Self-taught programmer who built AI platform from concept to deployment, demonstrating entrepreneurial thinking</li>
+        <li><strong>Community Building:</strong> Two years experience creating inclusive environments and fostering connections among diverse groups</li>
+        <li><strong>Problem-Solving:</strong> Developed creative solutions for technical challenges and program improvements</li>
+        <li><strong>Cross-functional Communication:</strong> Experience working with students, faculty, alumni, and external partners professionally</li>
+        <li><strong>Detail-Oriented:</strong> Maintained accurate records and documentation for multiple concurrent programs</li>
+    </ul>
+
+    <div class="section-title">ENTREPRENEURIAL ENGAGEMENT</div>
+
+    <ul>
+        <li><strong>Technical Innovation:</strong> Independently launched technology venture requiring business planning and market research</li>
+        <li><strong>Networking:</strong> Built connections with technical communities and potential users through outreach efforts</li>
+        <li><strong>Continuous Learning:</strong> Self-motivated learner passionate about startups, business development, and social innovation</li>
+        <li><strong>Alumni Engagement:</strong> Experience supporting alumni through mentoring programs and community events</li>
+        <li><strong>Hybrid Work:</strong> Proven ability to work effectively both independently (remote) and collaboratively (in-office)</li>
+    </ul>
+
+    <script>
+        function printAsPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

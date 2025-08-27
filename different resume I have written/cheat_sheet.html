@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microprocessor Pipeline & Datapath Finals Cheat Sheet</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.3;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.4in 0.5in;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            margin: 5px 0;
+            font-style: italic;
+        }
+
+        .nav {
+            background-color: #f9f9f9;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .nav a {
+            margin: 0 8px;
+            text-decoration: none;
+            color: #0066cc;
+            font-weight: bold;
+        }
+        
+        .section-title {
+            text-transform: uppercase;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 2px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 18px;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-left: 4px solid #0066cc;
+        }
+        
+        .subsection {
+            font-weight: bold;
+            margin-bottom: 0;
+            font-size: 16px;
+            margin-top: 12px;
+            color: #0066cc;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 3px;
+        }
+        
+        .formula {
+            font-family: monospace;
+            background-color: #f8f8f8;
+            padding: 4px;
+            border-left: 3px solid #007bff;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .formula-box {
+            border: 1px solid #ddd;
+            padding: 8px;
+            margin: 8px 0;
+            background-color: #f9f9f9;
+        }
+        
+        ul {
+            margin-top: 3px;
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        
+        .tip {
+            background-color: #e6f7ff;
+            border-left: 3px solid #1890ff;
+            padding: 5px;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        
+        .warning {
+            background-color: #fff7e6;
+            border-left: 3px solid #fa8c16;
+            padding: 5px;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        
+        .example {
+            background-color: #f6ffed;
+            border-left: 3px solid #52c41a;
+            padding: 8px;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .two-columns {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .column {
+            width: 48%;
+        }
+
+        .three-columns {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .column-three {
+            width: 32%;
+        }
+
+        .important {
+            font-weight: bold;
+            color: #d73a49;
+        }
+        
+        .step-box {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            padding: 5px;
+            background-color: #fafafa;
+        }
+        
+        .step-title {
+            font-weight: bold;
+            background-color: #e6f7ff;
+            padding: 3px;
+            margin-bottom: 5px;
+        }
+        
+        .highlight {
+            background-color: #fffbe6;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .download-btn {
+            display: block;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 10px auto;
+            width: 200px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                margin: 0.2in;
+                font-size: 10pt;
+            }
+            
+            @page {
+                margin: 0.25in;
+                size: auto;
+            }
+            
+            .download-btn {
+                display: none;
+            }
+        }
+    </style>
+    <script>
+        function downloadPDF() {
+            window.print();
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">MICROPROCESSOR PIPELINE & DATAPATH FINALS CHEAT SHEET</h1>
+        <p class="subtitle">Hazards, Control, and Design Pattern Recognition Guide</p>
+    </div>
+    
+    <button class="download-btn" onclick="downloadPDF()">Download / Print PDF</button>
+    
+    <div class="nav">
+        <a href="#hazards">Pipeline Hazards</a> |
+        <a href="#datapath">Datapath</a> |
+        <a href="#control">Control Logic</a> |
+        <a href="#pipeline-perf">Performance</a> |
+        <a href="#problem-approach">Problem Patterns</a> |
+        <a href="#arithmetic">Arithmetic</a> |
+        <a href="#division">Division</a> |
+        <a href="#memory-hierarchy">Memory</a>
+    </div>
+    
+    <div id="hazards" class="section-title">1. PIPELINE HAZARDS - RECOGNITION & SOLUTIONS</div>
+    
+    <div class="subsection">Three Types of Hazards</div>
+    <table>
+        <tr>
+            <th width="20%">Hazard Type</th>
+            <th width="35%">Definition</th>
+            <th width="25%">Common Causes</th>
+            <th width="20%">Keywords to Watch</th>
+        </tr>
+        <tr>
+            <td><strong>Structure Hazard</strong></td>
+            <td>Resource conflict - hardware can't support all possible combinations</td>
+            <td>Single memory port, limited ALUs</td>
+            <td>"resource busy", "conflict", "single memory"</td>
+        </tr>
+        <tr>
+            <td><strong>Data Hazard</strong></td>
+            <td>Instruction depends on result of previous instruction still in pipeline</td>
+            <td>RAW dependencies, load-use scenarios</td>
+            <td>"depends on", "uses result", "previous instruction"</td>
+        </tr>
+        <tr>
+            <td><strong>Control Hazard</strong></td>
+            <td>Branch/jump makes next instruction uncertain</td>
+            <td>Conditional branches, function calls</td>
+            <td>"branch", "jump", "if-then", "control flow"</td>
+        </tr>
+    </table>
+    
+    <div class="subsection">Data Hazard Recognition & Solutions</div>
+    <div class="two-columns">
+        <div class="column">
+            <div class="step-box">
+                <div class="step-title">Identifying Data Hazards</div>
+                <ol>
+                    <li>Look for register dependencies between consecutive instructions</li>
+                    <li>Check if destination register of instruction i is source for i+1, i+2, etc.</li>
+                    <li>Consider pipeline depth when evaluating dependency distance</li>
+                </ol>
+            </div>
+        </div>
+        <div class="column">
+            <div class="step-box">
+                <div class="step-title">Solution Techniques</div>
+                <ul>
+                    <li><strong>Forwarding/Bypassing:</strong> Route data directly from EX/MEM stages</li>
+                    <li><strong>Stalling:</strong> Insert NOPs/bubbles when forwarding impossible</li>
+                    <li><strong>Code Reordering:</strong> Compiler moves independent instructions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="warning">
+        <strong>Load-Use Hazard Special Case:</strong> Cannot forward backward in time! LDUR followed immediately by dependent instruction requires at least 1 stall cycle even with forwarding.
+    </div>
+    
+    <div class="subsection">Control Hazard Handling Strategies</div>
+    <table>
+        <tr>
+            <th>Strategy</th>
+            <th>How It Works</th>
+            <th>Performance Impact</th>
+            <th>When to Use</th>
+        </tr>
+        <tr>
+            <td><strong>Stall</strong></td>
+            <td>Wait until branch outcome known</td>
+            <td>High penalty (multiple cycles)</td>
+            <td>Simple implementation</td>
+        </tr>
+        <tr>
+            <td><strong>Predict Not Taken</strong></td>
+            <td>Continue fetching sequentially</td>
+            <td>No penalty if correct</td>
+            <td>Fall-through common</td>
+        </tr>
+        <tr>
+            <td><strong>Predict Taken</strong></td>
+            <td>Fetch from branch target</td>
+            <td>Requires early target calculation</td>
+            <td>Loops (backward branches)</td>
+        </tr>
+        <tr>
+            <td><strong>Dynamic Prediction</strong></td>
+            <td>Hardware tracks branch history</td>
+            <td>Best average performance</td>
+            <td>Complex processors</td>
+        </tr>
+    </table>
+    
+    <div id="datapath" class="section-title">2. DATAPATH DESIGN PATTERNS & COMPONENTS</div>
+    
+    <div class="subsection">Key Datapath Elements & Their Roles</div>
+    <div class="three-columns">
+        <div class="column-three">
+            <strong>Combinational Elements</strong>
+            <ul>
+                <li><strong>ALU:</strong> Arithmetic/logic operations</li>
+                <li><strong>Adders:</strong> PC+4, branch target</li>
+                <li><strong>Mux:</strong> Select between data sources</li>
+                <li><strong>Sign-extend:</strong> Immediate values</li>
+            </ul>
+        </div>
+        <div class="column-three">
+            <strong>Storage Elements</strong>
+            <ul>
+                <li><strong>PC:</strong> Program counter</li>
+                <li><strong>Register File:</strong> 32 registers</li>
+                <li><strong>Instruction Memory:</strong> Read-only</li>
+                <li><strong>Data Memory:</strong> Read/write</li>
+            </ul>
+        </div>
+        <div class="column-three">
+            <strong>Control Signals</strong>
+            <ul>
+                <li><strong>RegWrite:</strong> Enable register write</li>
+                <li><strong>MemRead/Write:</strong> Memory ops</li>
+                <li><strong>ALUSrc:</strong> ALU input source</li>
+                <li><strong>PCSrc:</strong> Next PC source</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="subsection">Instruction Type Recognition for Datapath Design</div>
+    <table>
+        <tr>
+            <th>Instruction Type</th>
+            <th>Key Operations</th>
+            <th>Critical Path Elements</th>
+            <th>Design Considerations</th>
+        </tr>
+        <tr>
+            <td><strong>R-Type</strong></td>
+            <td>Read 2 regs → ALU → Write reg</td>
+            <td>Reg file → ALU → Reg file</td>
+            <td>Need 3 register ports (2R, 1W)</td>
+        </tr>
+        <tr>
+            <td><strong>Load (LDUR)</strong></td>
+            <td>Read reg → Add offset → Memory → Write reg</td>
+            <td>Reg → ALU → Mem → Reg (longest)</td>
+            <td>Sign-extend needed, memory wait</td>
+        </tr>
+        <tr>
+            <td><strong>Store (STUR)</strong></td>
+            <td>Read 2 regs → Add offset → Write memory</td>
+            <td>Reg → ALU → Memory</td>
+            <td>No writeback stage needed</td>
+        </tr>
+        <tr>
+            <td><strong>Branch (CBZ)</strong></td>
+            <td>Compare reg → Calculate target → Update PC</td>
+            <td>Reg → ALU & Target calc</td>
+            <td>Early branch resolution helps</td>
+        </tr>
+    </table>
+    
+    <div class="tip">
+        <strong>Design Pattern Recognition:</strong> When asked to "design a datapath for instruction X":
+        <ol>
+            <li>Identify what the instruction does (computation, memory access, control flow)</li>
+            <li>List required datapath elements (ALU? Memory? How many register reads?)</li>
+            <li>Trace the data flow from fetch to writeback</li>
+            <li>Add multiplexers where paths merge</li>
+            <li>Identify control signals needed</li>
+        </ol>
+    </div>
+    
+    <div id="control" class="section-title">3. CONTROL LOGIC DESIGN & ALU CONTROL</div>
+    
+    <div class="subsection">Control Signal Generation Pattern</div>
+    <div class="formula-box">
+        <strong>Two-Level Control Design:</strong><br>
+        1. Main Control: Opcode → Control signals<br>
+        2. ALU Control: ALUOp + Function bits → ALU control lines
+    </div>
+    
+    <div class="subsection">ALU Control Logic</div>
+    <table>
+        <tr>
+            <th>Instruction Type</th>
+            <th>ALUOp</th>
+            <th>Function Field</th>
+            <th>ALU Control</th>
+            <th>ALU Operation</th>
+        </tr>
+        <tr>
+            <td>Load/Store</td>
+            <td>00</td>
+            <td>XXXXXX (don't care)</td>
+            <td>0010</td>
+            <td>Add (for address)</td>
+        </tr>
+        <tr>
+            <td>Branch (CBZ)</td>
+            <td>01</td>
+            <td>XXXXXX</td>
+            <td>0111</td>
+            <td>Pass input b</td>
+        </tr>
+        <tr>
+            <td>R-type</td>
+            <td>10</td>
+            <td>Varies by instruction</td>
+            <td>Depends on function</td>
+            <td>Add/Sub/AND/OR</td>
+        </tr>
+    </table>
+    
+    <div class="subsection">Control Signal Truth Table Pattern</div>
+    <div class="step-box">
+        <div class="step-title">Approach for Control Design Questions</div>
+        <ol>
+            <li><strong>List all instruction types</strong> the control must handle</li>
+            <li><strong>For each instruction, determine:</strong>
+                <ul>
+                    <li>Which registers to read/write (Reg2Loc, RegWrite)</li>
+                    <li>ALU operation needed (ALUOp)</li>
+                    <li>Memory access requirements (MemRead, MemWrite)</li>
+                    <li>Result source (MemtoReg)</li>
+                    <li>Next PC calculation (Branch, Uncondbranch)</li>
+                </ul>
+            </li>
+            <li><strong>Create truth table</strong> with opcode as input, control signals as output</li>
+            <li><strong>Minimize if asked</strong> (but usually straightforward implementation OK)</li>
+        </ol>
+    </div>
+    
+    <div id="pipeline-perf" class="section-title">4. PIPELINE PERFORMANCE ANALYSIS</div>
+    
+    <div class="subsection">Pipeline Performance Metrics</div>
+    <div class="formula-box">
+        <div class="formula">Speedup = Time_nonpipelined / Time_pipelined</div>
+        <div class="formula">Ideal Speedup = Number of pipeline stages (if perfectly balanced)</div>
+        <div class="formula">Pipeline Throughput = 1 instruction / cycle time (steady state)</div>
+        <div class="formula">Pipeline Latency = Number of stages × cycle time</div>
+    </div>
+    
+    <div class="subsection">Factors Affecting Pipeline Performance</div>
+    <div class="two-columns">
+        <div class="column">
+            <strong>Performance Enhancers:</strong>
+            <ul>
+                <li>Balanced pipeline stages</li>
+                <li>Effective forwarding/bypassing</li>
+                <li>Accurate branch prediction</li>
+                <li>Instruction/data cache hits</li>
+                <li>Independent instruction streams</li>
+            </ul>
+        </div>
+        <div class="column">
+            <strong>Performance Degraders:</strong>
+            <ul>
+                <li>Pipeline hazards requiring stalls</li>
+                <li>Unbalanced stage delays</li>
+                <li>Branch mispredictions</li>
+                <li>Cache misses</li>
+                <li>Complex addressing modes</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="subsection">CPI in Pipelined Processors</div>
+    <div class="formula-box">
+        <div class="formula">CPI_pipelined = CPI_ideal + Stalls_per_instruction</div>
+        <div class="formula">CPI_ideal = 1 (for scalar pipeline)</div>
+        <div class="formula">Stalls = Structure_stalls + Data_stalls + Control_stalls</div>
+    </div>
+    
+    <div id="problem-approach" class="section-title">5. PROBLEM SOLVING APPROACHES & PATTERNS</div>
+    
+    <div class="subsection">Common Question Types & Approaches</div>
+    
+    <div class="step-box">
+        <div class="step-title">Pattern 1: "Identify hazards in this code sequence"</div>
+        <strong>Approach:</strong>
+        <ol>
+            <li>Create a pipeline diagram showing instruction flow</li>
+            <li>Mark where each instruction reads/writes registers</li>
+            <li>Look for:
+                <ul>
+                    <li>RAW dependencies within hazard distance</li>
+                    <li>Branches that affect instruction fetch</li>
+                    <li>Memory operations that might conflict</li>
+                </ul>
+            </li>
+            <li>Classify each hazard by type</li>
+        </ol>
+    </div>
+    
+    <div class="step-box">
+        <div class="step-title">Pattern 2: "Design control logic for new instruction"</div>
+        <strong>Approach:</strong>
+        <ol>
+            <li>Understand what the instruction does functionally</li>
+            <li>Identify which existing datapath elements it uses</li>
+            <li>Determine if new datapath elements are needed</li>
+            <li>List all control signals and their required values</li>
+            <li>Add to control truth table</li>
+        </ol>
+    </div>
+    
+    <div class="step-box">
+        <div class="step-title">Pattern 3: "Calculate pipeline performance with hazards"</div>
+        <strong>Approach:</strong>
+        <ol>
+            <li>Count total instructions</li>
+            <li>Identify all hazards and required stall cycles</li>
+            <li>Calculate total cycles = instructions + total stalls</li>
+            <li>CPI = total cycles / instruction count</li>
+            <li>Compare to ideal CPI of 1.0</li>
+        </ol>
+    </div>
+    
+    <div class="step-box">
+        <div class="step-title">Pattern 4: "Optimize code to reduce hazards"</div>
+        <strong>Approach:</strong>
+        <ol>
+            <li>Identify all data dependencies</li>
+            <li>Find independent instructions that can be moved</li>
+            <li>Reorder to increase distance between dependent instructions</li>
+            <li>Verify semantic correctness after reordering</li>
+            <li>Count stall reduction</li>
+        </ol>
+    </div>
+    
+    <div class="subsection">Quick Reference: Hazard Solutions</div>
+    <table>
+        <tr>
+            <th>Hazard Situation</th>
+            <th>Hardware Solution</th>
+            <th>Software Solution</th>
+            <th>Trade-offs</th>
+        </tr>
+        <tr>
+            <td>ALU result needed by next instruction</td>
+            <td>Forwarding from EX/MEM</td>
+            <td>Insert independent instruction</td>
+            <td>Hardware complexity vs. code size</td>
+        </tr>
+        <tr>
+            <td>Load-use dependency</td>
+            <td>Forwarding + 1 stall</td>
+            <td>Schedule load earlier</td>
+            <td>Unavoidable 1-cycle penalty</td>
+        </tr>
+        <tr>
+            <td>Branch decision</td>
+            <td>Branch prediction</td>
+            <td>Loop unrolling</td>
+            <td>Prediction accuracy vs. complexity</td>
+        </tr>
+        <tr>
+            <td>Memory port conflict</td>
+            <td>Separate I/D caches</td>
+            <td>—</td>
+            <td>Area/power vs. performance</td>
+        </tr>
+    </table>
+    
+    <div class="subsection">Pipeline Design Principles</div>
+    <ul>
+        <li><strong>All instructions same length:</strong> Simplifies fetch and decode</li>
+        <li><strong>Few instruction formats:</strong> Simplifies decode and control</li>
+        <li><strong>Memory operands only in loads/stores:</strong> Simplifies pipeline stages</li>
+        <li><strong>Operands must be aligned:</strong> Allows single-cycle memory access</li>
+        <li><strong>Balance pipeline stages:</strong> Minimizes cycle time</li>
+    </ul>
+    
+    <div class="warning">
+        <strong>Common Mistakes to Avoid:</strong>
+        <ul>
+            <li>Forgetting that branches have delay slots in some architectures</li>
+            <li>Not accounting for pipeline register delays</li>
+            <li>Assuming forwarding solves all data hazards (load-use still needs stall)</li>
+            <li>Mixing up structural vs. data hazards</li>
+            <li>Forgetting writeback stage when counting pipeline depth</li>
+        </ul>
+    </div>
+    
+    <div class="tip">
+        <strong>FINAL EXAM STRATEGY:</strong> Pipeline questions often combine concepts:
+        <ol>
+            <li>Start by identifying the instruction types involved</li>
+            <li>Draw pipeline stage diagram if helpful</li>
+            <li>Mark all dependencies and potential hazards</li>
+            <li>Apply solutions systematically (forwarding first, then stalls)</li>
+            <li>Calculate performance impact if asked</li>
+            <li>Always verify your solution makes logical sense</li>
+        </ol>
+    </div>
+    
+    <div id="arithmetic" class="section-title">6. BINARY ARITHMETIC & NUMBER CONVERSIONS</div>
+    
+    <div class="subsection">Binary ↔ Decimal Conversion Techniques</div>
+    <div class="two-columns">
+        <div class="column">
+            <div class="step-box">
+                <div class="step-title">Decimal to Binary</div>
+                <ol>
+                    <li><strong>Successive Division Method:</strong>
+                        <ul>
+                            <li>Divide by 2 repeatedly</li>
+                            <li>Record remainders (0 or 1)</li>
+                            <li>Read remainders bottom to top</li>
+                        </ul>
+                    </li>
+                    <li><strong>Example: 105₁₀ to binary</strong>
+                        <ul>
+                            <li>105 ÷ 2 = 52 R1</li>
+                            <li>52 ÷ 2 = 26 R0</li>
+                            <li>26 ÷ 2 = 13 R0</li>
+                            <li>13 ÷ 2 = 6 R1</li>
+                            <li>6 ÷ 2 = 3 R0</li>
+                            <li>3 ÷ 2 = 1 R1</li>
+                            <li>1 ÷ 2 = 0 R1</li>
+                            <li>Result: 1101001₂</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="column">
+            <div class="step-box">
+                <div class="step-title">Binary to Decimal</div>
+                <ol>
+                    <li><strong>Positional Value Method:</strong>
+                        <ul>
+                            <li>Each position = 2^n</li>
+                            <li>Multiply bit × position value</li>
+                            <li>Sum all products</li>
+                        </ul>
+                    </li>
+                    <li><strong>Example: 1101001₂ to decimal</strong>
+                        <ul>
+                            <li>1×2⁶ = 64</li>
+                            <li>1×2⁵ = 32</li>
+                            <li>0×2⁴ = 0</li>
+                            <li>1×2³ = 8</li>
+                            <li>0×2² = 0</li>
+                            <li>0×2¹ = 0</li>
+                            <li>1×2⁰ = 1</li>
+                            <li>Sum: 64+32+8+1 = 105₁₀</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <div class="subsection">Signed Integer Arithmetic (8-bit examples)</div>
+    <div class="formula-box">
+        <div class="formula">Range for n-bit signed: -2^(n-1) to 2^(n-1) - 1</div>
+        <div class="formula">8-bit signed range: -128 to +127</div>
+        <div class="formula">Two's complement: Invert all bits, then add 1</div>
+    </div>
+    
+    <div class="step-box">
+        <div class="step-title">Pattern: Signed Addition/Subtraction Problems</div>
+        <strong>Common Question:</strong> "Calculate A - B where A and B are signed 8-bit integers"<br><br>
+        <strong>Approach:</strong>
+        <ol>
+            <li><strong>Convert to binary:</strong> Use successive division</li>
+            <li><strong>For subtraction:</strong> Convert to A + (-B)
+                <ul>
+                    <li>Find two's complement of B</li>
+                    <li>Add A + two's complement of B</li>
+                </ul>
+            </li>
+            <li><strong>Check overflow:</strong>
+                <ul>
+                    <li>Addition: Pos + Pos = Neg → Overflow</li>
+                    <li>Addition: Neg + Neg = Pos → Overflow</li>
+                    <li>Subtraction: Pos - Neg = Neg → Overflow</li>
+                    <li>Subtraction: Neg - Pos = Pos → Overflow</li>
+                </ul>
+            </li>
+            <li><strong>Verify result:</strong> Convert back to decimal</li>
+        </ol>
+    </div>
+    
+    <div class="example">
+        <strong>Example: 
+    </div>
+    
+    <div class="subsection">Floating Point Arithmetic</div>
+    <div class="formula-box">
+        <div class="formula">IEEE 754 Single Precision: 1 sign | 8 exponent | 23 mantissa</div>
+        <div class="formula">IEEE 754 Double Precision: 1 sign | 11 exponent | 52 mantissa</div>
+        <div class="formula">Value = (-1)^S × 1.M × 2^(E-bias)</div>
+        <div class="formula">Bias: Single = 127, Double = 1023</div>
+    </div>
+    
+    <div class="step-box">
+        <div class="step-title">Pattern: Floating Point Representation</div>
+        <strong>Common Question:</strong> "Represent X in IEEE 754 format"<br><br>
+        <strong>Approach:</strong>
+        <ol>
+            <li><strong>Convert to binary:</strong>
+                <ul>
+                    <li>Integer part: successive division</li>
+                    <li>Fractional part: multiply by 2, take integer</li>
+                </ul>
+            </li>
+            <li><strong>Normalize:</strong> 1.xxxxx × 2^n format</li>
+            <li><strong>Determine fields:</strong>
+                <ul>
+                    <li>Sign bit: 0 for positive, 1 for negative</li>
+                    <li>Exponent: n + bias (convert to binary)</li>
+                    <li>Mantissa: fractional part after 1.</li>
+                </ul>
+            </li>
+            <li><strong>Pad with zeros</strong> to fill mantissa field</li>
+        </ol>
+    </div>
+    
+    <div class="example">
+        <strong>Example: 
+    </div>
+    
+    <div class="subsection">Floating Point Addition/Multiplication</div>
+    <div class="two-columns">
+        <div class="column">
+            <div class="step-box">
+                <div class="step-title">FP Addition Steps</div>
+                <ol>
+                    <li><strong>Align exponents:</strong> Shift smaller number</li>
+                    <li><strong>Add mantissas:</strong> Include hidden 1</li>
+                    <li><strong>Normalize result:</strong> Adjust if needed</li>
+                    <li><strong>Round:</strong> To fit precision</li>
+                    <li><strong>Check special cases:</strong> Overflow/underflow</li>
+                </ol>
+            </div>
+        </div>
+        <div class="column">
+            <div class="step-box">
+                <div class="step-title">FP Multiplication Steps</div>
+                <ol>
+                    <li><strong>Add exponents:</strong> E1 + E2 - bias</li>
+                    <li><strong>Multiply mantissas:</strong> (1.M1) × (1.M2)</li>
+                    <li><strong>Normalize:</strong> Shift if ≥ 2.0</li>
+                    <li><strong>XOR signs:</strong> For result sign</li>
+                    <li><strong>Round and check:</strong> Range limits</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <div class="subsection">Quick Verification Techniques</div>
+    <table>
+        <tr>
+            <th>Operation Type</th>
+            <th>Verification Method</th>
+            <th>Common Errors to Check</th>
+        </tr>
+        <tr>
+            <td>Binary Addition</td>
+            <td>Convert result to decimal, compare with decimal addition</td>
+            <td>Forgot carry bits, overflow not detected</td>
+        </tr>
+        <tr>
+            <td>Two's Complement</td>
+            <td>Complement result should give original when negated</td>
+            <td>Forgot to add 1, wrong bit width</td>
+        </tr>
+        <tr>
+            <td>IEEE 754 Conversion</td>
+            <td>Reconstruct decimal from binary representation</td>
+            <td>Wrong bias, unnormalized mantissa</td>
+        </tr>
+        <tr>
+            <td>FP Arithmetic</td>
+            <td>Rough decimal calculation should match</td>
+            <td>Exponent alignment errors, rounding</td>
+        </tr>
+    </table>
+    
+    <div class="warning">
+        <strong>Critical Checks for Arithmetic Problems:</strong>
+        <ul>
+            <li><strong>Overflow Check:</strong> Result outside representable range?</li>
+            <li><strong>Sign Check:</strong> Does sign make sense for operation?</li>
+            <li><strong>Magnitude Check:</strong> Is |result| reasonable?</li>
+            <li><strong>Binary Length:</strong> Correct number of bits?</li>
+            <li><strong>Decimal Verification:</strong> Convert back and verify</li>
+        </ul>
+    </div>
+    
+    <div class="tip">
+        <strong>Exam Strategy for Arithmetic Problems:</strong>
+        <ol>
+            <li><strong>Read carefully:</strong> Note bit width and signed/unsigned</li>
+            <li><strong>Show all work:</strong> Conversions, carries, borrows</li>
+            <li><strong>Check overflow/underflow:</strong> Especially for signed ops</li>
+            <li><strong>Verify with decimal:</strong> Quick sanity check</li>
+            <li><strong>For IEEE 754:</strong> Remember bias and hidden bit</li>
+            <li><strong>Time management:</strong> FP problems take longer</li>
+        </ol>
+    </div>
+
+    <div id="division" class="section-title">7. BINARY DIVISION ALGORITHMS</div>
+
+    <div class="two-columns">
+        <div class="column">
+            <div class="step-box" style="height: 100%;">
+                <div class="step-title">Restoring Division (Slow & Simple)</div>
+                <p>Analogous to grade-school long division. It performs a subtraction and, if the result is negative, restores the original value.</p>
+                <strong>Approach:</strong>
+                <ol>
+                    <li><strong>Initialize:</strong> Remainder (R) = Dividend.</li>
+                    <li><strong>Shift:</strong> Shift Remainder left by 1 bit.</li>
+                    <li><strong>Subtract:</strong> R = R - Divisor.</li>
+                    <li><strong>Check & Set Quotient Bit:</strong>
+                        <ul>
+                            <li>If R ≥ 0 (MSB=0), set quotient bit to 1.</li>
+                            <li>If R < 0 (MSB=1), set quotient bit to 0 and <span class="important">restore</span> the remainder (R = R + Divisor).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Repeat:</strong> Repeat shift/subtract/check for n steps (where n is the number of bits).</li>
+                </ol>
+            </div>
+        </div>
+        <div class="column">
+            <div class="step-box" style="height: 100%;">
+                <div class="step-title">Non-Restoring Division (Faster)</div>
+                <p>Improves on restoring division by eliminating the restoration step. Instead, it either adds or subtracts based on the current remainder's sign.</p>
+                <strong>Approach:</strong>
+                <ol>
+                    <li><strong>Initialize:</strong> Remainder (R) = Dividend.</li>
+                    <li><strong>Check Remainder Sign:</strong>
+                        <ul>
+                            <li>If R ≥ 0 (MSB=0), <span class="highlight">shift left</span>, then <span class="highlight">subtract</span> Divisor.</li>
+                            <li>If R < 0 (MSB=1), <span class="highlight">shift left</span>, then <span class="highlight">add</span> Divisor.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Set Quotient Bit:</strong>
+                        <ul>
+                            <li>If R ≥ 0 (MSB=0) after the operation, set quotient bit to 1.</li>
+                            <li>If R < 0 (MSB=1), set quotient bit to 0.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Repeat:</strong> Repeat check/op/set for n steps.</li>
+                    <li><strong>Final Correction:</strong> If the final remainder is negative, <span class="important">add the divisor back</span> to get the correct final remainder.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="example">
+        <strong>Example: 7 ÷ 3 (0111 ÷ 0011) using 4-bit unsigned division</strong><br>
+        <strong>Restoring Method:</strong>
+        <ol>
+            <li>R = 0000, Q = 0111. Shift R,Q left: R=00001, Q=1110. Subtract 3 (0011): 00001 - 0011 -> R is negative. Set Q₀=0, Restore R.</li>
+            <li>Shift R,Q left. Subtract 3. Result positive. Set Q₁=1.</li>
+            <li>...and so on.</li>
+        </ol>
+        <strong>Result:</strong> Quotient = 2 (0010), Remainder = 1 (0001). Non-restoring follows a similar but more direct path.
+    </div>
+
+    <div class="subsection">Algorithm Comparison</div>
+    <table>
+        <tr>
+            <th>Aspect</th>
+            <th>Restoring Division</th>
+            <th>Non-Restoring Division</th>
+        </tr>
+        <tr>
+            <td><strong>Speed</strong></td>
+            <td>Slower due to potential restore step (add/sub).</td>
+            <td>Faster, as each cycle is a predictable shift and add/sub.</td>
+        </tr>
+        <tr>
+            <td><strong>Complexity</strong></td>
+            <td>Simpler logic, easier to understand and implement.</td>
+            <td>More complex control logic to decide between adding and subtracting.</td>
+        </tr>
+        <tr>
+            <td><strong>Hardware</strong></td>
+            <td>Requires ALU for both addition and subtraction.</td>
+            <td>Requires ALU for both addition and subtraction.</td>
+        </tr>
+        <tr>
+            <td><strong>Use Case</strong></td>
+            <td>Good for educational purposes or simple CPUs.</td>
+            <td>Common in processors where performance is critical.</td>
+        </tr>
+    </table>
+    
+    <div id="memory-hierarchy" class="section-title">8. MEMORY HIERARCHY & CACHE FUNDAMENTALS</div>
+
+    <div class="subsection">Core Concept: The Speed vs. Size Trade-off</div>
+    <p style="font-size: 13px;">The fundamental challenge is that fast memory (SRAM) is expensive and small, while large memory (Disk) is cheap and slow. The memory hierarchy creates the illusion of a memory that is both large and fast by organizing storage in levels.</p>
+    
+    <div class="subsection">The Principle of Locality</div>
+    <div class="two-columns">
+        <div class="column">
+            <div class="step-box" style="height: 100%;">
+                <div class="step-title">Temporal Locality</div>
+                <p>If an item is accessed, it's likely to be accessed again soon.</p>
+                <strong>Example:</strong> Instructions in a loop or variables used repeatedly.
+            </div>
+        </div>
+        <div class="column">
+            <div class="step-box" style="height: 100%;">
+                <div class="step-title">Spatial Locality</div>
+                <p>If an item is accessed, items with nearby addresses are likely to be accessed soon.</p>
+                <strong>Example:</strong> Sequential instruction fetching or accessing array elements in order.
+            </div>
+        </div>
+    </div>
+
+    <div class="subsection">Hierarchy Terminology</div>
+    <table>
+        <tr>
+            <th width="20%">Term</th>
+            <th width="80%">Definition</th>
+        </tr>
+        <tr>
+            <td><strong>Block / Line</strong></td>
+            <td>The unit of data copied between levels of the hierarchy.</td>
+        </tr>
+        <tr>
+            <td><strong>Hit</strong></td>
+            <td>The requested data is found in an upper, faster level (e.g., the cache).</td>
+        </tr>
+        <tr>
+            <td><strong>Miss</strong></td>
+            <td>The requested data is <span class="important">not</span> found in the upper level, requiring a fetch from a lower, slower level.</td>
+        </tr>
+        <tr>
+            <td><strong>Miss Penalty</strong></td>
+            <td>The time required to fetch a block from a lower level and deliver it to the upper level.</td>
+        </tr>
+    </table>
+
+    <div class="subsection">Memory Technology Types</div>
+    <table>
+        <tr>
+            <th>Technology</th>
+            <th>Access Time</th>
+            <th>Cost / GB</th>
+            <th>Primary Use Case</th>
+        </tr>
+        <tr>
+            <td><strong>SRAM</strong> (Static RAM)</td>
+            <td>~0.5 - 2.5 ns</td>
+            <td>Very High ($2k - $5k)</td>
+            <td>L1/L2 Cache Memory</td>
+        </tr>
+        <tr>
+            <td><strong>DRAM</strong> (Dynamic RAM)</td>
+            <td>~50 - 70 ns</td>
+            <td>Moderate ($20 - $75)</td>
+            <td>Main Memory</td>
+        </tr>
+        <tr>
+            <td><strong>Flash Storage</strong></td>
+            <td>Much faster than disk</td>
+            <td>Low (between DRAM/Disk)</td>
+            <td>SSDs, USB Drives</td>
+        </tr>
+        <tr>
+            <td><strong>Magnetic Disk</strong></td>
+            <td>~5 - 20 ms</td>
+            <td>Very Low (<$2)</td>
+            <td>Permanent Storage (HDD)</td>
+        </tr>
+    </table>
+    
+    <div class="tip">
+        <strong>Key Technology Characteristics:</strong>
+        <ul>
+            <li><strong>DRAM:</strong> Stores data as charge in a capacitor; must be periodically <span class="highlight">refreshed</span>. Performance is improved with features like row buffers and banking.</li>
+            <li><strong>Flash:</strong> Non-volatile memory that <span class="highlight">wears out</span> after many write cycles. Requires <span class="important">wear leveling</span> to distribute writes and extend lifespan.</li>
+            <li><strong>Disk:</strong> Performance limited by physical movement: <span class="highlight">seek time</span> (moving the arm) and <span class="highlight">rotational delay</span> (waiting for the sector).</li>
+        </ul>
+    </div>
+
+    <div class="subsection">Cache Fundamentals: Direct Mapped Cache</div>
+    <div class="formula-box">
+        A simple and common cache organization where each block from main memory maps to exactly one location in the cache.
+        <div class="formula">(Block Address) MOD (Number of Blocks in Cache)</div>
+        <strong>How it works:</strong> The low-order bits of the block address are used as an index to determine which cache line to check. This makes finding a block fast, but can lead to conflicts if multiple memory blocks map to the same cache line.
+    </div>
+
+</body>
+</html>

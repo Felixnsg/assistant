@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felix Nsenga - Resume</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            line-height: 1.1;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.3in 0.5in;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 3px;
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .contact-info {
+            font-size: 11px;
+            margin: 3px 0;
+        }
+
+        .section-title {
+            text-transform: uppercase;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 1px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            margin-bottom: 0;
+            font-size: 12px;
+        }
+
+        .company-location {
+            font-style: italic;
+            margin-top: 1px;
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .dates {
+            float: right;
+            font-weight: normal;
+        }
+
+        ul {
+            margin-top: 1px;
+            margin-bottom: 6px;
+            padding-left: 16px;
+        }
+
+        li {
+            margin-bottom: 1px;
+            font-size: 11px;
+        }
+
+        .summary {
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .skills-section {
+            font-size: 11px;
+            line-height: 1.2;
+        }
+
+        /* Download button styling */
+        .download-container {
+            text-align: center;
+            margin: 6px 0;
+            padding: 2px;
+        }
+
+        .download-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 1px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .download-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Hide the button when printing */
+        @media print {
+            .download-container {
+                display: none;
+            }
+
+            body {
+                padding: 0;
+                margin: 0.3in;
+            }
+
+            @page {
+                margin: 0;
+                size: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="download-container">
+        <button class="download-button" onclick="printAsPDF()">Download as PDF</button>
+    </div>
+
+    <div class="header">
+        <h1 class="name">FELIX WA NGOY NSENGA</h1>
+        <p class="contact-info">Seattle, WA • 425-500-9954 • fnsenga@seattleu.edu • linkedin.com/in/felix-nsenga-7a52a8280</p>
+    </div>
+
+    <div class="summary">
+        Enthusiastic undergraduate student passionate about early childhood education and literacy development. Multilingual communicator with experience mentoring diverse youth populations and creating engaging learning environments. Strong collaborative skills with proven ability to build meaningful relationships with children and families from various cultural backgrounds. Committed to social-emotional learning and preparing young scholars for academic success.
+    </div>
+
+    <div class="section-title">EDUCATION</div>
+
+    <div class="job-title">Bachelor of Science in Electrical and Computer Engineering <span class="dates">Expected 2027</span></div>
+    <div class="company-location">Seattle University, Seattle, WA</div>
+    <ul>
+        <li>GPA: 3.8/4.0 • Dean's List: Three consecutive quarters • Undergraduate student</li>
+        <li>Available 12 hours/week including M/W 12:30-2:30PM, T/TH 9:30-11:30AM, or T/TH 3-5PM slots</li>
+        <li>Committed to full academic year engagement (November 2025 - June 2026)</li>
+    </ul>
+
+    <div class="section-title">YOUTH EDUCATION & MENTORING EXPERIENCE</div>
+
+    <div class="job-title">Peer Educator & Youth Mentor <span class="dates">2022-2024</span></div>
+    <div class="company-location">Bellevue College, Bellevue, WA</div>
+    <ul>
+        <li>Mentored diverse groups of students, adapting communication styles to meet individual learning needs</li>
+        <li>Created engaging educational activities and materials to support student learning and development</li>
+        <li>Facilitated small and large group activities, maintaining high energy and positive learning environments</li>
+        <li>Built trusting relationships with students and families from various cultural and socioeconomic backgrounds</li>
+        <li>Collaborated with faculty supervisor to plan and implement student support programming</li>
+        <li>Demonstrated reliability and punctuality, maintaining consistent weekly schedules with students</li>
+        <li>Participated in team meetings to share strategies and improve program quality</li>
+    </ul>
+
+    <div class="job-title">Educational Content Developer & Activity Facilitator <span class="dates">2024-Present</span></div>
+    <div class="company-location">Personal Initiative - Youth Technology & Literacy Project</div>
+    <ul>
+        <li>Developed age-appropriate educational materials making complex concepts accessible to young learners</li>
+        <li>Created hands-on learning activities combining technology with traditional literacy skills</li>
+        <li>Practiced reading children's stories aloud with expression and engagement techniques</li>
+        <li>Prepared visual aids, activity materials, and learning kits for interactive sessions</li>
+        <li>Adapted activities based on feedback and learner engagement levels</li>
+    </ul>
+
+    <div class="section-title">RELEVANT SKILLS FOR EARLY LEARNING</div>
+
+    <p class="skills-section"><strong>Classroom Skills</strong>: Reading aloud with expression, Activity facilitation, Small & large group management, High-energy engagement<br>
+    <strong>Communication</strong>: Clear verbal communication, Active listening, Professional writing, Family engagement, Team collaboration<br>
+    <strong>Language Abilities</strong>: Fluent in English, French, and Swahili; Native speaker of 5+ African dialects<br>
+    <strong>Professional Skills</strong>: Lesson planning, Material preparation, Time management, Constructive feedback reception</p>
+
+    <div class="section-title">CULTURAL COMPETENCY & COMMUNITY ENGAGEMENT</div>
+
+    <ul>
+        <li><strong>Multilingual Advantage:</strong> Ability to communicate with diverse families in their native languages, building stronger connections</li>
+        <li><strong>Cultural Sensitivity:</strong> Deep understanding of immigrant and refugee experiences, creating inclusive spaces for all children</li>
+        <li><strong>Community Focus:</strong> Passionate about serving Central Seattle communities and reducing educational disparities</li>
+        <li><strong>Positive Behavior Support:</strong> Experience using encouragement and strength-based approaches with young learners</li>
+    </ul>
+
+    <div class="section-title">COMMITMENT TO EARLY CHILDHOOD DEVELOPMENT</div>
+
+    <ul>
+        <li><strong>Social-Emotional Learning:</strong> Dedicated to supporting children's emotional growth alongside academic preparation</li>
+        <li><strong>Literacy Focus:</strong> Passionate about fostering love of reading and language development in pre-K scholars</li>
+        <li><strong>Team Collaboration:</strong> Eager to work with classroom teachers and mentor teams to create cohesive programming</li>
+        <li><strong>Professional Growth:</strong> Committed to ongoing training in culturally responsive teaching and anti-racist practices</li>
+        <li><strong>Flexibility:</strong> Adaptable to changing classroom needs and unexpected situations while maintaining positive attitude</li>
+        <li><strong>Full-Year Commitment:</strong> Available for complete academic year including November training series</li>
+    </ul>
+
+    <script>
+        function printAsPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
