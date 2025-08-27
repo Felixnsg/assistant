@@ -1,0 +1,101 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Logs
+*.log
+logs/*.log
+interfaces/logs/*.log
+
+# Cache and temporary files
+cache_dumps/cache_dump_*.json
+*.cache
+*.tmp
+temp/
+tmp/
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# IDE and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Security - Never commit these
+*.key
+*.pem
+*.cert
+secrets.json
+credentials.json
+
+# Model files (large)
+*.pth
+*.pt
+*.h5
+*.pkl
+*.onnx
+
+# Audio/Video files (large)
+*.mp3
+*.wav
+*.mp4
+*.avi
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Personal notes
+notes.txt
+TODO.txt
+scratch/
